@@ -77,7 +77,7 @@ class _SetupUsernamePageState extends State<SetupUsernamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text('Setup Username to continue'),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
           icon: const Icon(Icons.arrow_back),

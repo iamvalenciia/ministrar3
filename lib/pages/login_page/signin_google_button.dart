@@ -53,20 +53,26 @@ class _SigninGoogleButtonState extends State<SigninGoogleButton> {
       );
 
       developer.log(
-        'response',
+        'final response = await supabase.auth.signInWithIdToken',
         name: 'Google Sign In',
         error: jsonEncode(response.user),
       );
 
-      if (response.user?.userMetadata != null) {
+      if (response.user != null) {
         final userId = supabase.auth.currentUser!.id;
         final data =
             await supabase.from('profiles').select().eq('id', userId).single();
+        developer.log(
+          "final data = await supabase.from('profiles').select().eq('id', userId).single()",
+          name: 'Google Sign In',
+          error: jsonEncode(data),
+        );
+
         if (mounted) {
           if (data['username'] == null) {
-            Navigator.of(context).pushReplacementNamed('/setup_username');
+            Navigator.of(context).pushReplacementNamed('/setup-username');
           } else {
-            Navigator.of(context).pushReplacementNamed('/account');
+            Navigator.of(context).pushReplacementNamed('/');
           }
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -74,7 +80,6 @@ class _SigninGoogleButtonState extends State<SigninGoogleButton> {
               backgroundColor: Theme.of(context).colorScheme.primary,
             ),
           );
-          Navigator.of(context).pushReplacementNamed('/');
         }
       }
       // developer.log(
