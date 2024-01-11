@@ -3,11 +3,13 @@ import 'package:ministrar3/instances/supabase.dart';
 import 'package:ministrar3/pages/account_page/account_page.dart';
 import 'package:ministrar3/pages/home_page/home_page.dart';
 import 'package:ministrar3/pages/login_page/login_page.dart';
-import 'package:ministrar3/pages/login_page/setup_username_page.dart';
+import 'package:ministrar3/pages/riverpod_username_page.dart';
+// import 'package:ministrar3/pages/setup_username_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Future<void> main() async {
   await initializeSupabase();
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -38,7 +40,7 @@ class _MyAppState extends State<MyApp> {
         '/': (context) => const HomePage(),
         '/login': (context) => const LoginPage(),
         '/account': (context) => const AccountPage(),
-        '/setup-username': (context) => const SetupUsernamePage(),
+        '/setup-username': (context) => const SetupUsername(),
       },
       debugShowCheckedModeBanner: false,
     );
