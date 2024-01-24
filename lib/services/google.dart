@@ -2,7 +2,7 @@
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class GoogleSignInProvider {
+class GoogleProvider {
   static GoogleSignIn? _googleSignIn;
 
   static Future<GoogleSignIn> getGoogleSignIn() async {

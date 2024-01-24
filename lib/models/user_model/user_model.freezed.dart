@@ -21,7 +21,7 @@ User _$UserFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$User {
   String get id => throw _privateConstructorUsedError;
-  String? get updated_at => throw _privateConstructorUsedError;
+  DateTime? get updated_at => throw _privateConstructorUsedError;
   String? get username => throw _privateConstructorUsedError;
   String? get full_name => throw _privateConstructorUsedError;
   String? get avatar_url => throw _privateConstructorUsedError;
@@ -38,7 +38,7 @@ abstract class $UserCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String? updated_at,
+      DateTime? updated_at,
       String? username,
       String? full_name,
       String? avatar_url});
@@ -71,7 +71,7 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
       updated_at: freezed == updated_at
           ? _value.updated_at
           : updated_at // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       username: freezed == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
@@ -97,7 +97,7 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String? updated_at,
+      DateTime? updated_at,
       String? username,
       String? full_name,
       String? avatar_url});
@@ -127,7 +127,7 @@ class __$$UserImplCopyWithImpl<$Res>
       updated_at: freezed == updated_at
           ? _value.updated_at
           : updated_at // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       username: freezed == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
@@ -160,7 +160,7 @@ class _$UserImpl implements _User {
   @override
   final String id;
   @override
-  final String? updated_at;
+  final DateTime? updated_at;
   @override
   final String? username;
   @override
@@ -211,7 +211,7 @@ class _$UserImpl implements _User {
 abstract class _User implements User {
   factory _User(
       {required final String id,
-      final String? updated_at,
+      final DateTime? updated_at,
       final String? username,
       final String? full_name,
       final String? avatar_url}) = _$UserImpl;
@@ -221,7 +221,7 @@ abstract class _User implements User {
   @override
   String get id;
   @override
-  String? get updated_at;
+  DateTime? get updated_at;
   @override
   String? get username;
   @override

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:ministrar3/instances/google_sign_in.dart';
-import 'package:ministrar3/instances/supabase.dart';
+import 'package:ministrar3/services/google.dart';
+import 'package:ministrar3/services/supabase.dart';
 
 class CustomeNavigationDrawer extends StatefulWidget {
   const CustomeNavigationDrawer({super.key});
@@ -13,8 +13,7 @@ class CustomeNavigationDrawer extends StatefulWidget {
 
 class _CustomeNavigationDrawerState extends State<CustomeNavigationDrawer> {
   Future<void> _signOut() async {
-    final GoogleSignIn googleSignIn =
-        await GoogleSignInProvider.getGoogleSignIn();
+    final GoogleSignIn googleSignIn = await GoogleProvider.getGoogleSignIn();
     await supabase.auth.signOut();
     await googleSignIn.signOut();
   }

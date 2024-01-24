@@ -10,7 +10,7 @@ part 'user_model.g.dart';
 class User with _$User {
   factory User({
     required String id,
-    String? updated_at,
+    DateTime? updated_at,
     String? username,
     String? full_name,
     String? avatar_url,

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:ministrar3/pages/login_page/app_description.dart';
-import 'package:ministrar3/pages/login_page/custome_divider.dart';
-import 'package:ministrar3/pages/login_page/signin_google_button.dart';
+import 'package:ministrar3/screens/login_screen/app_description.dart';
+import 'package:ministrar3/screens/login_screen/custome_divider.dart';
+import 'package:ministrar3/screens/login_screen/riverpod_signin_google_button.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

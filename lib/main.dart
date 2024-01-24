@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ministrar3/instances/supabase.dart';
-import 'package:ministrar3/pages/account_page/account_page.dart';
-import 'package:ministrar3/pages/home_page/home_page.dart';
-import 'package:ministrar3/pages/login_page/login_page.dart';
-import 'package:ministrar3/pages/riverpod_username_page.dart';
+import 'package:ministrar3/services/supabase.dart';
+import 'package:ministrar3/screens/profile_screen/profile_screen.dart';
+import 'package:ministrar3/screens/home_screen/home_page.dart';
+import 'package:ministrar3/screens/login_screen/login_page.dart';
+import 'package:ministrar3/screens/username_screen/username_screen.dart';
 // import 'package:ministrar3/pages/setup_username_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,10 +37,10 @@ class _MyAppState extends State<MyApp> {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const HomePage(),
-        '/login': (context) => const LoginPage(),
-        '/account': (context) => const AccountPage(),
-        '/setup-username': (context) => const SetupUsername(),
+        '/': (context) => const HomeScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/account': (context) => const ProfileScreen(),
+        '/setup-username': (context) => const UsernameScreen(),
       },
       debugShowCheckedModeBanner: false,
     );

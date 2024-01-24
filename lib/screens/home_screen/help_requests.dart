@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ministrar3/instances/supabase.dart';
+import 'package:ministrar3/services/supabase.dart';
 
 class HelpRequests extends StatefulWidget {
   const HelpRequests({super.key});
@@ -9,7 +9,7 @@ class HelpRequests extends StatefulWidget {
 }
 
 class _HelpRequestsState extends State<HelpRequests> {
-  final Future<dynamic> _future = supabase.rpc('nearby_help_requests',
+  final Future<dynamic> _future = supabase.rpc('nearby_opportunities',
       params: {'lat': 0.817809, 'long': -79.685650});
 
   @override

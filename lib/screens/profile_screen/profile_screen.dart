@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:ministrar3/instances/supabase.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:ministrar3/services/google.dart';
+import 'package:ministrar3/services/supabase.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class SetupUsernamePage extends StatefulWidget {
-  const SetupUsernamePage({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<SetupUsernamePage> createState() => _SetupUsernamePageState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _SetupUsernamePageState extends State<SetupUsernamePage> {
+class _ProfileScreenState extends State<ProfileScreen> {
   final _usernameController = TextEditingController();
-  final _full_nameController = TextEditingController();
+  final _websiteController = TextEditingController();
 
   var _loading = true;
 
@@ -33,16 +35,17 @@ class _SetupUsernamePageState extends State<SetupUsernamePage> {
       final userId = supabase.auth.currentUser!.id;
       final data =
           await supabase.from('profiles').select().eq('id', userId).single();
-      // here lines of code to save the data from user profile in riverpod
       _usernameController.text = (data['username'] ?? '') as String;
-      _full_nameController.text = (data['full_name'] ?? '') as String;
+      _websiteController.text = (data['website'] ?? '') as String;
     } catch (error) {
-      _showSnackBar(
-        error is PostgrestException
-            ? error.message
-            : 'Unexpected error occurred',
-        true,
-      );
+      if (mounted) {
+        _showSnackBar(
+          error is PostgrestException
+              ? error.message
+              : 'Unexpected error occurred',
+          true,
+        );
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -54,30 +57,65 @@ class _SetupUsernamePageState extends State<SetupUsernamePage> {
     final updates = {
       'id': supabase.auth.currentUser!.id,
       'username': _usernameController.text.trim(),
-      'full_name': _full_nameController.text.trim(),
+      'website': _websiteController.text.trim(),
       'updated_at': DateTime.now().toIso8601String(),
     };
 
     try {
       await supabase.from('profiles').upsert(updates);
-      _showSnackBar('Successfully updated profile!');
+      if (mounted) {
+        _showSnackBar('Successfully updated profile!');
+      }
     } catch (error) {
-      _showSnackBar(
-        error is PostgrestException
-            ? error.message
-            : 'Unexpected error occurred',
-        true,
-      );
+      if (mounted) {
+        _showSnackBar(
+          error is PostgrestException
+              ? error.message
+              : 'Unexpected error occurred',
+          true,
+        );
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }
+  }
+
+  Future<void> _signOut() async {
+    final GoogleSignIn googleSignIn = await GoogleProvider.getGoogleSignIn();
+
+    try {
+      await supabase.auth.signOut();
+      await googleSignIn.signOut();
+    } catch (error) {
+      if (mounted) {
+        _showSnackBar(
+          error is AuthException ? error.message : 'Unexpected error occurred',
+          true,
+        );
+      }
+    } finally {
+      if (mounted) Navigator.of(context).pushReplacementNamed('/login');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getProfile();
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _websiteController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Setup Username to continue'),
+        title: const Text('Profile'),
         leading: IconButton(
           onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
           icon: const Icon(Icons.arrow_back),
@@ -88,38 +126,22 @@ class _SetupUsernamePageState extends State<SetupUsernamePage> {
           : ListView(
               padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
               children: [
-                // fetch avatar url from riverpod
-                // data['avatar_url'].isNotEmpty
-                // ? CachedNetworkImage(
-                //     imageUrl: providerImageUrl,
-                //     placeholder: (context, url) => const Icon(
-                //       Icons.account_circle,
-                //       size: 40,
-                //       color: primaryColor,
-                //     ),
-                //     width: 40, // Set the width and height as needed
-                //     height: 50,
-                //     fit: BoxFit.cover,
-                //   )
-                // : const Icon(
-                //     Icons.account_circle,
-                //     size: 40,
-                //     color: primaryColor,
-                //   ),
                 TextFormField(
                   controller: _usernameController,
-                  decoration: const InputDecoration(labelText: 'Username'),
+                  decoration: const InputDecoration(labelText: 'User Name'),
                 ),
                 const SizedBox(height: 18),
                 TextFormField(
-                  controller: _full_nameController,
-                  decoration: const InputDecoration(labelText: 'Name'),
+                  controller: _websiteController,
+                  decoration: const InputDecoration(labelText: 'Website'),
                 ),
                 const SizedBox(height: 18),
                 ElevatedButton(
                   onPressed: _loading ? null : _updateProfile,
                   child: Text(_loading ? 'Saving...' : 'Update'),
                 ),
+                const SizedBox(height: 18),
+                TextButton(onPressed: _signOut, child: const Text('Sign Out')),
               ],
             ),
     );
