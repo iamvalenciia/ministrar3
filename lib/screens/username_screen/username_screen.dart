@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ministrar3/models/user_model/user_model.dart';
 import 'package:ministrar3/providers/user_provider/user_provider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:developer' as developer;
+
+import 'package:ministrar3/services/supabase.dart';
 
 class UsernameScreen extends ConsumerStatefulWidget {
   const UsernameScreen({super.key});
@@ -13,89 +15,96 @@ class UsernameScreen extends ConsumerStatefulWidget {
 
 class _UsernameScreenState extends ConsumerState<UsernameScreen> {
   late final TextEditingController _usernameController;
-  late final TextEditingController _fullNameController;
 
   @override
   void initState() {
     super.initState();
     _usernameController = TextEditingController();
-    _fullNameController = TextEditingController();
   }
 
   @override
   void dispose() {
     _usernameController.dispose();
-    _fullNameController.dispose();
     super.dispose();
+  }
+
+  void _updateUsername() async {
+    final username = _usernameController.text.trim();
+    if (username.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a username.')),
+      );
+      return;
+    }
+    try {
+      final userId = supabase.auth.currentUser?.id;
+      final int code = await ref
+          .read(userProfileProvider.notifier)
+          .updateUser(userId.toString(), username);
+
+      switch (code) {
+        case 200: // OK
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Welcome $username')),
+          );
+          // navigate home
+          Navigator.of(context).pushReplacementNamed('/');
+          break;
+        case 23505: // Duplicate key value
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('This username is already taken.')),
+          );
+          break;
+        case 400: // Client error
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text(
+                    'There was an issue with the request. Please try again.')),
+          );
+          break;
+        default: // Server error
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text('Server error. Please try again later.')),
+          );
+          break;
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content:
+                Text('An unexpected error occurred. Please try again Later.')),
+      );
+      developer.log('Error updating username', error: e);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final userId = ref.read(userNotifierProvider.notifier);
-    final userFuture =
-        ref.read(userNotifierProvider.notifier).fetchUser(userId);
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Account'),
+        title: const Text('Setup your Username'),
         leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
           icon: const Icon(Icons.arrow_back),
         ),
       ),
-      body: FutureBuilder<User>(
-        future: userFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text(
-                'Oops, something unexpected happened: ${snapshot.error}');
-          } else {
-            User user = snapshot.data!;
-            return Column(
-              children: [
-                // if (user.avatar_url != null && user.avatar_url!.isNotEmpty)
-                //   CachedNetworkImage(
-                //     imageUrl: user.avatar_url!,
-                //     placeholder: (context, url) =>
-                //         const CircularProgressIndicator(),
-                //     errorWidget: (context, url, error) =>
-                //         const Icon(Icons.error),
-                //   )
-                // else
-                const Icon(
-                  Icons.account_circle,
-                  size: 40,
-                ),
-                Text('Hello ${user.full_name}, please setup your username'),
-                TextFormField(
-                  controller: _fullNameController,
-                  decoration: const InputDecoration(labelText: 'Full Name'),
-                ),
-                TextFormField(
-                  controller: _usernameController,
-                  decoration: const InputDecoration(labelText: 'Username'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    User updateUser = User(
-                      id: user.id,
-                      username: _usernameController.text,
-                      full_name: _fullNameController.text,
-                      updated_at: DateTime.now(),
-                      // Add other fields as necessary
-                    );
-                    ref
-                        .read(userNotifierProvider.notifier)
-                        .updateUser(updateUser);
-                  },
-                  child: const Text('Update'),
-                ),
-              ],
-            );
-          }
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextFormField(
+              controller: _usernameController,
+              decoration: const InputDecoration(labelText: 'Username'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _updateUsername,
+              child: const Text('Continue'),
+            ),
+          ],
+        ),
       ),
     );
   }
