@@ -1,7 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'login_google_provider.dart';
-
+part of 'login_provider.dart';
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************

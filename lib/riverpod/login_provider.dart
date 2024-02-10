@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
 import 'package:ministrar3/services/google.dart';
 import 'package:ministrar3/services/supabase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -8,7 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 
 // Necessary for code-generation to work
-part 'login_google_provider.g.dart';
+part 'login_provider.g.dart';
 
 /// This will create a provider named `activityProvider`
 /// which will cache the result of this function.

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ministrar3/models/user_model/user_model.dart';
-import 'package:ministrar3/providers/user_provider/user_provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:ministrar3/riverpod/user_provider.dart';
+import 'package:ministrar3/services/google.dart';
 import 'dart:developer' as developer;
 
 import 'package:ministrar3/services/supabase.dart';
@@ -20,6 +21,14 @@ class _UsernameScreenState extends ConsumerState<UsernameScreen> {
   void initState() {
     super.initState();
     _usernameController = TextEditingController();
+
+    // Fetch the current user profile and set the username in the text controller
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = ref.read(userProfileProvider).value;
+      if (user != null) {
+        _usernameController.text = user.username ?? '';
+      }
+    });
   }
 
   @override
@@ -45,10 +54,10 @@ class _UsernameScreenState extends ConsumerState<UsernameScreen> {
       switch (code) {
         case 200: // OK
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Welcome $username')),
+            SnackBar(content: Text('Username updated successfully.')),
           );
           // navigate home
-          Navigator.of(context).pushReplacementNamed('/');
+          Navigator.of(context).pushReplacementNamed('/account');
           break;
         case 23505: // Duplicate key value
           ScaffoldMessenger.of(context).showSnackBar(
@@ -60,6 +69,12 @@ class _UsernameScreenState extends ConsumerState<UsernameScreen> {
             const SnackBar(
                 content: Text(
                     'There was an issue with the request. Please try again.')),
+          );
+          break;
+        case 23514: // Client error
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text("Your username can not contain space")),
           );
           break;
         default: // Server error
@@ -81,11 +96,23 @@ class _UsernameScreenState extends ConsumerState<UsernameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.read(userProfileProvider).value;
+    final username = user?.username;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Setup your Username'),
         leading: IconButton(
-          onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
+          onPressed: () async {
+            if (username != null) {
+              Navigator.of(context).pushReplacementNamed('/account');
+            } else {
+              (Navigator.of(context).pushReplacementNamed('/login'));
+              final GoogleSignIn googleSignIn =
+                  await GoogleProvider.getGoogleSignIn();
+              await supabase.auth.signOut();
+              await googleSignIn.signOut();
+            }
+          },
           icon: const Icon(Icons.arrow_back),
         ),
       ),

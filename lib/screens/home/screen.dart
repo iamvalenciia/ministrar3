@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ministrar3/services/supabase.dart';
-import 'package:ministrar3/screens/home_screen/navigation_drawer.dart';
-import 'package:ministrar3/screens/home_screen/help_requests.dart';
-import 'package:ministrar3/screens/home_screen/login_card.dart';
+import 'package:ministrar3/screens/home/navigation_drawer.dart';
+import 'package:ministrar3/screens/home/help_requests.dart';
+import 'package:ministrar3/screens/home/login_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ministrar3/providers/login_google_provider/login_google_provider.dart';
-import 'package:ministrar3/services/supabase.dart';
-import 'package:ministrar3/screens/username_screen/username_screen.dart';
-import 'package:ministrar3/providers/user_provider/user_provider.dart';
+import 'package:ministrar3/riverpod/login_provider.dart';
+import 'package:ministrar3/riverpod/user_provider.dart';
 import 'dart:developer' as developer;
 
 class SigninGoogleButton extends ConsumerStatefulWidget {
