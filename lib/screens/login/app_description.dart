@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 
-class AppDescription extends StatefulWidget {
-  const AppDescription({super.key});
+class AppDescription extends StatelessWidget {
+  const AppDescription({Key? key}) : super(key: key);
 
-  @override
-  State<AppDescription> createState() => _AppDescriptionState();
-}
-
-class _AppDescriptionState extends State<AppDescription> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,14 +17,10 @@ class _AppDescriptionState extends State<AppDescription> {
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.primary),
-              // style: TextStyle(fontWeight: FontWeight.bold),
             ),
             TextSpan(
               text: ' &',
-              style: TextStyle(
-                  // fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary),
-              // style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
             ),
             TextSpan(
               text: ' Be Helped:',

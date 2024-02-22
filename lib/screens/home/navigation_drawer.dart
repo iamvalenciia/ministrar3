@@ -3,19 +3,21 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ministrar3/services/google.dart';
 import 'package:ministrar3/services/supabase.dart';
 
-class CustomeNavigationDrawer extends StatefulWidget {
-  const CustomeNavigationDrawer({super.key});
+class CustomeNavigationDrawer extends StatelessWidget {
+  const CustomeNavigationDrawer({Key? key}) : super(key: key);
 
-  @override
-  State<CustomeNavigationDrawer> createState() =>
-      _CustomeNavigationDrawerState();
-}
-
-class _CustomeNavigationDrawerState extends State<CustomeNavigationDrawer> {
-  Future<void> _signOut() async {
+  Future<void> _signOut(BuildContext context) async {
     final GoogleSignIn googleSignIn = await GoogleProvider.getGoogleSignIn();
     await supabase.auth.signOut();
     await googleSignIn.signOut();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        content: const Text('You have successfully signed out'),
+      ),
+    );
+    Navigator.pop(context);
+    Navigator.of(context).pushReplacementNamed('/login');
   }
 
   @override
@@ -43,17 +45,7 @@ class _CustomeNavigationDrawerState extends State<CustomeNavigationDrawer> {
           enabled: userExist,
           title: const Text('Logout'),
           leading: const Icon(Icons.logout),
-          onTap: () {
-            _signOut();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                content: const Text('You have successfully signed out'),
-              ),
-            );
-            Navigator.pop(context);
-            Navigator.of(context).pushReplacementNamed('/login');
-          },
+          onTap: () => _signOut(context),
         ),
       ],
     );

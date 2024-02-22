@@ -63,5 +63,7 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to show you nearby help requests when you are using the app</string>
 </dict>
 </plist>

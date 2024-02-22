@@ -1,7 +1,7 @@
 import 'package:ministrar3/services/supabase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ministrar3/models/user_model.dart';
+import 'package:ministrar3/models/user_model/user_model.dart';
 import 'dart:developer' as developer;
 // command to generate the file
 // dart run build_runner build

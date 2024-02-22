@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ministrar3/riverpod/login_provider.dart';
-import 'package:ministrar3/riverpod/user_provider.dart';
+import 'package:ministrar3/riverpod/login_provider/login_provider.dart';
+import 'package:ministrar3/riverpod/user_provider/user_provider.dart';
 import 'dart:developer' as developer;
 
 class SigninGoogleButton extends ConsumerStatefulWidget {
@@ -19,7 +19,6 @@ class _SigninGoogleButtonState extends ConsumerState<SigninGoogleButton> {
   Widget build(BuildContext context) {
     final isLoggingIn = _loginState?.isLoading ?? false;
     final loginError = _loginState?.error;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 80),
       child: ElevatedButton(

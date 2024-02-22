@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 
-class LoginCard extends StatefulWidget {
-  const LoginCard({super.key});
+class LoginCard extends StatelessWidget {
+  const LoginCard({Key? key}) : super(key: key);
 
-  @override
-  State<LoginCard> createState() => _LoginCardState();
-}
-
-class _LoginCardState extends State<LoginCard> {
   @override
   Widget build(BuildContext context) {
     return Card(

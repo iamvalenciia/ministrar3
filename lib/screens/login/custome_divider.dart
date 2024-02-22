@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 
-class CustomeDivider extends StatefulWidget {
-  const CustomeDivider({super.key});
+class CustomeDivider extends StatelessWidget {
+  const CustomeDivider({Key? key}) : super(key: key);
 
-  @override
-  State<CustomeDivider> createState() => _CustomeDividerState();
-}
-
-class _CustomeDividerState extends State<CustomeDivider> {
   @override
   Widget build(BuildContext context) {
     return const Row(

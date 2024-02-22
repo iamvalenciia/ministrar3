@@ -3,14 +3,9 @@ import 'package:ministrar3/screens/login/app_description.dart';
 import 'package:ministrar3/screens/login/custome_divider.dart';
 import 'package:ministrar3/screens/login/riverpod_signin_google_button.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +34,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
-// when click in gmail accoutn user, show a message sayin "waiting authentication ..."
-//  Then show a message saying "Welcome [user.name]"
-

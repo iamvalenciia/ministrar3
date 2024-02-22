@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:ministrar3/riverpod/user_provider.dart';
+import 'package:ministrar3/riverpod/user_provider/user_provider.dart';
 import 'package:ministrar3/services/google.dart';
 import 'dart:developer' as developer;
 

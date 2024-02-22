@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ministrar3/riverpod/user_provider.dart';
-import 'package:ministrar3/models/user_model.dart';
+import 'package:ministrar3/riverpod/user_provider/user_provider.dart';
+import 'package:ministrar3/models/user_model/user_model.dart';
 
 // Consumes the shared state and rebuild when it changes
 class ProfileScreen extends ConsumerWidget {
