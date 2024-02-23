@@ -48,3 +48,8 @@ final streamDistanceProvider = StreamProvider.autoDispose
 
 
 // Posible solution test in a real device
+
+// SUPABASE
+// also fix the proble to supabase proyect, is not pushing the function help_requests
+// posible solution run the sql in the localhost, to create the help requests function,
+// create new migration and push the changes
