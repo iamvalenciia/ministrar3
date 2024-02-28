@@ -29,10 +29,7 @@ class LocationCard extends StatelessWidget {
                   }
                 }
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
-                );
+                Navigator.of(context).pushReplacementNamed('/');
               },
             ),
           ],

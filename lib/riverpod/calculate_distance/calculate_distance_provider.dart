@@ -1,55 +1,55 @@
 import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:ministrar3/models/help_requests_model/help_requests_model.dart';
+import 'package:ministrar3/riverpod/help_requests_provider/help_requests_provider.dart';
 import 'dart:developer' as developer;
 
-final streamDistanceProvider = StreamProvider.autoDispose
-    .family<double, HelpRequestsModel>((ref, helpRequest) async* {
-  final StreamController<double> controller =
-      StreamController<double>.broadcast();
+final streamDistanceProvider = StreamProvider.autoDispose((ref) {
+  final distanceStreamController = StreamController<double>.broadcast();
 
-  StreamSubscription<Position> positionStream = Geolocator.getPositionStream(
-          locationSettings: LocationSettings(distanceFilter: 1))
-      .listen((Position position) {
-    final double userLat = position.latitude;
-    final double userLong = position.longitude;
-    final double helpRequestLat = helpRequest.lat ?? 50;
-    final double helpRequestLong = helpRequest.long ?? 0.0;
-    // Use current location
-    double distanceInMeters = Geolocator.distanceBetween(
-        userLat, userLong, helpRequestLat, helpRequestLong);
-    controller.add(distanceInMeters);
+  final StreamSubscription<Position> positionStream =
+      Geolocator.getPositionStream(
+              locationSettings: LocationSettings(distanceFilter: 3))
+          .listen((Position position) {
+    final userLat = position.latitude;
+    final userLong = position.longitude;
 
-    // Log the current location and distance
-    developer.log('Current location: $userLat, $userLong');
-    developer.log('Distance to help request: $distanceInMeters meters');
+    // Access HelpRequests from context if needed
+    final helpRequests = ref.watch(getHelpRequestsProvider);
+
+    helpRequests.when(
+      data: (data) {
+        for (final helpRequest in data) {
+          final helpRequestLat = helpRequest.lat ?? 50;
+          final helpRequestLong = helpRequest.long ?? 0.0;
+          final distanceInMeters = Geolocator.distanceBetween(
+              userLat, userLong, helpRequestLat, helpRequestLong);
+          distanceStreamController.add(distanceInMeters);
+        }
+      },
+      loading: () => {},
+      error: (error, stack) => {},
+    );
   });
 
   ref.onDispose(() {
     positionStream.cancel();
-    controller.close();
-    // Log that the provider has been disposed
-    developer.log('streamDistanceProvider disposed');
+    distanceStreamController.close();
   });
 
-  yield* controller.stream;
+  return distanceStreamController.stream;
 });
+// fix my CI/CD 
 
-// the problem is from here
-// the position.latitude and position.longitud still are de same
+// DIVIDE SCREEN CLOSE TO ME AND MY REQUESTS
 
-// posible errors:
-// my laptops is not connected to the location of the simulator android
-// Missing some configurations here
-// it is setup to update location when the divice move 1 meter
-// I move some metter and didn't update, but I think because for some reason
-// my simulator android is not recognizing when I move with my laptop
+// INCLUDE LOGIC TO CREATE REQUESTS WITH JUST MY CURRENT LOCATION
 
+// INCLUDE LOGIC TO HELP
+// SHOW IN THE HOME WHO I AM HELPING
 
-// Posible solution test in a real device
+// LOGIC TO CALCULATE HOW MANY PEOPLE YOUR HELP
 
-// SUPABASE
-// also fix the proble to supabase proyect, is not pushing the function help_requests
-// posible solution run the sql in the localhost, to create the help requests function,
-// create new migration and push the changes
+// CHAT LOGIC
+
+// RELEASE

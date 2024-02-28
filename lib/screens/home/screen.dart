@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ministrar3/services/supabase.dart';
 import 'package:ministrar3/screens/home/navigation_drawer.dart';
-import 'package:ministrar3/screens/home/help_requests.dart';
+import 'package:ministrar3/screens/home/tab_controller.dart';
 import 'package:ministrar3/screens/home/login_card.dart';
 import 'package:ministrar3/screens/home/location_card.dart';
 import 'package:location/location.dart';
@@ -35,23 +35,29 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Widget conditional(bool condition, Widget widget) {
+    return condition ? widget : const SizedBox();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('AppBar')),
+      appBar: AppBar(title: const Text('Ministrar')),
       endDrawer: const CustomeNavigationDrawer(),
       body: Column(
         children: [
-          // Show the LoginCard if the user is not logged in
-          if (supabase.auth.currentUser?.id == null) const LoginCard(),
-          // Show the LocationCard if location permission is denied
-          if (_permissionGranted == PermissionStatus.denied)
-            const LocationCard(),
-          // Show the HelpRequests if location permission is granted
-          if (_permissionGranted == PermissionStatus.granted)
-            HelpRequests()
-          else
-            Text('We need permission to your location to access help requests'),
+          conditional(supabase.auth.currentUser?.id == null, const LoginCard()),
+          conditional(_permissionGranted == PermissionStatus.denied,
+              const LocationCard()),
+          Expanded(
+            child: conditional(_permissionGranted == PermissionStatus.granted,
+                CustomeTabController()),
+          ),
+          conditional(
+              _permissionGranted != PermissionStatus.granted,
+              Text(
+                  'We need permission to your location to access help requests')),
+          Text("People I am helping: 0"),
         ],
       ),
     );
