@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'help_requests_model.dart';
+part of 'help_request_model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,35 +14,48 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-HelpRequestsModel _$HelpRequestsModelFromJson(Map<String, dynamic> json) {
-  return _HelpRequestsModel.fromJson(json);
+HelpRequestModel _$HelpRequestModelFromJson(Map<String, dynamic> json) {
+  return _HelpRequestModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$HelpRequestsModel {
+mixin _$HelpRequestModel {
   int get id => throw _privateConstructorUsedError;
+  set id(int value) => throw _privateConstructorUsedError;
   String? get user_id => throw _privateConstructorUsedError;
+  set user_id(String? value) => throw _privateConstructorUsedError;
   String? get category => throw _privateConstructorUsedError;
+  set category(String? value) => throw _privateConstructorUsedError;
   String? get content => throw _privateConstructorUsedError;
+  set content(String? value) => throw _privateConstructorUsedError;
   bool? get is_active => throw _privateConstructorUsedError;
+  set is_active(bool? value) => throw _privateConstructorUsedError;
   DateTime? get inserted_at => throw _privateConstructorUsedError;
+  set inserted_at(DateTime? value) => throw _privateConstructorUsedError;
   DateTime? get updated_at => throw _privateConstructorUsedError;
+  set updated_at(DateTime? value) => throw _privateConstructorUsedError;
   double? get lat => throw _privateConstructorUsedError;
+  set lat(double? value) => throw _privateConstructorUsedError;
   double? get long => throw _privateConstructorUsedError;
+  set long(double? value) => throw _privateConstructorUsedError;
   String? get username => throw _privateConstructorUsedError;
+  set username(String? value) => throw _privateConstructorUsedError;
   String? get avatar_url => throw _privateConstructorUsedError;
+  set avatar_url(String? value) => throw _privateConstructorUsedError;
+  double? get distance => throw _privateConstructorUsedError;
+  set distance(double? value) => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $HelpRequestsModelCopyWith<HelpRequestsModel> get copyWith =>
+  $HelpRequestModelCopyWith<HelpRequestModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $HelpRequestsModelCopyWith<$Res> {
-  factory $HelpRequestsModelCopyWith(
-          HelpRequestsModel value, $Res Function(HelpRequestsModel) then) =
-      _$HelpRequestsModelCopyWithImpl<$Res, HelpRequestsModel>;
+abstract class $HelpRequestModelCopyWith<$Res> {
+  factory $HelpRequestModelCopyWith(
+          HelpRequestModel value, $Res Function(HelpRequestModel) then) =
+      _$HelpRequestModelCopyWithImpl<$Res, HelpRequestModel>;
   @useResult
   $Res call(
       {int id,
@@ -55,13 +68,14 @@ abstract class $HelpRequestsModelCopyWith<$Res> {
       double? lat,
       double? long,
       String? username,
-      String? avatar_url});
+      String? avatar_url,
+      double? distance});
 }
 
 /// @nodoc
-class _$HelpRequestsModelCopyWithImpl<$Res, $Val extends HelpRequestsModel>
-    implements $HelpRequestsModelCopyWith<$Res> {
-  _$HelpRequestsModelCopyWithImpl(this._value, this._then);
+class _$HelpRequestModelCopyWithImpl<$Res, $Val extends HelpRequestModel>
+    implements $HelpRequestModelCopyWith<$Res> {
+  _$HelpRequestModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -82,6 +96,7 @@ class _$HelpRequestsModelCopyWithImpl<$Res, $Val extends HelpRequestsModel>
     Object? long = freezed,
     Object? username = freezed,
     Object? avatar_url = freezed,
+    Object? distance = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -128,16 +143,20 @@ class _$HelpRequestsModelCopyWithImpl<$Res, $Val extends HelpRequestsModel>
           ? _value.avatar_url
           : avatar_url // ignore: cast_nullable_to_non_nullable
               as String?,
+      distance: freezed == distance
+          ? _value.distance
+          : distance // ignore: cast_nullable_to_non_nullable
+              as double?,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$HelpRequestsModelImplCopyWith<$Res>
-    implements $HelpRequestsModelCopyWith<$Res> {
-  factory _$$HelpRequestsModelImplCopyWith(_$HelpRequestsModelImpl value,
-          $Res Function(_$HelpRequestsModelImpl) then) =
-      __$$HelpRequestsModelImplCopyWithImpl<$Res>;
+abstract class _$$HelpRequestModelImplCopyWith<$Res>
+    implements $HelpRequestModelCopyWith<$Res> {
+  factory _$$HelpRequestModelImplCopyWith(_$HelpRequestModelImpl value,
+          $Res Function(_$HelpRequestModelImpl) then) =
+      __$$HelpRequestModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -151,15 +170,16 @@ abstract class _$$HelpRequestsModelImplCopyWith<$Res>
       double? lat,
       double? long,
       String? username,
-      String? avatar_url});
+      String? avatar_url,
+      double? distance});
 }
 
 /// @nodoc
-class __$$HelpRequestsModelImplCopyWithImpl<$Res>
-    extends _$HelpRequestsModelCopyWithImpl<$Res, _$HelpRequestsModelImpl>
-    implements _$$HelpRequestsModelImplCopyWith<$Res> {
-  __$$HelpRequestsModelImplCopyWithImpl(_$HelpRequestsModelImpl _value,
-      $Res Function(_$HelpRequestsModelImpl) _then)
+class __$$HelpRequestModelImplCopyWithImpl<$Res>
+    extends _$HelpRequestModelCopyWithImpl<$Res, _$HelpRequestModelImpl>
+    implements _$$HelpRequestModelImplCopyWith<$Res> {
+  __$$HelpRequestModelImplCopyWithImpl(_$HelpRequestModelImpl _value,
+      $Res Function(_$HelpRequestModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -176,8 +196,9 @@ class __$$HelpRequestsModelImplCopyWithImpl<$Res>
     Object? long = freezed,
     Object? username = freezed,
     Object? avatar_url = freezed,
+    Object? distance = freezed,
   }) {
-    return _then(_$HelpRequestsModelImpl(
+    return _then(_$HelpRequestModelImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -222,14 +243,18 @@ class __$$HelpRequestsModelImplCopyWithImpl<$Res>
           ? _value.avatar_url
           : avatar_url // ignore: cast_nullable_to_non_nullable
               as String?,
+      distance: freezed == distance
+          ? _value.distance
+          : distance // ignore: cast_nullable_to_non_nullable
+              as double?,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$HelpRequestsModelImpl implements _HelpRequestsModel {
-  _$HelpRequestsModelImpl(
+class _$HelpRequestModelImpl implements _HelpRequestModel {
+  _$HelpRequestModelImpl(
       {required this.id,
       this.user_id,
       this.category,
@@ -240,124 +265,113 @@ class _$HelpRequestsModelImpl implements _HelpRequestsModel {
       this.lat,
       this.long,
       this.username,
-      this.avatar_url});
+      this.avatar_url,
+      this.distance});
 
-  factory _$HelpRequestsModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$HelpRequestsModelImplFromJson(json);
+  factory _$HelpRequestModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$HelpRequestModelImplFromJson(json);
 
   @override
-  final int id;
+  int id;
   @override
-  final String? user_id;
+  String? user_id;
   @override
-  final String? category;
+  String? category;
   @override
-  final String? content;
+  String? content;
   @override
-  final bool? is_active;
+  bool? is_active;
   @override
-  final DateTime? inserted_at;
+  DateTime? inserted_at;
   @override
-  final DateTime? updated_at;
+  DateTime? updated_at;
   @override
-  final double? lat;
+  double? lat;
   @override
-  final double? long;
+  double? long;
   @override
-  final String? username;
+  String? username;
   @override
-  final String? avatar_url;
+  String? avatar_url;
+  @override
+  double? distance;
 
   @override
   String toString() {
-    return 'HelpRequestsModel(id: $id, user_id: $user_id, category: $category, content: $content, is_active: $is_active, inserted_at: $inserted_at, updated_at: $updated_at, lat: $lat, long: $long, username: $username, avatar_url: $avatar_url)';
+    return 'HelpRequestModel(id: $id, user_id: $user_id, category: $category, content: $content, is_active: $is_active, inserted_at: $inserted_at, updated_at: $updated_at, lat: $lat, long: $long, username: $username, avatar_url: $avatar_url, distance: $distance)';
   }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$HelpRequestsModelImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.user_id, user_id) || other.user_id == user_id) &&
-            (identical(other.category, category) ||
-                other.category == category) &&
-            (identical(other.content, content) || other.content == content) &&
-            (identical(other.is_active, is_active) ||
-                other.is_active == is_active) &&
-            (identical(other.inserted_at, inserted_at) ||
-                other.inserted_at == inserted_at) &&
-            (identical(other.updated_at, updated_at) ||
-                other.updated_at == updated_at) &&
-            (identical(other.lat, lat) || other.lat == lat) &&
-            (identical(other.long, long) || other.long == long) &&
-            (identical(other.username, username) ||
-                other.username == username) &&
-            (identical(other.avatar_url, avatar_url) ||
-                other.avatar_url == avatar_url));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, user_id, category, content,
-      is_active, inserted_at, updated_at, lat, long, username, avatar_url);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$HelpRequestsModelImplCopyWith<_$HelpRequestsModelImpl> get copyWith =>
-      __$$HelpRequestsModelImplCopyWithImpl<_$HelpRequestsModelImpl>(
+  _$$HelpRequestModelImplCopyWith<_$HelpRequestModelImpl> get copyWith =>
+      __$$HelpRequestModelImplCopyWithImpl<_$HelpRequestModelImpl>(
           this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$HelpRequestsModelImplToJson(
+    return _$$HelpRequestModelImplToJson(
       this,
     );
   }
 }
 
-abstract class _HelpRequestsModel implements HelpRequestsModel {
-  factory _HelpRequestsModel(
-      {required final int id,
-      final String? user_id,
-      final String? category,
-      final String? content,
-      final bool? is_active,
-      final DateTime? inserted_at,
-      final DateTime? updated_at,
-      final double? lat,
-      final double? long,
-      final String? username,
-      final String? avatar_url}) = _$HelpRequestsModelImpl;
+abstract class _HelpRequestModel implements HelpRequestModel {
+  factory _HelpRequestModel(
+      {required int id,
+      String? user_id,
+      String? category,
+      String? content,
+      bool? is_active,
+      DateTime? inserted_at,
+      DateTime? updated_at,
+      double? lat,
+      double? long,
+      String? username,
+      String? avatar_url,
+      double? distance}) = _$HelpRequestModelImpl;
 
-  factory _HelpRequestsModel.fromJson(Map<String, dynamic> json) =
-      _$HelpRequestsModelImpl.fromJson;
+  factory _HelpRequestModel.fromJson(Map<String, dynamic> json) =
+      _$HelpRequestModelImpl.fromJson;
 
   @override
   int get id;
+  set id(int value);
   @override
   String? get user_id;
+  set user_id(String? value);
   @override
   String? get category;
+  set category(String? value);
   @override
   String? get content;
+  set content(String? value);
   @override
   bool? get is_active;
+  set is_active(bool? value);
   @override
   DateTime? get inserted_at;
+  set inserted_at(DateTime? value);
   @override
   DateTime? get updated_at;
+  set updated_at(DateTime? value);
   @override
   double? get lat;
+  set lat(double? value);
   @override
   double? get long;
+  set long(double? value);
   @override
   String? get username;
+  set username(String? value);
   @override
   String? get avatar_url;
+  set avatar_url(String? value);
+  @override
+  double? get distance;
+  set distance(double? value);
   @override
   @JsonKey(ignore: true)
-  _$$HelpRequestsModelImplCopyWith<_$HelpRequestsModelImpl> get copyWith =>
+  _$$HelpRequestModelImplCopyWith<_$HelpRequestModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

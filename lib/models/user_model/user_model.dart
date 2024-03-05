@@ -6,10 +6,9 @@ part 'user_model.freezed.dart';
 /// The response of the `GET /api/activity` endpoint.
 ///
 /// It is defined using `freezed` and `json_serializable`.
-@freezed
+@unfreezed
 class UserModel with _$UserModel {
   factory UserModel({
-    required String id,
     String? username,
     String? full_name,
     String? avatar_url,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ministrar3/screens/login/app_description.dart';
 import 'package:ministrar3/screens/login/custome_divider.dart';
-import 'package:ministrar3/screens/login/riverpod_signin_google_button.dart';
+import 'package:ministrar3/screens/login/google_button.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);

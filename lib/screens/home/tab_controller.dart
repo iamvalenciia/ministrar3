@@ -18,7 +18,7 @@ class CustomeTabController extends StatelessWidget {
         // Add a height constraint here
         body: TabBarView(
           children: [
-            HelpRequests(),
+            HelpRequestsScreen(),
             MyHelpRequests(),
           ],
         ),

@@ -20,10 +20,12 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UserModel {
-  String get id => throw _privateConstructorUsedError;
   String? get username => throw _privateConstructorUsedError;
+  set username(String? value) => throw _privateConstructorUsedError;
   String? get full_name => throw _privateConstructorUsedError;
+  set full_name(String? value) => throw _privateConstructorUsedError;
   String? get avatar_url => throw _privateConstructorUsedError;
+  set avatar_url(String? value) => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -36,8 +38,7 @@ abstract class $UserModelCopyWith<$Res> {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) then) =
       _$UserModelCopyWithImpl<$Res, UserModel>;
   @useResult
-  $Res call(
-      {String id, String? username, String? full_name, String? avatar_url});
+  $Res call({String? username, String? full_name, String? avatar_url});
 }
 
 /// @nodoc
@@ -53,16 +54,11 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
     Object? username = freezed,
     Object? full_name = freezed,
     Object? avatar_url = freezed,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
       username: freezed == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
@@ -87,8 +83,7 @@ abstract class _$$UserModelImplCopyWith<$Res>
       __$$UserModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {String id, String? username, String? full_name, String? avatar_url});
+  $Res call({String? username, String? full_name, String? avatar_url});
 }
 
 /// @nodoc
@@ -102,16 +97,11 @@ class __$$UserModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
     Object? username = freezed,
     Object? full_name = freezed,
     Object? avatar_url = freezed,
   }) {
     return _then(_$UserModelImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
       username: freezed == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
@@ -131,44 +121,22 @@ class __$$UserModelImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$UserModelImpl implements _UserModel {
-  _$UserModelImpl(
-      {required this.id, this.username, this.full_name, this.avatar_url});
+  _$UserModelImpl({this.username, this.full_name, this.avatar_url});
 
   factory _$UserModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserModelImplFromJson(json);
 
   @override
-  final String id;
+  String? username;
   @override
-  final String? username;
+  String? full_name;
   @override
-  final String? full_name;
-  @override
-  final String? avatar_url;
+  String? avatar_url;
 
   @override
   String toString() {
-    return 'UserModel(id: $id, username: $username, full_name: $full_name, avatar_url: $avatar_url)';
+    return 'UserModel(username: $username, full_name: $full_name, avatar_url: $avatar_url)';
   }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$UserModelImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.username, username) ||
-                other.username == username) &&
-            (identical(other.full_name, full_name) ||
-                other.full_name == full_name) &&
-            (identical(other.avatar_url, avatar_url) ||
-                other.avatar_url == avatar_url));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, username, full_name, avatar_url);
 
   @JsonKey(ignore: true)
   @override
@@ -186,22 +154,22 @@ class _$UserModelImpl implements _UserModel {
 
 abstract class _UserModel implements UserModel {
   factory _UserModel(
-      {required final String id,
-      final String? username,
-      final String? full_name,
-      final String? avatar_url}) = _$UserModelImpl;
+      {String? username,
+      String? full_name,
+      String? avatar_url}) = _$UserModelImpl;
 
   factory _UserModel.fromJson(Map<String, dynamic> json) =
       _$UserModelImpl.fromJson;
 
   @override
-  String get id;
-  @override
   String? get username;
+  set username(String? value);
   @override
   String? get full_name;
+  set full_name(String? value);
   @override
   String? get avatar_url;
+  set avatar_url(String? value);
   @override
   @JsonKey(ignore: true)
   _$$UserModelImplCopyWith<_$UserModelImpl> get copyWith =>

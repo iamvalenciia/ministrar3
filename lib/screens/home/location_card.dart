@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:ministrar3/screens/home/screen.dart';
 
 class LocationCard extends StatelessWidget {
   const LocationCard({Key? key}) : super(key: key);

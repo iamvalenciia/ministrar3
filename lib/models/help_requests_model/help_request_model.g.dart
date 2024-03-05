@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'help_requests_model.dart';
+part of 'help_request_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$HelpRequestsModelImpl _$$HelpRequestsModelImplFromJson(
+_$HelpRequestModelImpl _$$HelpRequestModelImplFromJson(
         Map<String, dynamic> json) =>
-    _$HelpRequestsModelImpl(
+    _$HelpRequestModelImpl(
       id: json['id'] as int,
       user_id: json['user_id'] as String?,
       category: json['category'] as String?,
@@ -24,10 +24,11 @@ _$HelpRequestsModelImpl _$$HelpRequestsModelImplFromJson(
       long: (json['long'] as num?)?.toDouble(),
       username: json['username'] as String?,
       avatar_url: json['avatar_url'] as String?,
+      distance: (json['distance'] as num?)?.toDouble(),
     );
 
-Map<String, dynamic> _$$HelpRequestsModelImplToJson(
-        _$HelpRequestsModelImpl instance) =>
+Map<String, dynamic> _$$HelpRequestModelImplToJson(
+        _$HelpRequestModelImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'user_id': instance.user_id,
@@ -40,4 +41,5 @@ Map<String, dynamic> _$$HelpRequestsModelImplToJson(
       'long': instance.long,
       'username': instance.username,
       'avatar_url': instance.avatar_url,
+      'distance': instance.distance,
     };
