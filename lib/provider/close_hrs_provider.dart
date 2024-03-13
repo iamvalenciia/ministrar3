@@ -3,8 +3,12 @@ import 'package:ministrar3/models/help_requests_model/help_request_model.dart';
 import 'package:ministrar3/services/supabase.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart';
-// import 'dart:developer' as developer;
+import 'dart:developer' as developer;
 import 'dart:async';
+
+//------------------------------
+// LIST HELP REQUESTS NOTIFIER
+//------------------------------
 
 class HelpRequestsNotifier extends ChangeNotifier {
   List<HelpRequestModel>? _helpRequests;
@@ -48,24 +52,38 @@ class HelpRequestsNotifier extends ChangeNotifier {
     try {
       Location location = Location();
       LocationData locationData = await location.getLocation();
+      final userId = supabase.auth.currentUser?.id;
 
-      final response = await supabase.rpc('help_requests', params: {
-        'ref_latitude': locationData.latitude,
-        'ref_longitude': locationData.longitude,
-      });
+      final response = userId != null
+          ? await supabase.rpc('help_requests_with_user_id', params: {
+              'ref_latitude': locationData.latitude,
+              'ref_longitude': locationData.longitude,
+              'query_user_id': userId,
+            })
+          : await supabase.rpc('help_requests', params: {
+              'ref_latitude': locationData.latitude,
+              'ref_longitude': locationData.longitude,
+            });
 
-      if (response is List) {
-        _helpRequests =
-            response.map((json) => HelpRequestModel.fromJson(json)).toList();
-      } else {
-        _error = 'Unexpected response data';
-      }
+      developer.log('RESPONSE', error: response, name: 'RESPONSE');
+
+      _handleResponse(response);
     } catch (e) {
+      developer.log('ERROR', error: e, name: 'ERROR');
       _error = e.toString();
     } finally {
       isFirstLoad = false;
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  void _handleResponse(dynamic response) {
+    if (response is List) {
+      _helpRequests =
+          response.map((json) => HelpRequestModel.fromJson(json)).toList();
+    } else {
+      _error = 'Unexpected response data';
     }
   }
 

@@ -13,13 +13,12 @@ _$HelpRequestModelImpl _$$HelpRequestModelImplFromJson(
       user_id: json['user_id'] as String?,
       category: json['category'] as String?,
       content: json['content'] as String?,
-      is_active: json['is_active'] as bool?,
       inserted_at: json['inserted_at'] == null
           ? null
           : DateTime.parse(json['inserted_at'] as String),
-      updated_at: json['updated_at'] == null
+      receive_help_at: json['receive_help_at'] == null
           ? null
-          : DateTime.parse(json['updated_at'] as String),
+          : DateTime.parse(json['receive_help_at'] as String),
       lat: (json['lat'] as num?)?.toDouble(),
       long: (json['long'] as num?)?.toDouble(),
       username: json['username'] as String?,
@@ -34,9 +33,8 @@ Map<String, dynamic> _$$HelpRequestModelImplToJson(
       'user_id': instance.user_id,
       'category': instance.category,
       'content': instance.content,
-      'is_active': instance.is_active,
       'inserted_at': instance.inserted_at?.toIso8601String(),
-      'updated_at': instance.updated_at?.toIso8601String(),
+      'receive_help_at': instance.receive_help_at?.toIso8601String(),
       'lat': instance.lat,
       'long': instance.long,
       'username': instance.username,

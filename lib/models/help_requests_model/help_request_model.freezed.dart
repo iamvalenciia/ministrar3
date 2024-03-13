@@ -28,12 +28,10 @@ mixin _$HelpRequestModel {
   set category(String? value) => throw _privateConstructorUsedError;
   String? get content => throw _privateConstructorUsedError;
   set content(String? value) => throw _privateConstructorUsedError;
-  bool? get is_active => throw _privateConstructorUsedError;
-  set is_active(bool? value) => throw _privateConstructorUsedError;
   DateTime? get inserted_at => throw _privateConstructorUsedError;
   set inserted_at(DateTime? value) => throw _privateConstructorUsedError;
-  DateTime? get updated_at => throw _privateConstructorUsedError;
-  set updated_at(DateTime? value) => throw _privateConstructorUsedError;
+  DateTime? get receive_help_at => throw _privateConstructorUsedError;
+  set receive_help_at(DateTime? value) => throw _privateConstructorUsedError;
   double? get lat => throw _privateConstructorUsedError;
   set lat(double? value) => throw _privateConstructorUsedError;
   double? get long => throw _privateConstructorUsedError;
@@ -62,9 +60,8 @@ abstract class $HelpRequestModelCopyWith<$Res> {
       String? user_id,
       String? category,
       String? content,
-      bool? is_active,
       DateTime? inserted_at,
-      DateTime? updated_at,
+      DateTime? receive_help_at,
       double? lat,
       double? long,
       String? username,
@@ -89,9 +86,8 @@ class _$HelpRequestModelCopyWithImpl<$Res, $Val extends HelpRequestModel>
     Object? user_id = freezed,
     Object? category = freezed,
     Object? content = freezed,
-    Object? is_active = freezed,
     Object? inserted_at = freezed,
-    Object? updated_at = freezed,
+    Object? receive_help_at = freezed,
     Object? lat = freezed,
     Object? long = freezed,
     Object? username = freezed,
@@ -115,17 +111,13 @@ class _$HelpRequestModelCopyWithImpl<$Res, $Val extends HelpRequestModel>
           ? _value.content
           : content // ignore: cast_nullable_to_non_nullable
               as String?,
-      is_active: freezed == is_active
-          ? _value.is_active
-          : is_active // ignore: cast_nullable_to_non_nullable
-              as bool?,
       inserted_at: freezed == inserted_at
           ? _value.inserted_at
           : inserted_at // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      updated_at: freezed == updated_at
-          ? _value.updated_at
-          : updated_at // ignore: cast_nullable_to_non_nullable
+      receive_help_at: freezed == receive_help_at
+          ? _value.receive_help_at
+          : receive_help_at // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       lat: freezed == lat
           ? _value.lat
@@ -164,9 +156,8 @@ abstract class _$$HelpRequestModelImplCopyWith<$Res>
       String? user_id,
       String? category,
       String? content,
-      bool? is_active,
       DateTime? inserted_at,
-      DateTime? updated_at,
+      DateTime? receive_help_at,
       double? lat,
       double? long,
       String? username,
@@ -189,9 +180,8 @@ class __$$HelpRequestModelImplCopyWithImpl<$Res>
     Object? user_id = freezed,
     Object? category = freezed,
     Object? content = freezed,
-    Object? is_active = freezed,
     Object? inserted_at = freezed,
-    Object? updated_at = freezed,
+    Object? receive_help_at = freezed,
     Object? lat = freezed,
     Object? long = freezed,
     Object? username = freezed,
@@ -215,17 +205,13 @@ class __$$HelpRequestModelImplCopyWithImpl<$Res>
           ? _value.content
           : content // ignore: cast_nullable_to_non_nullable
               as String?,
-      is_active: freezed == is_active
-          ? _value.is_active
-          : is_active // ignore: cast_nullable_to_non_nullable
-              as bool?,
       inserted_at: freezed == inserted_at
           ? _value.inserted_at
           : inserted_at // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      updated_at: freezed == updated_at
-          ? _value.updated_at
-          : updated_at // ignore: cast_nullable_to_non_nullable
+      receive_help_at: freezed == receive_help_at
+          ? _value.receive_help_at
+          : receive_help_at // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       lat: freezed == lat
           ? _value.lat
@@ -259,9 +245,8 @@ class _$HelpRequestModelImpl implements _HelpRequestModel {
       this.user_id,
       this.category,
       this.content,
-      this.is_active,
       this.inserted_at,
-      this.updated_at,
+      this.receive_help_at,
       this.lat,
       this.long,
       this.username,
@@ -280,11 +265,9 @@ class _$HelpRequestModelImpl implements _HelpRequestModel {
   @override
   String? content;
   @override
-  bool? is_active;
-  @override
   DateTime? inserted_at;
   @override
-  DateTime? updated_at;
+  DateTime? receive_help_at;
   @override
   double? lat;
   @override
@@ -298,7 +281,7 @@ class _$HelpRequestModelImpl implements _HelpRequestModel {
 
   @override
   String toString() {
-    return 'HelpRequestModel(id: $id, user_id: $user_id, category: $category, content: $content, is_active: $is_active, inserted_at: $inserted_at, updated_at: $updated_at, lat: $lat, long: $long, username: $username, avatar_url: $avatar_url, distance: $distance)';
+    return 'HelpRequestModel(id: $id, user_id: $user_id, category: $category, content: $content, inserted_at: $inserted_at, receive_help_at: $receive_help_at, lat: $lat, long: $long, username: $username, avatar_url: $avatar_url, distance: $distance)';
   }
 
   @JsonKey(ignore: true)
@@ -322,9 +305,8 @@ abstract class _HelpRequestModel implements HelpRequestModel {
       String? user_id,
       String? category,
       String? content,
-      bool? is_active,
       DateTime? inserted_at,
-      DateTime? updated_at,
+      DateTime? receive_help_at,
       double? lat,
       double? long,
       String? username,
@@ -347,14 +329,11 @@ abstract class _HelpRequestModel implements HelpRequestModel {
   String? get content;
   set content(String? value);
   @override
-  bool? get is_active;
-  set is_active(bool? value);
-  @override
   DateTime? get inserted_at;
   set inserted_at(DateTime? value);
   @override
-  DateTime? get updated_at;
-  set updated_at(DateTime? value);
+  DateTime? get receive_help_at;
+  set receive_help_at(DateTime? value);
   @override
   double? get lat;
   set lat(double? value);

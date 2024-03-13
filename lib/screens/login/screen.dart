@@ -16,18 +16,18 @@ class LoginScreen extends StatelessWidget {
             icon: const Icon(Icons.arrow_back)),
       ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         children: [
           const SizedBox(height: 20),
           Image.asset(
             'assets/app_images/logo_light.png',
             height: 290,
           ),
-          const SizedBox(height: 60),
-          const AppDescription(),
-          const SizedBox(height: 60),
+          // const SizedBox(height: 60),
+          // const AppDescription(),
+          const SizedBox(height: 80),
           const CustomeDivider(),
-          const SizedBox(height: 30),
+          const SizedBox(height: 10),
           const SigninGoogleButton(),
         ],
       ),

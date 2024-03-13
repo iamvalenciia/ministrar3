@@ -6,7 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 import 'package:ministrar3/models/user_model/user_model.dart';
 
-class UserProvider extends ChangeNotifier {
+class UserNotifier extends ChangeNotifier {
   UserModel? userModel;
   bool _isLoading = false;
 

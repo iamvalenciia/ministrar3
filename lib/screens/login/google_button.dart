@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ministrar3/provider/close_hrs_provider.dart';
+import 'package:ministrar3/provider/my_hr_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:ministrar3/provider/user_provider.dart';
 
@@ -7,7 +9,10 @@ class SigninGoogleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = context.watch<UserProvider>();
+    final userProvider = context.watch<UserNotifier>();
+    final helpRequestsNotifier = context.watch<HelpRequestsNotifier>();
+    final myHelpRequestNotifier = context.watch<MyHelpRequestNotifier>();
+
     final isLoggingIn = userProvider.isLoading;
 
     return Padding(
@@ -22,10 +27,12 @@ class SigninGoogleButton extends StatelessWidget {
 
                   if (isLoginSuccessful) {
                     await userProvider.fetchUserProfile();
+                    await helpRequestsNotifier.fetchHelpRequests();
+                    await myHelpRequestNotifier.fetchMyHelpRequest();
                     final username = userProvider.userModel?.username;
                     if (username == null) {
                       Navigator.of(context)
-                          .pushReplacementNamed('/setup-username');
+                          .pushReplacementNamed('/username-form');
                     } else {
                       Navigator.of(context).pushReplacementNamed('/');
                     }
