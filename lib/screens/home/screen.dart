@@ -1,41 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:ministrar3/models/help_requests_model/help_request_model.dart';
+import 'package:location/location.dart';
 import 'package:ministrar3/provider/activity_provider.dart';
 import 'package:ministrar3/provider/close_hrs_provider.dart';
 import 'package:ministrar3/provider/my_hr_provider.dart';
+import 'package:ministrar3/provider/permission_provider.dart';
 import 'package:ministrar3/provider/user_provider.dart';
-import 'package:ministrar3/screens/home/help_request_details.dart';
-import 'package:ministrar3/services/supabase.dart';
-import 'package:ministrar3/screens/home/navigation_drawer.dart';
-import 'package:ministrar3/screens/home/tab_controller.dart';
-import 'package:ministrar3/screens/home/login_card.dart';
 import 'package:ministrar3/screens/home/location_card.dart';
-import 'package:location/location.dart';
+import 'package:ministrar3/screens/home/login_card.dart';
+import 'package:ministrar3/screens/home/tab_controller.dart';
+import 'package:ministrar3/services/supabase.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
+class HomeScreenBody extends StatefulWidget {
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreenBody> createState() => _HomeScreenBodyState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenBodyState extends State<HomeScreenBody> {
   Location location = Location();
-  PermissionStatus _permissionGranted = PermissionStatus.denied;
-  static bool _isFirstLoad = true; // Add this line
-  HelpRequestModel? selectedRequest; // Add this line
+  static bool _isFirstLoad = true;
 
-  void selectRequest(HelpRequestModel request) {
-    setState(() {
-      selectedRequest = request;
-    });
+  Widget conditional(bool condition, Widget widget) {
+    return condition ? widget : Container();
   }
 
   @override
   void initState() {
     super.initState();
-    checkLocationPermission();
     if (_isFirstLoad) {
       // Check if it's the first load
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -46,31 +37,24 @@ class _HomeScreenState extends State<HomeScreen> {
             Provider.of<MyHelpRequestNotifier>(context, listen: false);
         final activityNotifier =
             Provider.of<ActivityNotifier>(context, listen: false);
+        final permissionNotifier =
+            Provider.of<PermissionProvider>(context, listen: false);
+        userNotifier.fetchUserProfile();
         helpRequestsNotifier.fetchHelpRequests();
         myHelpRequestNotifier.fetchMyHelpRequest();
-        userNotifier.fetchUserProfile();
+        permissionNotifier.checkLocationPermission();
         activityNotifier.fetchPostActivity();
       });
       _isFirstLoad = false; // Set to false after first load
     }
   }
 
-  // Check for location permissions and handle potential exceptions
-  void checkLocationPermission() async {
-    try {
-      _permissionGranted = await location.hasPermission();
-      setState(() {});
-    } catch (e) {
-      print('Failed to check location permissions: $e');
-    }
-  }
-
-  Widget conditional(bool condition, Widget widget) {
-    return condition ? widget : const SizedBox();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final _permissionGranted =
+        context.watch<PermissionProvider?>()?.permissionGranted;
+    // Watch for changes
+
     return RefreshIndicator(
       onRefresh: () async {
         final helpRequestsNotifier =
@@ -85,40 +69,26 @@ class _HomeScreenState extends State<HomeScreen> {
         await myHelpRequestNotifier.fetchMyHelpRequest();
         await activityNotifier.fetchPostActivity();
       },
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Ministrar')),
-        endDrawer: const CustomeNavigationDrawer(),
-        body: selectedRequest != null
-            ? HelpRequestDetails(
-                request: selectedRequest!,
-                onBack: () {
-                  setState(() {
-                    selectedRequest = null;
-                  });
-                },
-              )
-            : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: ListView(
-                  children: [
-                    conditional(supabase.auth.currentUser?.id == null,
-                        const LoginCard()),
-                    conditional(_permissionGranted == PermissionStatus.denied,
-                        const LocationCard()),
-                    SizedBox(
-                      height: 200,
-                      child: conditional(
-                          _permissionGranted == PermissionStatus.granted,
-                          CustomeTabController(onSelect: selectRequest)),
-                    ),
-                    conditional(
-                        _permissionGranted != PermissionStatus.granted,
-                        Text(
-                            'We need permission to your location to access help requests')),
-                    Text("People I am helping: 0"),
-                  ],
-                ),
-              ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: ListView(
+          children: [
+            conditional(
+                supabase.auth.currentUser?.id == null, const LoginCard()),
+            conditional(_permissionGranted == PermissionStatus.denied,
+                const LocationCard()),
+            SizedBox(
+              height: 200,
+              child: conditional(_permissionGranted == PermissionStatus.granted,
+                  CustomeTabController()),
+            ),
+            conditional(
+                _permissionGranted != PermissionStatus.granted,
+                Text(
+                    'We need permission to your location to access help requests')),
+            Text("People I am helping: 0"),
+          ],
+        ),
       ),
     );
   }

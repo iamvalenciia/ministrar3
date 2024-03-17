@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ministrar3/provider/close_hrs_provider.dart';
 import 'package:ministrar3/provider/my_hr_provider.dart';
@@ -29,7 +30,7 @@ class CustomeNavigationDrawer extends StatelessWidget {
           leading: const Icon(Icons.account_circle),
           onTap: () {
             Navigator.pop(context);
-            Navigator.of(context).pushReplacementNamed('/account');
+            context.go('/home/account');
           },
         ),
         ListTile(
@@ -41,6 +42,7 @@ class CustomeNavigationDrawer extends StatelessWidget {
                 await GoogleProvider.getGoogleSignIn();
             await supabase.auth.signOut();
             await googleSignIn.signOut();
+            Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('You have successfully signed out'),
@@ -52,10 +54,9 @@ class CustomeNavigationDrawer extends StatelessWidget {
                 elevation: 5,
               ),
             );
-            Navigator.pop(context);
-            Navigator.of(context).pushReplacementNamed('/login');
-            await helpRequestsNotifier.fetchHelpRequests();
+            context.go('/home/login');
             myHelpRequestNotifier.clearHelpRequest();
+            await helpRequestsNotifier.fetchHelpRequests();
           },
         ),
       ],

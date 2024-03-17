@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ministrar3/provider/user_provider.dart';
-import 'package:ministrar3/services/google.dart';
 import 'dart:developer' as developer;
-
-import 'package:ministrar3/services/supabase.dart';
 import 'package:provider/provider.dart';
 
 class UsernameFormScreen extends StatefulWidget {
@@ -35,23 +32,6 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
     final userProvier = context.read<UserNotifier>();
     final user = context.watch<UserNotifier>().userModel;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Setup your Username'),
-        leading: IconButton(
-          onPressed: () async {
-            if (user?.username != null) {
-              Navigator.of(context).pushReplacementNamed('/account');
-            } else {
-              Navigator.of(context).pushReplacementNamed('/login');
-              final GoogleSignIn googleSignIn =
-                  await GoogleProvider.getGoogleSignIn();
-              await supabase.auth.signOut();
-              await googleSignIn.signOut();
-            }
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
-      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
         child: Form(
@@ -79,7 +59,7 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
                     final username = _usernameController.text.trim();
                     // If the username is the same as the current one, navigate back to the account screen
                     if (username == user?.username) {
-                      Navigator.of(context).pushReplacementNamed('/account');
+                      context.go('/home/account');
                       return;
                     }
                     try {
@@ -93,8 +73,7 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
                                     Text('Username updated successfully.')),
                           );
                           // navigate home
-                          Navigator.of(context)
-                              .pushReplacementNamed('/account');
+                          context.go('/home/account');
                           break;
                         case 23505: // Duplicate key value
                           ScaffoldMessenger.of(context).showSnackBar(

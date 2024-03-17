@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ministrar3/screens/login/app_description.dart';
+// import 'package:ministrar3/screens/login/app_description.dart';
 import 'package:ministrar3/screens/login/custome_divider.dart';
 import 'package:ministrar3/screens/login/google_button.dart';
 
@@ -9,27 +9,23 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign In'),
-        leading: IconButton(
-            onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
-            icon: const Icon(Icons.arrow_back)),
-      ),
-      body: ListView(
+      body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
-        children: [
-          const SizedBox(height: 20),
-          Image.asset(
-            'assets/app_images/logo_light.png',
-            height: 290,
-          ),
-          // const SizedBox(height: 60),
-          // const AppDescription(),
-          const SizedBox(height: 80),
-          const CustomeDivider(),
-          const SizedBox(height: 10),
-          const SigninGoogleButton(),
-        ],
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Image.asset(
+              'assets/app_images/logo_light.png',
+              height: 290,
+            ),
+            // const SizedBox(height: 60),
+            // const AppDescription(),
+            const SizedBox(height: 80),
+            const CustomeDivider(),
+            const SizedBox(height: 10),
+            const SigninGoogleButton(),
+          ],
+        ),
       ),
     );
   }

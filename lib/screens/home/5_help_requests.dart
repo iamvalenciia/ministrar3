@@ -1,13 +1,11 @@
 // help_requests.dart
 import 'package:flutter/material.dart';
-import 'package:ministrar3/models/help_requests_model/help_request_model.dart';
+import 'package:go_router/go_router.dart';
+// import 'package:ministrar3/models/help_requests_model/help_request_model.dart';
 import 'package:ministrar3/provider/close_hrs_provider.dart';
 import 'package:provider/provider.dart';
 
 class HelpRequestsScreen extends StatelessWidget {
-  final void Function(HelpRequestModel) onSelect;
-
-  HelpRequestsScreen({required this.onSelect});
   @override
   Widget build(BuildContext context) {
     // Accessing the notifier
@@ -37,11 +35,13 @@ class HelpRequestsScreen extends StatelessWidget {
                 leading: const Icon(Icons.account_circle),
                 title: Text(request.username.toString()),
                 subtitle: Text(
-                    '${request.distance?.toInt() ?? 'Calculating...'} m'), // Replace with actual distance logic
+                  request.distance != null
+                      ? '${request.distance!.toInt()} meters'
+                      : 'Calculating ...',
+                ), // Replace with actual distance logic
                 trailing: Text(request.category.toString()),
-                onTap: () {
-                  onSelect(request);
-                },
+                onTap: () =>
+                    context.go('/home/help-request-details/${request.user_id}'),
               ),
             ),
           );

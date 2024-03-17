@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ministrar3/provider/my_hr_provider.dart';
 import 'package:provider/provider.dart';
-import 'dart:developer' as developer;
 
 const Map<String, String> list = {
   'food': 'Food',
@@ -38,13 +38,6 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
         Provider.of<MyHelpRequestNotifier>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Help Request'),
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pushReplacementNamed('/'),
-          icon: const Icon(Icons.arrow_back),
-        ),
-      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
         child: Form(
@@ -114,7 +107,7 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
                               ),
                             );
 
-                            Navigator.of(context).pushReplacementNamed('/');
+                            context.go('/home');
                           }
                         }
                       }

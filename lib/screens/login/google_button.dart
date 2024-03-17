@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ministrar3/provider/close_hrs_provider.dart';
 import 'package:ministrar3/provider/my_hr_provider.dart';
 import 'package:provider/provider.dart';
@@ -31,10 +32,9 @@ class SigninGoogleButton extends StatelessWidget {
                     await myHelpRequestNotifier.fetchMyHelpRequest();
                     final username = userProvider.userModel?.username;
                     if (username == null) {
-                      Navigator.of(context)
-                          .pushReplacementNamed('/username-form');
+                      context.go('/home/account/username-form');
                     } else {
-                      Navigator.of(context).pushReplacementNamed('/');
+                      context.go('/home');
                     }
                   }
                 } catch (e) {

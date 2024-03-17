@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 
 class LocationCard extends StatelessWidget {
   const LocationCard({Key? key}) : super(key: key);
@@ -28,7 +29,7 @@ class LocationCard extends StatelessWidget {
                   }
                 }
 
-                Navigator.of(context).pushReplacementNamed('/');
+                context.go('/home');
               },
             ),
           ],
