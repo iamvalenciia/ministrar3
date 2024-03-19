@@ -55,12 +55,14 @@ class HelpRequestsNotifier extends ChangeNotifier {
       final userId = supabase.auth.currentUser?.id;
 
       final response = userId != null
-          ? await supabase.rpc('help_requests_with_user_id', params: {
+          // get all help requests (logged in user)
+          ? await supabase.rpc('help_requests_for_user', params: {
               'ref_latitude': locationData.latitude,
               'ref_longitude': locationData.longitude,
               'query_user_id': userId,
             })
-          : await supabase.rpc('help_requests', params: {
+          // get all help requests (guest user)
+          : await supabase.rpc('help_requests_for_guest', params: {
               'ref_latitude': locationData.latitude,
               'ref_longitude': locationData.longitude,
             });

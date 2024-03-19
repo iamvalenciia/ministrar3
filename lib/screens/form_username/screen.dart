@@ -16,7 +16,7 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
   @override
   void initState() {
     super.initState();
-    final user = context.read<UserNotifier>().userModel;
+    final user = context.read<UserNotifier>().userData;
     _usernameController =
         TextEditingController(text: user?.username ?? "Empty error code");
   }
@@ -30,7 +30,7 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvier = context.read<UserNotifier>();
-    final user = context.watch<UserNotifier>().userModel;
+    final user = context.watch<UserNotifier>().userData;
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),

@@ -8,7 +8,7 @@ import 'package:ministrar3/screens/home/screen.dart';
 import 'package:ministrar3/utility/navigation_drawer.dart';
 import 'package:ministrar3/utility/base_scaffold.dart';
 import 'package:ministrar3/screens/form_help_request/screen.dart';
-import 'package:ministrar3/screens/help_request_Details/screen.dart';
+import 'package:ministrar3/screens/help_request/screen.dart';
 import 'package:ministrar3/screens/profile/screen.dart';
 import 'package:ministrar3/screens/login/screen.dart';
 import 'package:ministrar3/screens/form_username/screen.dart';
@@ -28,7 +28,7 @@ final goRouter = GoRouter(
   routes: <RouteBase>[
     ShellRoute(
         builder: (BuildContext context, GoRouterState state, Widget child) {
-          final user = context.watch<UserNotifier>().userModel;
+          final user = context.watch<UserNotifier>().userData;
           final isNotHome = state.fullPath != '/home';
           String appBarTitle = '';
           if (state.fullPath!.startsWith('/home/help-request-details')) {

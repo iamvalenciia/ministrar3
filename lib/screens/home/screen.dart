@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:location/location.dart';
 import 'package:ministrar3/provider/activity_provider.dart';
 import 'package:ministrar3/provider/close_hrs_provider.dart';
@@ -20,10 +22,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   Location location = Location();
   static bool _isFirstLoad = true;
 
-  Widget conditional(bool condition, Widget widget) {
-    return condition ? widget : Container();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -43,7 +41,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
         helpRequestsNotifier.fetchHelpRequests();
         myHelpRequestNotifier.fetchMyHelpRequest();
         permissionNotifier.checkLocationPermission();
-        activityNotifier.fetchPostActivity();
+        activityNotifier.activities();
       });
       _isFirstLoad = false; // Set to false after first load
     }
@@ -67,24 +65,32 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
         await helpRequestsNotifier.fetchHelpRequests();
         await userNotifier.fetchUserProfile();
         await myHelpRequestNotifier.fetchMyHelpRequest();
-        await activityNotifier.fetchPostActivity();
+        await activityNotifier.activities();
+        // put all this fetches in a notifier class because wee need to called
+        // after login with google, because the use profiel is not showing the activity
+        // because is not fetching when we logout and log in agian, just fetch when recent open the app
+        // and when the user makes a pull to refresh
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: ListView(
           children: [
-            conditional(
-                supabase.auth.currentUser?.id == null, const LoginCard()),
-            conditional(_permissionGranted == PermissionStatus.denied,
-                const LocationCard()),
-            SizedBox(
-              height: 200,
-              child: conditional(_permissionGranted == PermissionStatus.granted,
-                  CustomeTabController()),
+            Visibility(
+                visible: supabase.auth.currentUser?.id == null,
+                child: const LoginCard()),
+            Visibility(
+                visible: _permissionGranted == PermissionStatus.denied,
+                child: const LocationCard()),
+            Visibility(
+              visible: _permissionGranted == PermissionStatus.granted,
+              child: SizedBox(
+                height: 200,
+                child: CustomeTabController(),
+              ),
             ),
-            conditional(
-                _permissionGranted != PermissionStatus.granted,
-                Text(
+            Visibility(
+                visible: _permissionGranted != PermissionStatus.granted,
+                child: Text(
                     'We need permission to your location to access help requests')),
             Text("People I am helping: 0"),
           ],

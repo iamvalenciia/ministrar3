@@ -58,8 +58,7 @@ class MyHelpRequestNotifier extends ChangeNotifier {
     try {
       final userId = supabase.auth.currentUser?.id;
 
-      final response =
-          await supabase.rpc('my_help_request_by_user_id', params: {
+      final response = await supabase.rpc('help_request_from_user', params: {
         'f_user_id': userId,
       });
 
@@ -86,8 +85,7 @@ class MyHelpRequestNotifier extends ChangeNotifier {
       final latitude = locationData.latitude;
       final longitude = locationData.longitude;
       final userId = supabase.auth.currentUser?.id;
-      final response =
-          await supabase.rpc('create_help_request_and_activity', params: {
+      final response = await supabase.rpc('create_hr_and_activity', params: {
         'p_user_id': userId,
         'p_category': category,
         'p_content': content,
@@ -105,6 +103,26 @@ class MyHelpRequestNotifier extends ChangeNotifier {
     } catch (e) {
       developer.log('createMyHelpRequest ERROR',
           error: e, name: 'createMyHelpRequest ERROR');
+      _error = e.toString();
+    }
+    return false;
+  }
+
+  Future<bool> deleteMyHelpRequest() async {
+    // this function delete help request and the activities belongs to the help request
+    // will delete all activities where status is either null or false
+    try {
+      final userId = supabase.auth.currentUser?.id;
+      await supabase.rpc('delete_hr_and_activity', params: {
+        'p_user_id': userId,
+      });
+
+      developer.log('deleteMyHelpRequest', name: 'deleteMyHelpRequest');
+
+      return true;
+    } catch (e) {
+      developer.log('deleteMyHelpRequest ERROR',
+          error: e, name: 'deleteMyHelpRequest ERROR');
       _error = e.toString();
     }
     return false;

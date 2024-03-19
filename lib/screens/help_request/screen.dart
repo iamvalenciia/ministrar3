@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ministrar3/provider/close_hrs_provider.dart';
 import 'package:ministrar3/provider/my_hr_provider.dart';
-import 'package:ministrar3/screens/help_request_Details/3_dots_menu.dart';
+import 'package:ministrar3/screens/help_request/3_dots_menu.dart';
 import 'package:ministrar3/services/supabase.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer' as developer;
@@ -55,7 +55,7 @@ class HelpRequestDetails extends StatelessWidget {
                             child: Text(
                                 helpRequest?.distance != null
                                     ? '${helpRequest?.distance!.toInt()} m'
-                                    : 'Calculating ...',
+                                    : 'distance...',
                                 style: TextStyle(fontStyle: FontStyle.italic)),
                           ),
                         ),
@@ -63,10 +63,14 @@ class HelpRequestDetails extends StatelessWidget {
                     ),
                     leading: CircleAvatar(
                       radius: 30,
-                      backgroundImage: CachedNetworkImageProvider(
-                          '${helpRequest?.avatar_url}'),
+                      backgroundImage: helpRequest != null
+                          ? CachedNetworkImageProvider(
+                              '${helpRequest.avatar_url}')
+                          : null,
                     ),
-                    trailing: MenuAnchorExample(),
+                    trailing: userId == helpRequest?.user_id
+                        ? HelpRequestSettings()
+                        : null,
                   ),
                   Card.outlined(
                     child: Padding(

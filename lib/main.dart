@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
         title: 'Flutter Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.teal, brightness: Brightness.light),
+              seedColor: Colors.teal, brightness: Brightness.dark),
           textTheme: const TextTheme(
             displayLarge: TextStyle(
               fontSize: 25,

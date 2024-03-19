@@ -7,7 +7,7 @@ import 'dart:developer' as developer;
 import 'package:ministrar3/models/user_model/user_model.dart';
 
 class UserNotifier extends ChangeNotifier {
-  UserModel? userModel;
+  UserModel? userData;
   bool _isLoading = false;
 
   bool get isLoading => _isLoading;
@@ -68,7 +68,7 @@ class UserNotifier extends ChangeNotifier {
       developer.log('Fetching from profiles table',
           error: data.toString(), name: "UserModel provider");
 
-      userModel = UserModel.fromJson(data);
+      userData = UserModel.fromJson(data);
     } catch (error) {
       developer.log(
         'An error occurred during Google Sign In',
@@ -90,10 +90,10 @@ class UserNotifier extends ChangeNotifier {
           .update({'username': newUsername}).eq('id', userId);
 
       // Update the username in the local user model
-      userModel = UserModel(
+      userData = UserModel(
         username: newUsername,
-        full_name: userModel!.full_name,
-        avatar_url: userModel!.avatar_url,
+        full_name: userData!.full_name,
+        avatar_url: userData!.avatar_url,
       );
 
       notifyListeners(); // Notify listeners about the update

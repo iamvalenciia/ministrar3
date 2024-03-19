@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ministrar3/models/activity_model/activity_model.dart';
+import 'package:ministrar3/provider/activity_provider.dart';
 import 'package:ministrar3/provider/my_hr_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -36,6 +38,8 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
   Widget build(BuildContext context) {
     final myHelpRequestNotifier =
         Provider.of<MyHelpRequestNotifier>(context, listen: false);
+    final activitiesNotifier =
+        Provider.of<ActivityNotifier>(context, listen: false);
 
     return Scaffold(
       body: Padding(
@@ -98,16 +102,14 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
                                   dropdownValue, _contentController.text);
 
                           if (success) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.primary,
-                                content: const Text(
-                                    'You have created successfully a help request'),
-                              ),
-                            );
-
+                            activitiesNotifier.createLocalActivity();
                             context.go('/home');
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
+                              content: const Text(
+                                  'You have created successfully a help request'),
+                            ));
                           }
                         }
                       }

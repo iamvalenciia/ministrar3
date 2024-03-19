@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ministrar3/provider/activity_provider.dart';
 import 'package:ministrar3/provider/close_hrs_provider.dart';
 import 'package:ministrar3/provider/my_hr_provider.dart';
 import 'package:provider/provider.dart';
@@ -10,11 +11,15 @@ class SigninGoogleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = context.watch<UserNotifier>();
-    final helpRequestsNotifier = context.watch<HelpRequestsNotifier>();
-    final myHelpRequestNotifier = context.watch<MyHelpRequestNotifier>();
+    final helpRequestsNotifier =
+        Provider.of<HelpRequestsNotifier>(context, listen: false);
+    final userNotifier = Provider.of<UserNotifier>(context, listen: true);
+    final myHelpRequestNotifier =
+        Provider.of<MyHelpRequestNotifier>(context, listen: false);
+    final activityNotifier =
+        Provider.of<ActivityNotifier>(context, listen: false);
 
-    final isLoggingIn = userProvider.isLoading;
+    final isLoggingIn = userNotifier.isLoading;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 80),
@@ -24,18 +29,19 @@ class SigninGoogleButton extends StatelessWidget {
             : () async {
                 try {
                   final isLoginSuccessful =
-                      await userProvider.loginWithGoogle();
+                      await userNotifier.loginWithGoogle();
 
                   if (isLoginSuccessful) {
-                    await userProvider.fetchUserProfile();
                     await helpRequestsNotifier.fetchHelpRequests();
-                    await myHelpRequestNotifier.fetchMyHelpRequest();
-                    final username = userProvider.userModel?.username;
+                    await userNotifier.fetchUserProfile();
+                    final username = userNotifier.userData?.username;
                     if (username == null) {
                       context.go('/home/account/username-form');
                     } else {
                       context.go('/home');
                     }
+                    await myHelpRequestNotifier.fetchMyHelpRequest();
+                    await activityNotifier.activities();
                   }
                 } catch (e) {
                   // Handle error
