@@ -4,10 +4,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ministrar3/provider/close_hrs_provider.dart';
 import 'package:ministrar3/provider/my_hr_provider.dart';
 import 'package:ministrar3/provider/user_provider.dart';
+import 'package:ministrar3/screens/form_edit_help_request/screen.dart';
 import 'package:ministrar3/screens/home/screen.dart';
 import 'package:ministrar3/utility/navigation_drawer.dart';
 import 'package:ministrar3/utility/base_scaffold.dart';
-import 'package:ministrar3/screens/form_help_request/screen.dart';
+import 'package:ministrar3/screens/form_create_help_request/screen.dart';
 import 'package:ministrar3/screens/help_request/screen.dart';
 import 'package:ministrar3/screens/profile/screen.dart';
 import 'package:ministrar3/screens/login/screen.dart';
@@ -66,6 +67,9 @@ final goRouter = GoRouter(
               case '/home/help-request-details/:helpRequestUserId':
                 appBarTitle = 'Help Request Details';
                 break;
+              case '/home/edit-help-request':
+                appBarTitle = 'Edit Help Request';
+                break;
               default:
                 appBarTitle = '';
             }
@@ -104,127 +108,58 @@ final goRouter = GoRouter(
         navigatorKey: _shellNavigatorKey,
         routes: <RouteBase>[
           GoRoute(
-              path: '/home',
-              pageBuilder: (BuildContext context, GoRouterState state) {
-                return CustomTransitionPage<void>(
-                  key: state.pageKey,
-                  child: HomeScreenBody(),
-                  transitionDuration: const Duration(milliseconds: 150),
-                  transitionsBuilder: (BuildContext context,
-                      Animation<double> animation,
-                      Animation<double> secondaryAnimation,
-                      Widget child) {
-                    // Change the opacity of the screen using a Curve based on the the animation's
-                    // value
-                    return FadeTransition(
-                      opacity: CurveTween(curve: Curves.easeInOut)
-                          .animate(animation),
-                      child: child,
-                    );
-                  },
-                );
-              },
-              routes: <RouteBase>[
-                GoRoute(
-                  path: 'help-request-details/:helpRequestUserId',
-                  pageBuilder: (BuildContext context, GoRouterState state) {
-                    return CustomTransitionPage<void>(
-                      key: state.pageKey,
-                      child: HelpRequestDetails(
-                        helpRequestUserId:
-                            state.pathParameters['helpRequestUserId'],
-                      ),
-                      transitionDuration: const Duration(milliseconds: 150),
-                      transitionsBuilder: (BuildContext context,
-                          Animation<double> animation,
-                          Animation<double> secondaryAnimation,
-                          Widget child) {
-                        // Change the opacity of the screen using a Curve based on the the animation's
-                        // value
-                        return FadeTransition(
-                          opacity: CurveTween(curve: Curves.easeInOut)
-                              .animate(animation),
-                          child: child,
-                        );
-                      },
-                    );
-                  },
-                ),
-                GoRoute(
-                    path: 'account',
-                    pageBuilder: (BuildContext context, GoRouterState state) {
-                      return CustomTransitionPage<void>(
-                        key: state.pageKey,
-                        child: ProfileScreen(),
-                        transitionDuration: const Duration(milliseconds: 150),
-                        transitionsBuilder: (BuildContext context,
-                            Animation<double> animation,
-                            Animation<double> secondaryAnimation,
-                            Widget child) {
-                          // Change the opacity of the screen using a Curve based on the the animation's
-                          // value
-                          return FadeTransition(
-                            opacity: CurveTween(curve: Curves.easeInOut)
-                                .animate(animation),
-                            child: child,
-                          );
-                        },
+            path: '/home',
+            pageBuilder: (BuildContext context, GoRouterState state) {
+              return CustomTransitionPage<void>(
+                key: state.pageKey,
+                child: HomeScreenBody(),
+                transitionDuration: const Duration(milliseconds: 150),
+                transitionsBuilder: (BuildContext context,
+                    Animation<double> animation,
+                    Animation<double> secondaryAnimation,
+                    Widget child) {
+                  // Change the opacity of the screen using a Curve based on the the animation's
+                  // value
+                  return FadeTransition(
+                    opacity:
+                        CurveTween(curve: Curves.easeInOut).animate(animation),
+                    child: child,
+                  );
+                },
+              );
+            },
+            routes: <RouteBase>[
+              GoRoute(
+                path: 'help-request-details/:helpRequestUserId',
+                pageBuilder: (BuildContext context, GoRouterState state) {
+                  return CustomTransitionPage<void>(
+                    key: state.pageKey,
+                    child: HelpRequestDetails(
+                      helpRequestUserId:
+                          state.pathParameters['helpRequestUserId'],
+                    ),
+                    transitionDuration: const Duration(milliseconds: 150),
+                    transitionsBuilder: (BuildContext context,
+                        Animation<double> animation,
+                        Animation<double> secondaryAnimation,
+                        Widget child) {
+                      // Change the opacity of the screen using a Curve based on the the animation's
+                      // value
+                      return FadeTransition(
+                        opacity: CurveTween(curve: Curves.easeInOut)
+                            .animate(animation),
+                        child: child,
                       );
                     },
-                    routes: <RouteBase>[
-                      GoRoute(
-                        path: 'username-form',
-                        pageBuilder:
-                            (BuildContext context, GoRouterState state) {
-                          return CustomTransitionPage<void>(
-                            key: state.pageKey,
-                            child: UsernameFormScreen(),
-                            transitionDuration:
-                                const Duration(milliseconds: 150),
-                            transitionsBuilder: (BuildContext context,
-                                Animation<double> animation,
-                                Animation<double> secondaryAnimation,
-                                Widget child) {
-                              // Change the opacity of the screen using a Curve based on the the animation's
-                              // value
-                              return FadeTransition(
-                                opacity: CurveTween(curve: Curves.easeInOut)
-                                    .animate(animation),
-                                child: child,
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    ]),
-                GoRoute(
-                  path: 'login',
+                  );
+                },
+              ),
+              GoRoute(
+                  path: 'account',
                   pageBuilder: (BuildContext context, GoRouterState state) {
                     return CustomTransitionPage<void>(
                       key: state.pageKey,
-                      child: LoginScreen(),
-                      transitionDuration: const Duration(milliseconds: 50),
-                      transitionsBuilder: (BuildContext context,
-                          Animation<double> animation,
-                          Animation<double> secondaryAnimation,
-                          Widget child) {
-                        // Change the opacity of the screen using a Curve based on the the animation's
-                        // value
-                        return FadeTransition(
-                          opacity: CurveTween(curve: Curves.easeInOut)
-                              .animate(animation),
-                          child: child,
-                        );
-                      },
-                    );
-                  },
-                ),
-                GoRoute(
-                  path: 'help-request-form',
-                  pageBuilder: (BuildContext context, GoRouterState state) {
-                    return CustomTransitionPage<void>(
-                      key: state.pageKey,
-                      child: HelpRequestFormScreen(),
+                      child: ProfileScreen(),
                       transitionDuration: const Duration(milliseconds: 150),
                       transitionsBuilder: (BuildContext context,
                           Animation<double> animation,
@@ -240,8 +175,98 @@ final goRouter = GoRouter(
                       },
                     );
                   },
-                ),
-              ]),
+                  routes: <RouteBase>[
+                    GoRoute(
+                      path: 'username-form',
+                      pageBuilder: (BuildContext context, GoRouterState state) {
+                        return CustomTransitionPage<void>(
+                          key: state.pageKey,
+                          child: UsernameFormScreen(),
+                          transitionDuration: const Duration(milliseconds: 150),
+                          transitionsBuilder: (BuildContext context,
+                              Animation<double> animation,
+                              Animation<double> secondaryAnimation,
+                              Widget child) {
+                            // Change the opacity of the screen using a Curve based on the the animation's
+                            // value
+                            return FadeTransition(
+                              opacity: CurveTween(curve: Curves.easeInOut)
+                                  .animate(animation),
+                              child: child,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ]),
+              GoRoute(
+                path: 'login',
+                pageBuilder: (BuildContext context, GoRouterState state) {
+                  return CustomTransitionPage<void>(
+                    key: state.pageKey,
+                    child: LoginScreen(),
+                    transitionDuration: const Duration(milliseconds: 50),
+                    transitionsBuilder: (BuildContext context,
+                        Animation<double> animation,
+                        Animation<double> secondaryAnimation,
+                        Widget child) {
+                      // Change the opacity of the screen using a Curve based on the the animation's
+                      // value
+                      return FadeTransition(
+                        opacity: CurveTween(curve: Curves.easeInOut)
+                            .animate(animation),
+                        child: child,
+                      );
+                    },
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'edit-help-request',
+                pageBuilder: (BuildContext context, GoRouterState state) {
+                  return CustomTransitionPage<void>(
+                    key: state.pageKey,
+                    child: EditHelpRequest(),
+                    transitionDuration: const Duration(milliseconds: 150),
+                    transitionsBuilder: (BuildContext context,
+                        Animation<double> animation,
+                        Animation<double> secondaryAnimation,
+                        Widget child) {
+                      // Change the opacity of the screen using a Curve based on the the animation's
+                      // value
+                      return FadeTransition(
+                        opacity: CurveTween(curve: Curves.easeInOut)
+                            .animate(animation),
+                        child: child,
+                      );
+                    },
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'help-request-form',
+                pageBuilder: (BuildContext context, GoRouterState state) {
+                  return CustomTransitionPage<void>(
+                    key: state.pageKey,
+                    child: HelpRequestFormScreen(),
+                    transitionDuration: const Duration(milliseconds: 150),
+                    transitionsBuilder: (BuildContext context,
+                        Animation<double> animation,
+                        Animation<double> secondaryAnimation,
+                        Widget child) {
+                      // Change the opacity of the screen using a Curve based on the the animation's
+                      // value
+                      return FadeTransition(
+                        opacity: CurveTween(curve: Curves.easeInOut)
+                            .animate(animation),
+                        child: child,
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
         ])
   ],
 );

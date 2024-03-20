@@ -69,7 +69,7 @@ class HelpRequestDetails extends StatelessWidget {
                           : null,
                     ),
                     trailing: userId == helpRequest?.user_id
-                        ? HelpRequestSettings()
+                        ? HelpRequestSettings(helpRequestId: helpRequest?.id)
                         : null,
                   ),
                   Card.outlined(

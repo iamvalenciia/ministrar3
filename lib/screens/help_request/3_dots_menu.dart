@@ -4,7 +4,8 @@ import 'package:ministrar3/provider/my_hr_provider.dart';
 import 'package:provider/provider.dart';
 
 class HelpRequestSettings extends StatefulWidget {
-  const HelpRequestSettings({super.key});
+  final helpRequestId;
+  const HelpRequestSettings({super.key, required this.helpRequestId});
 
   @override
   State<HelpRequestSettings> createState() => _HelpRequestSettingsState();
@@ -32,13 +33,12 @@ class _HelpRequestSettingsState extends State<HelpRequestSettings> {
         },
         menuChildren: <Widget>[
           MenuItemButton(
-            // leadingIcon: const Icon(Icons.edit),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('Edit', style: TextStyle()),
-            ),
-            onPressed: () => context.go('/home/help-request-form'),
-          ),
+              // leadingIcon: const Icon(Icons.edit),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('Edit', style: TextStyle()),
+              ),
+              onPressed: () => context.go('/home/edit-help-request')),
           MenuItemButton(
             // leadingIcon: const Icon(Icons.delete),
             child: Padding(
