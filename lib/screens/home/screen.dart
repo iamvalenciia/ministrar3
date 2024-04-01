@@ -1,100 +1,126 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:location/location.dart';
-import 'package:ministrar3/provider/activity_provider.dart';
-import 'package:ministrar3/provider/close_hrs_provider.dart';
-import 'package:ministrar3/provider/my_hr_provider.dart';
-import 'package:ministrar3/provider/permission_provider.dart';
-import 'package:ministrar3/provider/user_provider.dart';
-import 'package:ministrar3/screens/home/location_card.dart';
-import 'package:ministrar3/screens/home/login_card.dart';
-import 'package:ministrar3/screens/home/tab_controller.dart';
-import 'package:ministrar3/services/supabase.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
+import '../../provider/activity_provider.dart';
+import '../../provider/close_hrs_provider.dart';
+import '../../provider/location_permission.dart';
+import '../../provider/my_hr_provider.dart';
+import '../../provider/user_provider.dart';
+import '../../services/supabase.dart';
+import '../../utility_functions.dart';
+import 'location_card.dart';
+import 'login_card.dart';
+import 'tab_controller.dart';
+
 class HomeScreenBody extends StatefulWidget {
+  const HomeScreenBody({super.key});
+
   @override
   State<HomeScreenBody> createState() => _HomeScreenBodyState();
 }
 
 class _HomeScreenBodyState extends State<HomeScreenBody> {
-  Location location = Location();
   static bool _isFirstLoad = true;
+
+  Future<void> fetchData() async {
+    developer.log('Fetching data', name: 'HomeScreenBody');
+    final UserNotifier userNotifier =
+        Provider.of<UserNotifier>(context, listen: false);
+    final ActivityNotifier activityNotifier =
+        Provider.of<ActivityNotifier>(context, listen: false);
+
+    Geolocator.checkPermission().then((value) {
+      developer.log('Permission status: $value', name: 'HelpRequestsNotifier');
+      if (value == LocationPermission.whileInUse ||
+          value == LocationPermission.always) {
+        developer.log('before declare the help request notifier');
+        final HelpRequestsNotifier helpRequestsNotifier =
+            Provider.of<HelpRequestsNotifier>(context, listen: false);
+        developer.log('before declare the MY HELP REQUEST NOTIFIER');
+        final MyHelpRequestNotifier myHelpRequestNotifier =
+            Provider.of<MyHelpRequestNotifier>(context, listen: false);
+
+        developer.log('before fetch help request');
+        helpRequestsNotifier.fetchHelpRequests();
+        developer.log('before fetch My help request');
+        myHelpRequestNotifier.fetchMyHelpRequest();
+      }
+    });
+
+    if (supabase.auth.currentUser?.id != null) {
+      await Future.wait([
+        userNotifier.fetchUserProfile(),
+        activityNotifier.activities(),
+      ]);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     if (_isFirstLoad) {
-      // Check if it's the first load
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final helpRequestsNotifier =
-            Provider.of<HelpRequestsNotifier>(context, listen: false);
-        final userNotifier = Provider.of<UserNotifier>(context, listen: false);
-        final myHelpRequestNotifier =
-            Provider.of<MyHelpRequestNotifier>(context, listen: false);
-        final activityNotifier =
-            Provider.of<ActivityNotifier>(context, listen: false);
-        final permissionNotifier =
-            Provider.of<PermissionProvider>(context, listen: false);
-        userNotifier.fetchUserProfile();
-        helpRequestsNotifier.fetchHelpRequests();
-        myHelpRequestNotifier.fetchMyHelpRequest();
-        permissionNotifier.checkLocationPermission();
-        activityNotifier.activities();
+        // Provider.of<LocationPermissionNotifier>(context, listen: false)
+        //     .checkLocationPermission();
+        fetchData();
       });
-      _isFirstLoad = false; // Set to false after first load
+      _isFirstLoad = false;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final _permissionGranted =
-        context.watch<PermissionProvider?>()?.permissionGranted;
-    // Watch for changes
-
+    developer.log('Building HomeScreenBody');
+    final locationPermissionNotifier =
+        Provider.of<LocationPermissionNotifier>(context);
+    final UserNotifier userNotifier = context.watch<UserNotifier>();
     return RefreshIndicator(
       onRefresh: () async {
-        final helpRequestsNotifier =
-            Provider.of<HelpRequestsNotifier>(context, listen: false);
-        final userNotifier = Provider.of<UserNotifier>(context, listen: false);
-        final myHelpRequestNotifier =
-            Provider.of<MyHelpRequestNotifier>(context, listen: false);
-        final activityNotifier =
-            Provider.of<ActivityNotifier>(context, listen: false);
-        await helpRequestsNotifier.fetchHelpRequests();
-        await userNotifier.fetchUserProfile();
-        await myHelpRequestNotifier.fetchMyHelpRequest();
-        await activityNotifier.activities();
-        // put all this fetches in a notifier class because wee need to called
-        // after login with google, because the use profiel is not showing the activity
-        // because is not fetching when we logout and log in agian, just fetch when recent open the app
-        // and when the user makes a pull to refresh
+        try {
+          fetchData();
+        } catch (e) {
+          if (!context.mounted) {
+            return;
+          }
+          showFlashError(context, 'Error fetching data in the Home screen: $e');
+        }
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: ListView(
-          children: [
-            Visibility(
-                visible: supabase.auth.currentUser?.id == null,
-                child: const LoginCard()),
-            Visibility(
-                visible: _permissionGranted == PermissionStatus.denied,
-                child: const LocationCard()),
-            Visibility(
-              visible: _permissionGranted == PermissionStatus.granted,
-              child: SizedBox(
-                height: 200,
-                child: CustomeTabController(),
+      child: ListView(
+        children: <Widget>[
+          Visibility(
+            visible: !userNotifier.isUserLoggedIn,
+            child: const LoginCard(),
+          ),
+          Visibility(
+            visible: !locationPermissionNotifier.hasLocationPermission,
+            child: const LocationCard(),
+          ),
+          Visibility(
+            visible: locationPermissionNotifier.hasLocationPermission,
+            child: const SizedBox(
+              height: 200,
+              child: CustomeTabController(),
+            ),
+          ),
+          Visibility(
+            visible: !locationPermissionNotifier.hasLocationPermission,
+            child: const Center(
+              child: Card.outlined(
+                child: Padding(
+                  padding: EdgeInsets.all(25),
+                  child: const Text(
+                    'Please enable location permission to view nearby help requests',
+                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
+                  ),
+                ),
               ),
             ),
-            Visibility(
-                visible: _permissionGranted != PermissionStatus.granted,
-                child: Text(
-                    'We need permission to your location to access help requests')),
-            Text("People I am helping: 0"),
-          ],
-        ),
+          ),
+          const Text('People I am helping: 0'),
+        ],
       ),
     );
   }

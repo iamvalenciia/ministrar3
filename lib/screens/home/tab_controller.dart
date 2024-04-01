@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
-// import 'package:ministrar3/models/help_requests_model/help_request_model.dart';
-import 'package:ministrar3/screens/home/5_help_requests.dart';
-import 'package:ministrar3/screens/home/my_help_request.dart';
+
+import 'tab_help_requests.dart';
+import 'tab_my_help_request.dart';
 
 class CustomeTabController extends StatelessWidget {
+  const CustomeTabController({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
+    return const DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: TabBar(
-          tabs: [
+          tabs: <Widget>[
             Tab(
-              text: 'Help Requests',
+              icon: Icon(Icons.people),
             ),
             Tab(
-              text: 'Me',
+              icon: Icon(Icons.person),
             ),
           ],
         ),
         body: TabBarView(
-          children: [
-            HelpRequestsScreen(),
-            MyHelpRequests(),
+          children: <Widget>[
+            HelpRequests(),
+            MyHelpRequest(),
           ],
         ),
       ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomeDivider extends StatelessWidget {
-  const CustomeDivider({Key? key}) : super(key: key);
+  const CustomeDivider({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,8 +11,11 @@ class CustomeDivider extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
           child: Text(
-            "Login or create an account",
-            style: TextStyle(fontStyle: FontStyle.italic),
+            'Login or create an account',
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 16,
+            ),
           ),
         ),
         Expanded(child: Divider()),

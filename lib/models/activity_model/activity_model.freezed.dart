@@ -14,49 +14,46 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-Activitie _$ActivitieFromJson(Map<String, dynamic> json) {
-  return _Activitie.fromJson(json);
+Activity _$ActivityFromJson(Map<String, dynamic> json) {
+  return _Activity.fromJson(json);
 }
 
 /// @nodoc
-mixin _$Activitie {
-  int? get id => throw _privateConstructorUsedError;
-  set id(int? value) => throw _privateConstructorUsedError;
+mixin _$Activity {
+  int? get activity_id => throw _privateConstructorUsedError;
   String get activity_owner => throw _privateConstructorUsedError;
-  set activity_owner(String value) => throw _privateConstructorUsedError;
   DateTime get inserted_at => throw _privateConstructorUsedError;
-  set inserted_at(DateTime value) => throw _privateConstructorUsedError;
   String get post_owner => throw _privateConstructorUsedError;
-  set post_owner(String value) => throw _privateConstructorUsedError;
+  String? get activity_type =>
+      throw _privateConstructorUsedError; // Change this to String
   bool? get status => throw _privateConstructorUsedError;
-  set status(bool? value) => throw _privateConstructorUsedError;
   DateTime? get status_updated_at => throw _privateConstructorUsedError;
-  set status_updated_at(DateTime? value) => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $ActivitieCopyWith<Activitie> get copyWith =>
+  $ActivityCopyWith<Activity> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $ActivitieCopyWith<$Res> {
-  factory $ActivitieCopyWith(Activitie value, $Res Function(Activitie) then) =
-      _$ActivitieCopyWithImpl<$Res, Activitie>;
+abstract class $ActivityCopyWith<$Res> {
+  factory $ActivityCopyWith(Activity value, $Res Function(Activity) then) =
+      _$ActivityCopyWithImpl<$Res, Activity>;
   @useResult
   $Res call(
-      {int? id,
+      {int? activity_id,
       String activity_owner,
       DateTime inserted_at,
       String post_owner,
+      String? activity_type,
       bool? status,
       DateTime? status_updated_at});
 }
 
 /// @nodoc
-class _$ActivitieCopyWithImpl<$Res, $Val extends Activitie>
-    implements $ActivitieCopyWith<$Res> {
-  _$ActivitieCopyWithImpl(this._value, this._then);
+class _$ActivityCopyWithImpl<$Res, $Val extends Activity>
+    implements $ActivityCopyWith<$Res> {
+  _$ActivityCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -66,17 +63,18 @@ class _$ActivitieCopyWithImpl<$Res, $Val extends Activitie>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
+    Object? activity_id = freezed,
     Object? activity_owner = null,
     Object? inserted_at = null,
     Object? post_owner = null,
+    Object? activity_type = freezed,
     Object? status = freezed,
     Object? status_updated_at = freezed,
   }) {
     return _then(_value.copyWith(
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      activity_id: freezed == activity_id
+          ? _value.activity_id
+          : activity_id // ignore: cast_nullable_to_non_nullable
               as int?,
       activity_owner: null == activity_owner
           ? _value.activity_owner
@@ -90,6 +88,10 @@ class _$ActivitieCopyWithImpl<$Res, $Val extends Activitie>
           ? _value.post_owner
           : post_owner // ignore: cast_nullable_to_non_nullable
               as String,
+      activity_type: freezed == activity_type
+          ? _value.activity_type
+          : activity_type // ignore: cast_nullable_to_non_nullable
+              as String?,
       status: freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -103,44 +105,46 @@ class _$ActivitieCopyWithImpl<$Res, $Val extends Activitie>
 }
 
 /// @nodoc
-abstract class _$$ActivitieImplCopyWith<$Res>
-    implements $ActivitieCopyWith<$Res> {
-  factory _$$ActivitieImplCopyWith(
-          _$ActivitieImpl value, $Res Function(_$ActivitieImpl) then) =
-      __$$ActivitieImplCopyWithImpl<$Res>;
+abstract class _$$ActivityImplCopyWith<$Res>
+    implements $ActivityCopyWith<$Res> {
+  factory _$$ActivityImplCopyWith(
+          _$ActivityImpl value, $Res Function(_$ActivityImpl) then) =
+      __$$ActivityImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {int? id,
+      {int? activity_id,
       String activity_owner,
       DateTime inserted_at,
       String post_owner,
+      String? activity_type,
       bool? status,
       DateTime? status_updated_at});
 }
 
 /// @nodoc
-class __$$ActivitieImplCopyWithImpl<$Res>
-    extends _$ActivitieCopyWithImpl<$Res, _$ActivitieImpl>
-    implements _$$ActivitieImplCopyWith<$Res> {
-  __$$ActivitieImplCopyWithImpl(
-      _$ActivitieImpl _value, $Res Function(_$ActivitieImpl) _then)
+class __$$ActivityImplCopyWithImpl<$Res>
+    extends _$ActivityCopyWithImpl<$Res, _$ActivityImpl>
+    implements _$$ActivityImplCopyWith<$Res> {
+  __$$ActivityImplCopyWithImpl(
+      _$ActivityImpl _value, $Res Function(_$ActivityImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
+    Object? activity_id = freezed,
     Object? activity_owner = null,
     Object? inserted_at = null,
     Object? post_owner = null,
+    Object? activity_type = freezed,
     Object? status = freezed,
     Object? status_updated_at = freezed,
   }) {
-    return _then(_$ActivitieImpl(
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+    return _then(_$ActivityImpl(
+      activity_id: freezed == activity_id
+          ? _value.activity_id
+          : activity_id // ignore: cast_nullable_to_non_nullable
               as int?,
       activity_owner: null == activity_owner
           ? _value.activity_owner
@@ -154,6 +158,10 @@ class __$$ActivitieImplCopyWithImpl<$Res>
           ? _value.post_owner
           : post_owner // ignore: cast_nullable_to_non_nullable
               as String,
+      activity_type: freezed == activity_type
+          ? _value.activity_type
+          : activity_type // ignore: cast_nullable_to_non_nullable
+              as String?,
       status: freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -168,82 +176,108 @@ class __$$ActivitieImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ActivitieImpl implements _Activitie {
-  _$ActivitieImpl(
-      {this.id,
+class _$ActivityImpl implements _Activity {
+  _$ActivityImpl(
+      {this.activity_id,
       required this.activity_owner,
       required this.inserted_at,
       required this.post_owner,
+      this.activity_type,
       this.status,
       this.status_updated_at});
 
-  factory _$ActivitieImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ActivitieImplFromJson(json);
+  factory _$ActivityImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ActivityImplFromJson(json);
 
   @override
-  int? id;
+  final int? activity_id;
   @override
-  String activity_owner;
+  final String activity_owner;
   @override
-  DateTime inserted_at;
+  final DateTime inserted_at;
   @override
-  String post_owner;
+  final String post_owner;
   @override
-  bool? status;
+  final String? activity_type;
+// Change this to String
   @override
-  DateTime? status_updated_at;
+  final bool? status;
+  @override
+  final DateTime? status_updated_at;
 
   @override
   String toString() {
-    return 'Activitie(id: $id, activity_owner: $activity_owner, inserted_at: $inserted_at, post_owner: $post_owner, status: $status, status_updated_at: $status_updated_at)';
+    return 'Activity(activity_id: $activity_id, activity_owner: $activity_owner, inserted_at: $inserted_at, post_owner: $post_owner, activity_type: $activity_type, status: $status, status_updated_at: $status_updated_at)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ActivityImpl &&
+            (identical(other.activity_id, activity_id) ||
+                other.activity_id == activity_id) &&
+            (identical(other.activity_owner, activity_owner) ||
+                other.activity_owner == activity_owner) &&
+            (identical(other.inserted_at, inserted_at) ||
+                other.inserted_at == inserted_at) &&
+            (identical(other.post_owner, post_owner) ||
+                other.post_owner == post_owner) &&
+            (identical(other.activity_type, activity_type) ||
+                other.activity_type == activity_type) &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.status_updated_at, status_updated_at) ||
+                other.status_updated_at == status_updated_at));
   }
 
   @JsonKey(ignore: true)
   @override
+  int get hashCode => Object.hash(runtimeType, activity_id, activity_owner,
+      inserted_at, post_owner, activity_type, status, status_updated_at);
+
+  @JsonKey(ignore: true)
+  @override
   @pragma('vm:prefer-inline')
-  _$$ActivitieImplCopyWith<_$ActivitieImpl> get copyWith =>
-      __$$ActivitieImplCopyWithImpl<_$ActivitieImpl>(this, _$identity);
+  _$$ActivityImplCopyWith<_$ActivityImpl> get copyWith =>
+      __$$ActivityImplCopyWithImpl<_$ActivityImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$ActivitieImplToJson(
+    return _$$ActivityImplToJson(
       this,
     );
   }
 }
 
-abstract class _Activitie implements Activitie {
-  factory _Activitie(
-      {int? id,
-      required String activity_owner,
-      required DateTime inserted_at,
-      required String post_owner,
-      bool? status,
-      DateTime? status_updated_at}) = _$ActivitieImpl;
+abstract class _Activity implements Activity {
+  factory _Activity(
+      {final int? activity_id,
+      required final String activity_owner,
+      required final DateTime inserted_at,
+      required final String post_owner,
+      final String? activity_type,
+      final bool? status,
+      final DateTime? status_updated_at}) = _$ActivityImpl;
 
-  factory _Activitie.fromJson(Map<String, dynamic> json) =
-      _$ActivitieImpl.fromJson;
+  factory _Activity.fromJson(Map<String, dynamic> json) =
+      _$ActivityImpl.fromJson;
 
   @override
-  int? get id;
-  set id(int? value);
+  int? get activity_id;
   @override
   String get activity_owner;
-  set activity_owner(String value);
   @override
   DateTime get inserted_at;
-  set inserted_at(DateTime value);
   @override
   String get post_owner;
-  set post_owner(String value);
   @override
+  String? get activity_type;
+  @override // Change this to String
   bool? get status;
-  set status(bool? value);
   @override
   DateTime? get status_updated_at;
-  set status_updated_at(DateTime? value);
   @override
   @JsonKey(ignore: true)
-  _$$ActivitieImplCopyWith<_$ActivitieImpl> get copyWith =>
+  _$$ActivityImplCopyWith<_$ActivityImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

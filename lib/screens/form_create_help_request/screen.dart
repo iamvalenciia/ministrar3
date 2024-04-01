@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ministrar3/models/activity_model/activity_model.dart';
-import 'package:ministrar3/provider/activity_provider.dart';
-import 'package:ministrar3/provider/my_hr_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../../provider/activity_provider.dart';
+import '../../provider/my_hr_provider.dart';
+import '../../utility_functions.dart';
 
 const Map<String, String> list = {
   'food': 'Food',
@@ -12,6 +13,8 @@ const Map<String, String> list = {
 };
 
 class HelpRequestFormScreen extends StatefulWidget {
+  const HelpRequestFormScreen({super.key});
+
   @override
   _HelpRequestFormScreenState createState() => _HelpRequestFormScreenState();
 }
@@ -21,11 +24,16 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
   late final TextEditingController _contentController;
   String dropdownValue = list.keys.first;
   bool _useLocation = false;
+  late List<DropdownMenuEntry<String>> dropdownMenuEntries;
 
   @override
   void initState() {
     super.initState();
     _contentController = TextEditingController();
+    dropdownMenuEntries = list.entries
+        .map<DropdownMenuEntry<String>>((MapEntry<String, String> entry) =>
+            DropdownMenuEntry<String>(value: entry.key, label: entry.value))
+        .toList();
   }
 
   @override
@@ -36,66 +44,57 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final myHelpRequestNotifier =
-        Provider.of<MyHelpRequestNotifier>(context, listen: false);
-    final activitiesNotifier =
-        Provider.of<ActivityNotifier>(context, listen: false);
+    final myHelpRequestNotifier = context.read<MyHelpRequestNotifier>();
+    final activitiesNotifier = context.read<ActivityNotifier>();
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              DropdownMenu<String>(
-                initialSelection: list.keys.first,
-                onSelected: (String? value) {
-                  setState(() {
-                    dropdownValue = value!;
-                  });
-                },
-                dropdownMenuEntries: list.entries
-                    .map<DropdownMenuEntry<String>>(
-                        (MapEntry<String, String> entry) {
-                  return DropdownMenuEntry<String>(
-                      value: entry.key, label: entry.value);
-                }).toList(),
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          children: [
+            DropdownMenu<String>(
+              initialSelection: list.keys.first,
+              onSelected: (String? value) {
+                setState(() {
+                  dropdownValue = value!;
+                });
+              },
+              dropdownMenuEntries: dropdownMenuEntries,
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _contentController,
+              maxLength: 240,
+              maxLines: 6,
+              decoration: const InputDecoration(
+                labelText: 'Type your help request here ...',
+                border: OutlineInputBorder(),
               ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _contentController,
-                maxLength: 240,
-                maxLines: 6,
-                decoration: InputDecoration(
-                  enabled: true,
-                  labelText: 'Type your help request here ...',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "This field can't be empty";
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              CheckboxListTile(
-                title:
-                    Text("Publish this help request using my current location"),
-                value: _useLocation,
-                onChanged: (bool? value) {
-                  setState(() {
-                    _useLocation = value!;
-                  });
-                },
-                controlAffinity: ListTileControlAffinity
-                    .leading, //  places the control on the start or leading side
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _useLocation
-                    ? () async {
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "This field can't be empty";
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 20),
+            CheckboxListTile(
+              title: const Text(
+                  'Create this help request using my current location'),
+              value: _useLocation,
+              onChanged: (bool? value) {
+                setState(() {
+                  _useLocation = value!;
+                });
+              },
+              controlAffinity: ListTileControlAffinity
+                  .leading, //  places the control on the start or leading side
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _useLocation
+                  ? () async {
+                      try {
                         if (_formKey.currentState!.validate()) {
                           final success =
                               await myHelpRequestNotifier.createMyHelpRequest(
@@ -103,21 +102,26 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
 
                           if (success) {
                             activitiesNotifier.createLocalActivity();
+                            // DON'T use BuildContext across asynchronous gaps.
+                            if (!context.mounted) {
+                              return;
+                            }
                             context.go('/home');
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                              content: const Text(
-                                  'You have created successfully a help request'),
-                            ));
+                            showFlashSuccess(context, 'Help request created');
                           }
                         }
+                      } catch (e) {
+                        // DON'T use BuildContext across asynchronous gaps.
+                        if (!context.mounted) {
+                          return;
+                        }
+                        showFlashError(context, 'Error - Create HR button: $e');
                       }
-                    : null,
-                child: const Text('Continue'),
-              ),
-            ],
-          ),
+                    }
+                  : null,
+              child: const Text('Create Help Request'),
+            ),
+          ],
         ),
       ),
     );

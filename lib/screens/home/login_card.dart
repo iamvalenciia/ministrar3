@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class LoginCard extends StatelessWidget {
-  const LoginCard({Key? key}) : super(key: key);
+  const LoginCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class LoginCard extends StatelessWidget {
             const SizedBox(width: 8),
             TextButton(
               child: const Text('Login'),
-              onPressed: () => context.go('/home/login'),
+              onPressed: () => context.go('/login'),
             ),
           ],
         ),

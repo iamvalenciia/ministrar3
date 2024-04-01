@@ -1,31 +1,34 @@
-import 'package:flutter/material.dart';
-import 'package:location/location.dart';
-import 'package:ministrar3/models/help_requests_model/help_request_model.dart';
-import 'package:ministrar3/services/supabase.dart';
-import 'package:geolocator/geolocator.dart';
-import 'dart:developer' as developer;
 import 'dart:async';
+import 'dart:developer' as developer;
+
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+
+import '../models/help_requests_model/help_request_model.dart';
+import '../services/supabase.dart';
 
 //---------------------------
 // MY HELP REQUEST NOTIFIER
 //---------------------------
 
 class MyHelpRequestNotifier extends ChangeNotifier {
+  MyHelpRequestNotifier() {
+    _positionStreamSubscription = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(),
+    ).listen(_updateDistance);
+  }
+
   HelpRequestModel? _myHelpRequest;
+  double? _distance;
   bool _isLoading = true;
   bool isFirstLoad = true;
   String? _error;
   StreamSubscription<Position>? _positionStreamSubscription;
 
   HelpRequestModel? get myHelpRequest => _myHelpRequest;
+  double? get distance => _distance;
   bool get isLoading => _isLoading;
   String? get error => _error;
-
-  MyHelpRequestNotifier() {
-    _positionStreamSubscription = Geolocator.getPositionStream(
-      locationSettings: LocationSettings(distanceFilter: 0),
-    ).listen(_updateDistance);
-  }
 
   @override
   void dispose() {
@@ -34,41 +37,51 @@ class MyHelpRequestNotifier extends ChangeNotifier {
   }
 
   void _updateDistance(Position position) {
-    final userLat = position.latitude;
-    final userLong = position.longitude;
+    final double userLat = position.latitude;
+    final double userLong = position.longitude;
 
     if (_myHelpRequest != null) {
-      final helpRequestLat = _myHelpRequest!.lat ?? 0.0;
-      final helpRequestLong = _myHelpRequest!.long ?? 0.0;
-      final distanceInMeters = Geolocator.distanceBetween(
+      final double helpRequestLat = _myHelpRequest!.lat ?? 0.0;
+      final double helpRequestLong = _myHelpRequest!.long ?? 0.0;
+      _distance = Geolocator.distanceBetween(
         userLat,
         userLong,
         helpRequestLat,
         helpRequestLong,
       );
-      _myHelpRequest = _myHelpRequest!.copyWith(distance: distanceInMeters);
     }
 
     notifyListeners();
   }
 
   Future<void> fetchMyHelpRequest() async {
-    final userId = supabase.auth.currentUser?.id;
+    final String? userId = supabase.auth.currentUser?.id;
     if (userId == null) {
       return;
     }
-
     _isLoading = true;
     notifyListeners();
     try {
-      final response = await supabase.rpc('help_request_from_user', params: {
+      final response =
+          await supabase.rpc('help_request_from_user', params: <String, String>{
         'f_user_id': userId,
       });
 
-      developer.log('fetchMyHelpRequest',
-          error: response[0], name: 'fetchMyHelpRequest');
+      if (response is List) {
+        final List<HelpRequestModel> helpRequests = response.map((item) {
+          if (item is Map<String, dynamic>) {
+            return HelpRequestModel.fromJson(item);
+          }
+          throw TypeError();
+        }).toList();
 
-      _myHelpRequest = HelpRequestModel.fromJson(response[0]);
+        developer.log('fetchMyHelpRequest',
+            error: helpRequests[0], name: 'fetchMyHelpRequest');
+
+        _myHelpRequest = helpRequests[0];
+      } else {
+        throw TypeError();
+      }
     } catch (e) {
       developer.log(' fetchMyHelpRequest ERROR',
           error: e, name: ' fetchMyHelpRequest ERROR');
@@ -83,24 +96,27 @@ class MyHelpRequestNotifier extends ChangeNotifier {
   Future<bool> createMyHelpRequest(String category, String content) async {
     developer.log(category, name: 'category');
     try {
-      Location location = Location();
-      LocationData locationData = await location.getLocation();
-      final latitude = locationData.latitude;
-      final longitude = locationData.longitude;
-      final userId = supabase.auth.currentUser?.id;
-      final response = await supabase.rpc('create_hr_and_activity', params: {
+      final Position position = await Geolocator.getCurrentPosition();
+      final double latitude = position.latitude;
+      final double longitude = position.longitude;
+      final String? userId = supabase.auth.currentUser?.id;
+      final response = await supabase
+          .rpc('create_hr_and_activity', params: <String, dynamic>{
         'p_user_id': userId,
         'p_category': category,
         'p_content': content,
         'p_latitude': latitude,
         'p_longitude': longitude,
-        'p_inserted_at': DateTime.now().toIso8601String(),
       });
 
       developer.log('createMyHelpRequest',
-          error: response[0], name: 'createMyHelpRequest');
+          // ignore: avoid_dynamic_calls
+          error: response[0],
+          name: 'createMyHelpRequest');
 
-      _myHelpRequest = HelpRequestModel.fromJson(response[0]);
+      // ignore: avoid_dynamic_calls
+      _myHelpRequest =
+          HelpRequestModel.fromJson(response[0] as Map<String, dynamic>);
       notifyListeners();
       return true;
     } catch (e) {
@@ -113,18 +129,15 @@ class MyHelpRequestNotifier extends ChangeNotifier {
 
   Future<bool> updateMyHelpRequest(String category, String content) async {
     try {
-      final userId = supabase.auth.currentUser?.id;
+      final String? userId = supabase.auth.currentUser?.id;
       if (userId == null) {
         return false;
       }
 
-      final response = await supabase.from('help_requests').update({
+      await supabase.from('help_requests').update(<String, dynamic>{
         'category': category,
         'content': content,
-      }).eq('user_id', '${userId}');
-
-      developer.log('updateMyHelpRequest',
-          error: response, name: 'updateMyHelpRequest');
+      }).eq('user_id', userId);
 
       _myHelpRequest?.category = category;
       _myHelpRequest?.content = content;
@@ -142,8 +155,8 @@ class MyHelpRequestNotifier extends ChangeNotifier {
     // this function delete help request and the activities belongs to the help request
     // will delete all activities where status is either null or false
     try {
-      final userId = supabase.auth.currentUser?.id;
-      await supabase.rpc('delete_hr_and_activity', params: {
+      final String? userId = supabase.auth.currentUser?.id;
+      await supabase.rpc('delete_hr_and_activity', params: <String, dynamic>{
         'p_user_id': userId,
       });
 

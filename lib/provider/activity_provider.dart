@@ -1,18 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:ministrar3/models/activity_model/activity_model.dart';
-import 'package:ministrar3/services/supabase.dart';
-import 'dart:developer' as developer;
 import 'dart:async';
+import 'dart:developer' as developer;
+
+import 'package:flutter/material.dart';
+
+import '../models/activity_model/activity_model.dart';
+import '../services/supabase.dart';
 
 //------------------------------
 // LIST ACTIVITIES NOTIFIER
 //------------------------------
 
 class ActivityNotifier extends ChangeNotifier {
-  List<Activitie>? _activityPosts;
+  List<Activity>? _activityPosts;
   bool _isLoading = true;
 
-  List<Activitie>? get activityPosts => _activityPosts;
+  List<Activity>? get activityPosts => _activityPosts;
   bool get isLoading => _isLoading;
 
   Future<void> activities() async {
@@ -21,16 +23,19 @@ class ActivityNotifier extends ChangeNotifier {
     try {
       final userId = supabase.auth.currentUser?.id;
 
-      final response = await supabase
-          .from('activities')
-          .select('*')
-          .eq('activity_owner', '${userId}');
+      final List<dynamic> response =
+          await supabase.rpc('get_last_activities', params: {
+        'p_user_id': userId,
+      });
 
       developer.log('fetchPostActivity',
           error: response, name: 'fetchPostActivity');
 
       _activityPosts =
-          response.map((json) => Activitie.fromJson(json)).toList();
+          // ignore: inference_failure_on_untyped_parameter, avoid_dynamic_calls
+          response
+              .map((json) => Activity.fromJson(json as Map<String, dynamic>))
+              .toList();
     } catch (e) {
       developer.log('ERROR fetchPostActivity',
           error: e, name: 'ERROR fetchPostActivity');
@@ -42,16 +47,19 @@ class ActivityNotifier extends ChangeNotifier {
 
   void createLocalActivity() {
     final postOwnerId = supabase.auth.currentUser?.id ?? '';
-    Activitie newActivity = Activitie(
+    final Activity newActivity = Activity(
       activity_owner: postOwnerId,
       inserted_at: DateTime.now(),
       post_owner: postOwnerId,
-      status: null,
-      status_updated_at: null,
     );
 
-    // Add the new activity to the list
-    _activityPosts?.add(newActivity);
+    // Remove the last activity if the list is not empty
+    if (_activityPosts != null && _activityPosts!.isNotEmpty) {
+      _activityPosts!.removeLast();
+    }
+
+    // Add the new activity to the beginning of the list
+    _activityPosts?.insert(0, newActivity);
     notifyListeners();
   }
 }
