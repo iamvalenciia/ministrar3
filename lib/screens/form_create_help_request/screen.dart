@@ -106,7 +106,7 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
                             if (!context.mounted) {
                               return;
                             }
-                            context.go('/home');
+                            context.go('/');
                             showFlashSuccess(context, 'Help request created');
                           }
                         }

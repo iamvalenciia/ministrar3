@@ -11,7 +11,8 @@ import 'provider/user_provider.dart';
 import 'screens/form_create_help_request/screen.dart';
 import 'screens/form_edit_help_request/screen.dart';
 import 'screens/form_username/screen.dart';
-import 'screens/help_request_details/screen.dart';
+import 'screens/help_request_for_helpers/screen.dart';
+import 'screens/help_request_for_owners/screen.dart';
 import 'screens/home/screen.dart';
 import 'screens/login/screen.dart';
 import 'screens/profile/screen.dart';
@@ -25,25 +26,20 @@ final GlobalKey<NavigatorState> _shellNavigatorKey =
 
 final goRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/home',
+  initialLocation: '/',
   debugLogDiagnostics: true,
   routes: <RouteBase>[
     ShellRoute(
         builder: (BuildContext context, GoRouterState state, Widget child) {
-          final isNotHome = state.fullPath != '/home';
+          final isNotHome = state.fullPath != '/';
           String appBarTitle = '';
-          if (state.fullPath == '/help-request-details/:helpRequestUserId') {
-            final helpRequestUserId = state.pathParameters['helpRequestUserId'];
-            final userId = supabase.auth.currentUser?.id;
-            final helpRequestsNotifier = context.read<HelpRequestsNotifier>();
-            final myHelpRequestNotifier = context.read<MyHelpRequestNotifier>();
-            developer.log('helpRequestId: $helpRequestUserId');
-            final helpRequest = userId == helpRequestUserId
-                ? myHelpRequestNotifier.myHelpRequest
-                : helpRequestsNotifier.helpRequests
-                    ?.firstWhere((r) => r.user_id == helpRequestUserId);
-            appBarTitle = '${helpRequest?.category}';
-          } else if (state.fullPath == '/home') {
+          if (state.fullPath ==
+              '/help-request-for-helpers/:helpRequestUserId') {
+            appBarTitle = 'Help Request';
+          } else if (state.fullPath ==
+              '/help-request-for-owners/:helpRequestUserId') {
+            appBarTitle = 'Your Help Request';
+          } else if (state.fullPath == '/') {
             appBarTitle = 'Ministrar';
           } else if (state.fullPath == '/login') {
             appBarTitle = 'Sign In';
@@ -87,24 +83,30 @@ final goRouter = GoRouter(
                   )
                 : isNotHome
                     ? IconButton(
-                        onPressed: () => context.go('/home'),
+                        onPressed: () => context.go('/'),
                         icon: const Icon(Icons.arrow_back))
                     : null,
             externalAppBarTitle: Text(appBarTitle),
-            externalDrawer: state.fullPath == '/home'
-                ? const CustomeNavigationDrawer()
-                : null,
+            externalDrawer:
+                state.fullPath == '/' ? const CustomeNavigationDrawer() : null,
           );
         },
         navigatorKey: _shellNavigatorKey,
         routes: <RouteBase>[
           createGoRoute(
-            path: '/home',
+            path: '/',
             childBuilder: (state) => const HomeScreenBody(),
           ),
           createGoRoute(
-            path: '/help-request-details/:helpRequestUserId',
-            childBuilder: (state) => HelpRequestDetails(
+            path: '/help-request-for-owners/:helpRequestUserId',
+            childBuilder: (state) => HelpRequestForOwners(
+              helpRequestUserId: state.pathParameters['helpRequestUserId'],
+              index: int.tryParse(state.pathParameters['index'] ?? '0') ?? 0,
+            ),
+          ),
+          createGoRoute(
+            path: '/help-request-for-helpers/:helpRequestUserId',
+            childBuilder: (state) => HelpRequestForHelpers(
               helpRequestUserId: state.pathParameters['helpRequestUserId'],
               index: int.tryParse(state.pathParameters['index'] ?? '0') ?? 0,
             ),

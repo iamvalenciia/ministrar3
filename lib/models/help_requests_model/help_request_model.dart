@@ -9,7 +9,7 @@ part 'help_request_model.g.dart';
 class HelpRequestModel with _$HelpRequestModel {
   factory HelpRequestModel({
     required int id,
-    String? user_id,
+    required String help_request_owner_id,
     String? category,
     String? content,
     DateTime? inserted_at,
@@ -18,7 +18,9 @@ class HelpRequestModel with _$HelpRequestModel {
     double? long,
     String? username,
     String? avatar_url,
-    double? distance, // this is not included in the database
+    bool? location_sharing_enabled,
+    String? x_username,
+    String? instagram_username,
   }) = _HelpRequestModel;
 
   factory HelpRequestModel.fromJson(Map<String, dynamic> json) =>

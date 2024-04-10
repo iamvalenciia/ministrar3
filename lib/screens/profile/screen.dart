@@ -26,152 +26,116 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       body: Column(
         children: [
-          Column(
+          Row(
             children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(6.0),
-                  child: Container(
-                    width: 100, // Adjust width as needed
-                    height: 100, // Adjust height as needed
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      image: DecorationImage(
-                        image:
-                            CachedNetworkImageProvider('${user?.avatar_url}'),
-                        fit: BoxFit.fill,
-                      ),
+              Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: Container(
+                  width: 100, // Adjust width as needed
+                  height: 100, // Adjust height as needed
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider('${user?.avatar_url}'),
+                      fit: BoxFit.fill,
                     ),
                   ),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Selector<UserNotifier, String>(
-                    selector: (_, notifier) =>
-                        notifier.user?.username ?? 'error',
-                    builder: (_, username, __) => Text(
-                      '@$username',
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  MenuAnchor(
-                    builder: (BuildContext context, MenuController controller,
-                        Widget? child) {
-                      return IconButton(
-                        onPressed: () {
-                          if (controller.isOpen) {
-                            controller.close();
-                          } else {
-                            controller.open();
-                          }
-                        },
-                        icon: const Icon(Icons.more_vert),
-                        tooltip: 'Settings for your Help Request',
-                      );
-                    },
-                    menuChildren: <Widget>[
-                      MenuItemButton(
-                          // leadingIcon: const Icon(Icons.edit),
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('Edit Username', style: TextStyle()),
-                          ),
-                          onPressed: () => context.go('/username-form')),
-                    ],
-                  )
-                ],
-              ),
-            ],
-          ),
-          Wrap(
-            alignment: WrapAlignment.center,
-            children: <Widget>[
-              const Icon(
-                Icons.people,
-              ),
-              const SizedBox(width: 10),
-              const Text(
-                'This user has helped',
-                style: TextStyle(
-                  fontSize: 16,
-                ),
-              ),
-              Card.filled(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6)),
+              Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    '0',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Selector<UserNotifier, String>(
+                              selector: (_, notifier) =>
+                                  notifier.user?.username ?? 'error',
+                              builder: (_, username, __) => Text(
+                                '@$username',
+                                overflow: TextOverflow.fade,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ),
+                          MenuAnchor(
+                            builder: (BuildContext context,
+                                MenuController controller, Widget? child) {
+                              return IconButton(
+                                onPressed: () {
+                                  if (controller.isOpen) {
+                                    controller.close();
+                                  } else {
+                                    controller.open();
+                                  }
+                                },
+                                icon: const Icon(Icons.more_vert),
+                                tooltip: 'Settings for your Help Request',
+                              );
+                            },
+                            menuChildren: <Widget>[
+                              MenuItemButton(
+                                  // leadingIcon: const Icon(Icons.edit),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text('Edit Username',
+                                        style: TextStyle()),
+                                  ),
+                                  onPressed: () =>
+                                      context.go('/username-form')),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Ministered persons'),
+                          Row(
+                            children: [
+                              Icon(Icons.people),
+                              const SizedBox(width: 10),
+                              Text('0'),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              const Text(
-                'people',
-                style: TextStyle(
-                  fontSize: 16,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 10),
-          const Divider(),
           // Add some spacing between the text and the divider
           Selector<ActivityNotifier, List<Activity>>(
             selector: (_, notifier) => notifier.activityPosts ?? [],
-            builder: (_, activityModel, __) => ExpansionPanelList(
-              expansionCallback: (int index, bool isExpanded) => setState(() {
-                this.isExpanded = isExpanded; // Update the state variable
-              }),
-              children: [
-                ExpansionPanel(
-                  headerBuilder: (context, isExpanded) => const ListTile(
-                    title: Text('Last User Activities'),
-                  ),
-                  body: Padding(
-                    padding: const EdgeInsets.only(bottom: 40),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: activityModel
-                          .map((activity) => _ActivityCard(activity: activity))
-                          .toList(),
-                    ),
-                  ),
-                  isExpanded: isExpanded, // Initially expand the panel
+            builder: (_, activityModel, __) => Card.outlined(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: activityModel
+                      .expand((activity) => [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  'Created a help request ${timeago.format(activity.inserted_at!)}',
+                                  style: const TextStyle(
+                                      fontSize: 15, color: Colors.grey)),
+                            ),
+                            const Divider(),
+                          ])
+                      .toList()
+                    ..removeLast(),
                 ),
-              ],
+              ),
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-// -----------------------------------------/
-//  widget used in the ProfileScreen widget /
-//------------------------------------------/
-class _ActivityCard extends StatelessWidget {
-  const _ActivityCard({this.activity});
-  final Activity? activity;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card.outlined(
-      child: Container(
-        padding: const EdgeInsets.all(15),
-        width: double.infinity,
-        child: Text(
-            "Created a help request ${activity != null ? timeago.format(activity!.inserted_at) : 'Unknown'}",
-            style: const TextStyle(fontSize: 15)),
       ),
     );
   }

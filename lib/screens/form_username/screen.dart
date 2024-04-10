@@ -50,6 +50,9 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
                 if (value.length < 3) {
                   return 'Username must be at least 3 characters long';
                 }
+                if (value.contains(' ')) {
+                  return 'Username cannot contain spaces';
+                }
                 return null;
               },
             ),

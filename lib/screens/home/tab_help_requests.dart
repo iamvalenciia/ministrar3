@@ -1,10 +1,13 @@
 import 'dart:developer' as developer;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 import '../../models/help_requests_model/help_request_model.dart';
+import '../../provider/activity_provider.dart';
 import '../../provider/close_hrs_provider.dart';
 
 class HelpRequests extends StatelessWidget {
@@ -69,28 +72,97 @@ class HelpRequestsList extends StatelessWidget {
         final request = helpRequests[index];
         final userName = request.username.toString();
         final category = request.category.toString();
-        return Card(
-          child: SizedBox(
-            width: 300,
-            child: ListTile(
-              title: Text(
-                userName,
-                overflow: TextOverflow.ellipsis,
+        return GestureDetector(
+          onTap: () => context.go(
+              '/help-request-for-helpers/${request.help_request_owner_id}?index=$index'),
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: 300,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                              radius: 20,
+                              backgroundImage: CachedNetworkImageProvider(
+                                  '${request.avatar_url}')),
+                          const SizedBox(width: 18),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '@$userName',
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Selector<HelpRequestsNotifier, double>(
+                                  selector: (_, notifier) =>
+                                      notifier.distances?[index] ?? 1.1,
+                                  builder: (_, distance, __) {
+                                    return Text(
+                                      distance != 1.1
+                                          ? '${distance.toInt()} meters'
+                                          : 'Calculating ...',
+                                      overflow: TextOverflow.ellipsis,
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          Selector<ActivityNotifier, bool>(
+                            selector: (_, activityNotifier) => activityNotifier
+                                .isHelping(request.help_request_owner_id),
+                            builder: (context, isHelping, _) {
+                              return isHelping
+                                  ? Icon(
+                                      Icons.volunteer_activism,
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                    )
+                                  : Container();
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    Card.outlined(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          request.content.toString(),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: Row(
+                        children: [
+                          Text(
+                            timeago.format(request.inserted_at!),
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Theme.of(context).colorScheme.outline),
+                          ),
+                          Text(
+                            ' / $category',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              trailing: Text(category),
-              leading: const Icon(Icons.account_circle),
-              subtitle: Selector<HelpRequestsNotifier, double>(
-                selector: (_, notifier) => notifier.distances?[index] ?? 1.1,
-                builder: (_, distance, __) {
-                  return Text(
-                    distance != 1.1
-                        ? '${distance.toInt()} meters'
-                        : 'Calculating ...',
-                  );
-                },
-              ),
-              onTap: () => context
-                  .go('/help-request-details/${request.user_id}?index=$index'),
             ),
           ),
         );

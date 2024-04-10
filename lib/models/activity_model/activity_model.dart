@@ -9,12 +9,12 @@ part 'activity_model.g.dart';
 class Activity with _$Activity {
   factory Activity({
     int? activity_id,
-    required String activity_owner,
-    required DateTime inserted_at,
-    required String post_owner,
     String? activity_type, // Change this to String
+    required String? activity_owner,
+    required DateTime? inserted_at,
     bool? status,
     DateTime? status_updated_at,
+    String? help_request_owner_id,
   }) = _Activity;
 
   factory Activity.fromJson(Map<String, dynamic> json) =>

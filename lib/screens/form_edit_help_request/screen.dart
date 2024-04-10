@@ -90,7 +90,7 @@ class _EditHelpRequestState extends State<EditHelpRequest> {
                       return;
                     }
                     if (success) {
-                      context.go('/home');
+                      context.go('/');
                       showFlashSuccess(context, 'Help Request Updated');
                     }
                   }

@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -14,13 +15,18 @@ class MyHelpRequest extends StatelessWidget {
     final username = context.select((UserNotifier un) => un.user?.username);
     final myHelpRequest =
         context.select((MyHelpRequestNotifier mhrn) => mhrn.myHelpRequest);
+    developer.log('${myHelpRequest?.help_request_owner_id}',
+        name: 'myHelpRequest MyHelpRequest MyHelpRequest');
+    developer.log('${myHelpRequest?.avatar_url}',
+        name: 'myHelpRequest MyHelpRequest MyHelpRequest');
+    developer.log('$myHelpRequest',
+        name: 'myHelpRequest MyHelpRequest MyHelpRequest');
 
     if (myHelpRequest != null) {
       return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: 1,
         itemBuilder: (context, index) {
-          final request = myHelpRequest;
           return Card(
             child: SizedBox(
               width: 300, // Set a finite width here
@@ -40,9 +46,9 @@ class MyHelpRequest extends StatelessWidget {
                     );
                   },
                 ),
-                trailing: Text(request.category.toString()),
-                onTap: () =>
-                    context.go('/help-request-details/${request.user_id}'),
+                trailing: Text(myHelpRequest.category.toString()),
+                onTap: () => context.go(
+                    '/help-request-for-owners/${myHelpRequest.help_request_owner_id}'),
               ),
             ),
           );

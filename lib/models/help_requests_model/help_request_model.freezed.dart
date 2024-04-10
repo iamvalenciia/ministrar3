@@ -22,8 +22,8 @@ HelpRequestModel _$HelpRequestModelFromJson(Map<String, dynamic> json) {
 mixin _$HelpRequestModel {
   int get id => throw _privateConstructorUsedError;
   set id(int value) => throw _privateConstructorUsedError;
-  String? get user_id => throw _privateConstructorUsedError;
-  set user_id(String? value) => throw _privateConstructorUsedError;
+  String get help_request_owner_id => throw _privateConstructorUsedError;
+  set help_request_owner_id(String value) => throw _privateConstructorUsedError;
   String? get category => throw _privateConstructorUsedError;
   set category(String? value) => throw _privateConstructorUsedError;
   String? get content => throw _privateConstructorUsedError;
@@ -40,8 +40,13 @@ mixin _$HelpRequestModel {
   set username(String? value) => throw _privateConstructorUsedError;
   String? get avatar_url => throw _privateConstructorUsedError;
   set avatar_url(String? value) => throw _privateConstructorUsedError;
-  double? get distance => throw _privateConstructorUsedError;
-  set distance(double? value) => throw _privateConstructorUsedError;
+  bool? get location_sharing_enabled => throw _privateConstructorUsedError;
+  set location_sharing_enabled(bool? value) =>
+      throw _privateConstructorUsedError;
+  String? get x_username => throw _privateConstructorUsedError;
+  set x_username(String? value) => throw _privateConstructorUsedError;
+  String? get instagram_username => throw _privateConstructorUsedError;
+  set instagram_username(String? value) => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -57,7 +62,7 @@ abstract class $HelpRequestModelCopyWith<$Res> {
   @useResult
   $Res call(
       {int id,
-      String? user_id,
+      String help_request_owner_id,
       String? category,
       String? content,
       DateTime? inserted_at,
@@ -66,7 +71,9 @@ abstract class $HelpRequestModelCopyWith<$Res> {
       double? long,
       String? username,
       String? avatar_url,
-      double? distance});
+      bool? location_sharing_enabled,
+      String? x_username,
+      String? instagram_username});
 }
 
 /// @nodoc
@@ -83,7 +90,7 @@ class _$HelpRequestModelCopyWithImpl<$Res, $Val extends HelpRequestModel>
   @override
   $Res call({
     Object? id = null,
-    Object? user_id = freezed,
+    Object? help_request_owner_id = null,
     Object? category = freezed,
     Object? content = freezed,
     Object? inserted_at = freezed,
@@ -92,17 +99,19 @@ class _$HelpRequestModelCopyWithImpl<$Res, $Val extends HelpRequestModel>
     Object? long = freezed,
     Object? username = freezed,
     Object? avatar_url = freezed,
-    Object? distance = freezed,
+    Object? location_sharing_enabled = freezed,
+    Object? x_username = freezed,
+    Object? instagram_username = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      user_id: freezed == user_id
-          ? _value.user_id
-          : user_id // ignore: cast_nullable_to_non_nullable
-              as String?,
+      help_request_owner_id: null == help_request_owner_id
+          ? _value.help_request_owner_id
+          : help_request_owner_id // ignore: cast_nullable_to_non_nullable
+              as String,
       category: freezed == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
@@ -135,10 +144,18 @@ class _$HelpRequestModelCopyWithImpl<$Res, $Val extends HelpRequestModel>
           ? _value.avatar_url
           : avatar_url // ignore: cast_nullable_to_non_nullable
               as String?,
-      distance: freezed == distance
-          ? _value.distance
-          : distance // ignore: cast_nullable_to_non_nullable
-              as double?,
+      location_sharing_enabled: freezed == location_sharing_enabled
+          ? _value.location_sharing_enabled
+          : location_sharing_enabled // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      x_username: freezed == x_username
+          ? _value.x_username
+          : x_username // ignore: cast_nullable_to_non_nullable
+              as String?,
+      instagram_username: freezed == instagram_username
+          ? _value.instagram_username
+          : instagram_username // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -153,7 +170,7 @@ abstract class _$$HelpRequestModelImplCopyWith<$Res>
   @useResult
   $Res call(
       {int id,
-      String? user_id,
+      String help_request_owner_id,
       String? category,
       String? content,
       DateTime? inserted_at,
@@ -162,7 +179,9 @@ abstract class _$$HelpRequestModelImplCopyWith<$Res>
       double? long,
       String? username,
       String? avatar_url,
-      double? distance});
+      bool? location_sharing_enabled,
+      String? x_username,
+      String? instagram_username});
 }
 
 /// @nodoc
@@ -177,7 +196,7 @@ class __$$HelpRequestModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? user_id = freezed,
+    Object? help_request_owner_id = null,
     Object? category = freezed,
     Object? content = freezed,
     Object? inserted_at = freezed,
@@ -186,17 +205,19 @@ class __$$HelpRequestModelImplCopyWithImpl<$Res>
     Object? long = freezed,
     Object? username = freezed,
     Object? avatar_url = freezed,
-    Object? distance = freezed,
+    Object? location_sharing_enabled = freezed,
+    Object? x_username = freezed,
+    Object? instagram_username = freezed,
   }) {
     return _then(_$HelpRequestModelImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      user_id: freezed == user_id
-          ? _value.user_id
-          : user_id // ignore: cast_nullable_to_non_nullable
-              as String?,
+      help_request_owner_id: null == help_request_owner_id
+          ? _value.help_request_owner_id
+          : help_request_owner_id // ignore: cast_nullable_to_non_nullable
+              as String,
       category: freezed == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
@@ -229,10 +250,18 @@ class __$$HelpRequestModelImplCopyWithImpl<$Res>
           ? _value.avatar_url
           : avatar_url // ignore: cast_nullable_to_non_nullable
               as String?,
-      distance: freezed == distance
-          ? _value.distance
-          : distance // ignore: cast_nullable_to_non_nullable
-              as double?,
+      location_sharing_enabled: freezed == location_sharing_enabled
+          ? _value.location_sharing_enabled
+          : location_sharing_enabled // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      x_username: freezed == x_username
+          ? _value.x_username
+          : x_username // ignore: cast_nullable_to_non_nullable
+              as String?,
+      instagram_username: freezed == instagram_username
+          ? _value.instagram_username
+          : instagram_username // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -242,7 +271,7 @@ class __$$HelpRequestModelImplCopyWithImpl<$Res>
 class _$HelpRequestModelImpl implements _HelpRequestModel {
   _$HelpRequestModelImpl(
       {required this.id,
-      this.user_id,
+      required this.help_request_owner_id,
       this.category,
       this.content,
       this.inserted_at,
@@ -251,7 +280,9 @@ class _$HelpRequestModelImpl implements _HelpRequestModel {
       this.long,
       this.username,
       this.avatar_url,
-      this.distance});
+      this.location_sharing_enabled,
+      this.x_username,
+      this.instagram_username});
 
   factory _$HelpRequestModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$HelpRequestModelImplFromJson(json);
@@ -259,7 +290,7 @@ class _$HelpRequestModelImpl implements _HelpRequestModel {
   @override
   int id;
   @override
-  String? user_id;
+  String help_request_owner_id;
   @override
   String? category;
   @override
@@ -277,11 +308,15 @@ class _$HelpRequestModelImpl implements _HelpRequestModel {
   @override
   String? avatar_url;
   @override
-  double? distance;
+  bool? location_sharing_enabled;
+  @override
+  String? x_username;
+  @override
+  String? instagram_username;
 
   @override
   String toString() {
-    return 'HelpRequestModel(id: $id, user_id: $user_id, category: $category, content: $content, inserted_at: $inserted_at, receive_help_at: $receive_help_at, lat: $lat, long: $long, username: $username, avatar_url: $avatar_url, distance: $distance)';
+    return 'HelpRequestModel(id: $id, help_request_owner_id: $help_request_owner_id, category: $category, content: $content, inserted_at: $inserted_at, receive_help_at: $receive_help_at, lat: $lat, long: $long, username: $username, avatar_url: $avatar_url, location_sharing_enabled: $location_sharing_enabled, x_username: $x_username, instagram_username: $instagram_username)';
   }
 
   @JsonKey(ignore: true)
@@ -302,7 +337,7 @@ class _$HelpRequestModelImpl implements _HelpRequestModel {
 abstract class _HelpRequestModel implements HelpRequestModel {
   factory _HelpRequestModel(
       {required int id,
-      String? user_id,
+      required String help_request_owner_id,
       String? category,
       String? content,
       DateTime? inserted_at,
@@ -311,7 +346,9 @@ abstract class _HelpRequestModel implements HelpRequestModel {
       double? long,
       String? username,
       String? avatar_url,
-      double? distance}) = _$HelpRequestModelImpl;
+      bool? location_sharing_enabled,
+      String? x_username,
+      String? instagram_username}) = _$HelpRequestModelImpl;
 
   factory _HelpRequestModel.fromJson(Map<String, dynamic> json) =
       _$HelpRequestModelImpl.fromJson;
@@ -320,8 +357,8 @@ abstract class _HelpRequestModel implements HelpRequestModel {
   int get id;
   set id(int value);
   @override
-  String? get user_id;
-  set user_id(String? value);
+  String get help_request_owner_id;
+  set help_request_owner_id(String value);
   @override
   String? get category;
   set category(String? value);
@@ -347,8 +384,14 @@ abstract class _HelpRequestModel implements HelpRequestModel {
   String? get avatar_url;
   set avatar_url(String? value);
   @override
-  double? get distance;
-  set distance(double? value);
+  bool? get location_sharing_enabled;
+  set location_sharing_enabled(bool? value);
+  @override
+  String? get x_username;
+  set x_username(String? value);
+  @override
+  String? get instagram_username;
+  set instagram_username(String? value);
   @override
   @JsonKey(ignore: true)
   _$$HelpRequestModelImplCopyWith<_$HelpRequestModelImpl> get copyWith =>

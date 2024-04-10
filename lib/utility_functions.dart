@@ -5,21 +5,6 @@ import 'package:provider/provider.dart';
 import 'provider/close_hrs_provider.dart';
 import 'provider/my_hr_provider.dart';
 
-// This function shows a snackbar with a provided message
-void showSnackbar(BuildContext context, String message) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(message),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: Theme.of(context).colorScheme.secondary,
-      elevation: 5,
-    ),
-  );
-}
-
 // This function checks location permissions and fetches help requests if allowed
 void checkPermissionsAndFetchRequests(BuildContext context) {
   Geolocator.checkPermission().then((value) {

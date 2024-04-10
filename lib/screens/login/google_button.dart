@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../provider/activity_provider.dart';
 import '../../provider/close_hrs_provider.dart';
 import '../../provider/my_hr_provider.dart';
+import '../../provider/people_helping_provider.dart';
 import '../../provider/user_provider.dart';
 import '../../utility_functions.dart';
 
@@ -34,7 +35,7 @@ class SigninGoogleButton extends StatelessWidget {
                         if (userNotifier.user?.username == null) {
                           context.go('/username-form');
                         } else {
-                          context.go('/home');
+                          context.go('/');
                         }
                         Geolocator.checkPermission().then((value) {
                           if (value == LocationPermission.whileInUse ||
@@ -45,11 +46,17 @@ class SigninGoogleButton extends StatelessWidget {
                                 context.read<HelpRequestsNotifier>();
                             final ActivityNotifier activityNotifier =
                                 context.read<ActivityNotifier>();
+                            final PeopleHelpingNotifier peopleHelpingNotifier =
+                                Provider.of<PeopleHelpingNotifier>(context,
+                                    listen: false);
                             Future.wait(
                               [
                                 helpRequestsNotifier.fetchHelpRequests(),
                                 myHelpRequestNotifier.fetchMyHelpRequest(),
                                 activityNotifier.activities(),
+                                activityNotifier.fetchMyHelpActivities(),
+                                peopleHelpingNotifier
+                                    .fetchPeopleHelpingInMyHelpRequest()
                               ],
                             );
                           }

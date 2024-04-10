@@ -21,13 +21,13 @@ Activity _$ActivityFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Activity {
   int? get activity_id => throw _privateConstructorUsedError;
-  String get activity_owner => throw _privateConstructorUsedError;
-  DateTime get inserted_at => throw _privateConstructorUsedError;
-  String get post_owner => throw _privateConstructorUsedError;
   String? get activity_type =>
       throw _privateConstructorUsedError; // Change this to String
+  String? get activity_owner => throw _privateConstructorUsedError;
+  DateTime? get inserted_at => throw _privateConstructorUsedError;
   bool? get status => throw _privateConstructorUsedError;
   DateTime? get status_updated_at => throw _privateConstructorUsedError;
+  String? get help_request_owner_id => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -42,12 +42,12 @@ abstract class $ActivityCopyWith<$Res> {
   @useResult
   $Res call(
       {int? activity_id,
-      String activity_owner,
-      DateTime inserted_at,
-      String post_owner,
       String? activity_type,
+      String? activity_owner,
+      DateTime? inserted_at,
       bool? status,
-      DateTime? status_updated_at});
+      DateTime? status_updated_at,
+      String? help_request_owner_id});
 }
 
 /// @nodoc
@@ -64,34 +64,30 @@ class _$ActivityCopyWithImpl<$Res, $Val extends Activity>
   @override
   $Res call({
     Object? activity_id = freezed,
-    Object? activity_owner = null,
-    Object? inserted_at = null,
-    Object? post_owner = null,
     Object? activity_type = freezed,
+    Object? activity_owner = freezed,
+    Object? inserted_at = freezed,
     Object? status = freezed,
     Object? status_updated_at = freezed,
+    Object? help_request_owner_id = freezed,
   }) {
     return _then(_value.copyWith(
       activity_id: freezed == activity_id
           ? _value.activity_id
           : activity_id // ignore: cast_nullable_to_non_nullable
               as int?,
-      activity_owner: null == activity_owner
-          ? _value.activity_owner
-          : activity_owner // ignore: cast_nullable_to_non_nullable
-              as String,
-      inserted_at: null == inserted_at
-          ? _value.inserted_at
-          : inserted_at // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      post_owner: null == post_owner
-          ? _value.post_owner
-          : post_owner // ignore: cast_nullable_to_non_nullable
-              as String,
       activity_type: freezed == activity_type
           ? _value.activity_type
           : activity_type // ignore: cast_nullable_to_non_nullable
               as String?,
+      activity_owner: freezed == activity_owner
+          ? _value.activity_owner
+          : activity_owner // ignore: cast_nullable_to_non_nullable
+              as String?,
+      inserted_at: freezed == inserted_at
+          ? _value.inserted_at
+          : inserted_at // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       status: freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -100,6 +96,10 @@ class _$ActivityCopyWithImpl<$Res, $Val extends Activity>
           ? _value.status_updated_at
           : status_updated_at // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      help_request_owner_id: freezed == help_request_owner_id
+          ? _value.help_request_owner_id
+          : help_request_owner_id // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -114,12 +114,12 @@ abstract class _$$ActivityImplCopyWith<$Res>
   @useResult
   $Res call(
       {int? activity_id,
-      String activity_owner,
-      DateTime inserted_at,
-      String post_owner,
       String? activity_type,
+      String? activity_owner,
+      DateTime? inserted_at,
       bool? status,
-      DateTime? status_updated_at});
+      DateTime? status_updated_at,
+      String? help_request_owner_id});
 }
 
 /// @nodoc
@@ -134,34 +134,30 @@ class __$$ActivityImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? activity_id = freezed,
-    Object? activity_owner = null,
-    Object? inserted_at = null,
-    Object? post_owner = null,
     Object? activity_type = freezed,
+    Object? activity_owner = freezed,
+    Object? inserted_at = freezed,
     Object? status = freezed,
     Object? status_updated_at = freezed,
+    Object? help_request_owner_id = freezed,
   }) {
     return _then(_$ActivityImpl(
       activity_id: freezed == activity_id
           ? _value.activity_id
           : activity_id // ignore: cast_nullable_to_non_nullable
               as int?,
-      activity_owner: null == activity_owner
-          ? _value.activity_owner
-          : activity_owner // ignore: cast_nullable_to_non_nullable
-              as String,
-      inserted_at: null == inserted_at
-          ? _value.inserted_at
-          : inserted_at // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      post_owner: null == post_owner
-          ? _value.post_owner
-          : post_owner // ignore: cast_nullable_to_non_nullable
-              as String,
       activity_type: freezed == activity_type
           ? _value.activity_type
           : activity_type // ignore: cast_nullable_to_non_nullable
               as String?,
+      activity_owner: freezed == activity_owner
+          ? _value.activity_owner
+          : activity_owner // ignore: cast_nullable_to_non_nullable
+              as String?,
+      inserted_at: freezed == inserted_at
+          ? _value.inserted_at
+          : inserted_at // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       status: freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -170,6 +166,10 @@ class __$$ActivityImplCopyWithImpl<$Res>
           ? _value.status_updated_at
           : status_updated_at // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      help_request_owner_id: freezed == help_request_owner_id
+          ? _value.help_request_owner_id
+          : help_request_owner_id // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -179,12 +179,12 @@ class __$$ActivityImplCopyWithImpl<$Res>
 class _$ActivityImpl implements _Activity {
   _$ActivityImpl(
       {this.activity_id,
+      this.activity_type,
       required this.activity_owner,
       required this.inserted_at,
-      required this.post_owner,
-      this.activity_type,
       this.status,
-      this.status_updated_at});
+      this.status_updated_at,
+      this.help_request_owner_id});
 
   factory _$ActivityImpl.fromJson(Map<String, dynamic> json) =>
       _$$ActivityImplFromJson(json);
@@ -192,22 +192,22 @@ class _$ActivityImpl implements _Activity {
   @override
   final int? activity_id;
   @override
-  final String activity_owner;
-  @override
-  final DateTime inserted_at;
-  @override
-  final String post_owner;
-  @override
   final String? activity_type;
 // Change this to String
+  @override
+  final String? activity_owner;
+  @override
+  final DateTime? inserted_at;
   @override
   final bool? status;
   @override
   final DateTime? status_updated_at;
+  @override
+  final String? help_request_owner_id;
 
   @override
   String toString() {
-    return 'Activity(activity_id: $activity_id, activity_owner: $activity_owner, inserted_at: $inserted_at, post_owner: $post_owner, activity_type: $activity_type, status: $status, status_updated_at: $status_updated_at)';
+    return 'Activity(activity_id: $activity_id, activity_type: $activity_type, activity_owner: $activity_owner, inserted_at: $inserted_at, status: $status, status_updated_at: $status_updated_at, help_request_owner_id: $help_request_owner_id)';
   }
 
   @override
@@ -217,23 +217,30 @@ class _$ActivityImpl implements _Activity {
             other is _$ActivityImpl &&
             (identical(other.activity_id, activity_id) ||
                 other.activity_id == activity_id) &&
+            (identical(other.activity_type, activity_type) ||
+                other.activity_type == activity_type) &&
             (identical(other.activity_owner, activity_owner) ||
                 other.activity_owner == activity_owner) &&
             (identical(other.inserted_at, inserted_at) ||
                 other.inserted_at == inserted_at) &&
-            (identical(other.post_owner, post_owner) ||
-                other.post_owner == post_owner) &&
-            (identical(other.activity_type, activity_type) ||
-                other.activity_type == activity_type) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.status_updated_at, status_updated_at) ||
-                other.status_updated_at == status_updated_at));
+                other.status_updated_at == status_updated_at) &&
+            (identical(other.help_request_owner_id, help_request_owner_id) ||
+                other.help_request_owner_id == help_request_owner_id));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, activity_id, activity_owner,
-      inserted_at, post_owner, activity_type, status, status_updated_at);
+  int get hashCode => Object.hash(
+      runtimeType,
+      activity_id,
+      activity_type,
+      activity_owner,
+      inserted_at,
+      status,
+      status_updated_at,
+      help_request_owner_id);
 
   @JsonKey(ignore: true)
   @override
@@ -252,12 +259,12 @@ class _$ActivityImpl implements _Activity {
 abstract class _Activity implements Activity {
   factory _Activity(
       {final int? activity_id,
-      required final String activity_owner,
-      required final DateTime inserted_at,
-      required final String post_owner,
       final String? activity_type,
+      required final String? activity_owner,
+      required final DateTime? inserted_at,
       final bool? status,
-      final DateTime? status_updated_at}) = _$ActivityImpl;
+      final DateTime? status_updated_at,
+      final String? help_request_owner_id}) = _$ActivityImpl;
 
   factory _Activity.fromJson(Map<String, dynamic> json) =
       _$ActivityImpl.fromJson;
@@ -265,17 +272,17 @@ abstract class _Activity implements Activity {
   @override
   int? get activity_id;
   @override
-  String get activity_owner;
-  @override
-  DateTime get inserted_at;
-  @override
-  String get post_owner;
-  @override
   String? get activity_type;
   @override // Change this to String
+  String? get activity_owner;
+  @override
+  DateTime? get inserted_at;
+  @override
   bool? get status;
   @override
   DateTime? get status_updated_at;
+  @override
+  String? get help_request_owner_id;
   @override
   @JsonKey(ignore: true)
   _$$ActivityImplCopyWith<_$ActivityImpl> get copyWith =>

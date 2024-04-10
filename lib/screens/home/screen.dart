@@ -8,6 +8,7 @@ import '../../provider/activity_provider.dart';
 import '../../provider/close_hrs_provider.dart';
 import '../../provider/location_permission.dart';
 import '../../provider/my_hr_provider.dart';
+import '../../provider/people_helping_provider.dart';
 import '../../provider/user_provider.dart';
 import '../../services/supabase.dart';
 import '../../utility_functions.dart';
@@ -42,11 +43,14 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
         developer.log('before declare the MY HELP REQUEST NOTIFIER');
         final MyHelpRequestNotifier myHelpRequestNotifier =
             Provider.of<MyHelpRequestNotifier>(context, listen: false);
+        final PeopleHelpingNotifier peopleHelpingNotifier =
+            Provider.of<PeopleHelpingNotifier>(context, listen: false);
 
         developer.log('before fetch help request');
         helpRequestsNotifier.fetchHelpRequests();
         developer.log('before fetch My help request');
         myHelpRequestNotifier.fetchMyHelpRequest();
+        peopleHelpingNotifier.fetchPeopleHelpingInMyHelpRequest();
       }
     });
 
@@ -54,6 +58,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
       await Future.wait([
         userNotifier.fetchUserProfile(),
         activityNotifier.activities(),
+        activityNotifier.fetchMyHelpActivities(),
       ]);
     }
   }
@@ -119,7 +124,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
               ),
             ),
           ),
-          const Text('People I am helping: 0'),
         ],
       ),
     );

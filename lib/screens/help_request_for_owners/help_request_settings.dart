@@ -63,7 +63,7 @@ class _HelpRequestSettingsState extends State<HelpRequestSettings> {
                           (bool response) {
                             if (response) {
                               myHelpRequestNotifier.clearHelpRequest();
-                              context.go('/home');
+                              context.go('/');
                               showFlashSuccess(context, 'Help Request Deleted');
                             }
                           },
