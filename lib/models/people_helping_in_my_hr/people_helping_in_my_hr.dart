@@ -5,7 +5,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'people_helping_in_my_hr.freezed.dart';
 part 'people_helping_in_my_hr.g.dart';
 
-@freezed
+@unfreezed
 class PeopleHelpingInMyHelpRequest with _$PeopleHelpingInMyHelpRequest {
   factory PeopleHelpingInMyHelpRequest({
     int? activity_id, // Change this to String

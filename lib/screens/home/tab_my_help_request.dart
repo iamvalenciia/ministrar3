@@ -1,8 +1,8 @@
-import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../provider/activity_provider.dart';
 import '../../provider/my_hr_provider.dart';
 import '../../provider/user_provider.dart';
 
@@ -15,13 +15,8 @@ class MyHelpRequest extends StatelessWidget {
     final username = context.select((UserNotifier un) => un.user?.username);
     final myHelpRequest =
         context.select((MyHelpRequestNotifier mhrn) => mhrn.myHelpRequest);
-    developer.log('${myHelpRequest?.help_request_owner_id}',
-        name: 'myHelpRequest MyHelpRequest MyHelpRequest');
-    developer.log('${myHelpRequest?.avatar_url}',
-        name: 'myHelpRequest MyHelpRequest MyHelpRequest');
-    developer.log('$myHelpRequest',
-        name: 'myHelpRequest MyHelpRequest MyHelpRequest');
-
+    final bool wasLastActivityHelpTrue =
+        context.read<ActivityNotifier>().wasLastActivityHelp();
     if (myHelpRequest != null) {
       return ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -41,7 +36,7 @@ class MyHelpRequest extends StatelessWidget {
                   builder: (_, distance, __) {
                     return Text(
                       distance != 1.1
-                          ? '${distance.toInt()} meters'
+                          ? '${distance.toInt()} Km'
                           : 'Calculating ...',
                     );
                   },
@@ -54,9 +49,9 @@ class MyHelpRequest extends StatelessWidget {
           );
         },
       );
-    } else {
+    } else if (wasLastActivityHelpTrue) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 50),
+        padding: const EdgeInsets.symmetric(horizontal: 65, vertical: 50),
         child: ElevatedButton(
           onPressed: userExist ? () => context.go('/help-request-form') : null,
           child: const Row(
@@ -67,6 +62,32 @@ class MyHelpRequest extends StatelessWidget {
             ],
           ),
         ),
+      );
+    } else if (!wasLastActivityHelpTrue) {
+      return Center(
+        child: Card.filled(
+          child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'To make another help request, please help someone else first',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.volunteer_activism,
+                        color: Theme.of(context).colorScheme.primary),
+                  ),
+                ],
+              )),
+        ),
+      );
+    } else {
+      return const Center(
+        child: CircularProgressIndicator(),
       );
     }
   }

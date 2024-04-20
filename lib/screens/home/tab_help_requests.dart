@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -15,8 +13,6 @@ class HelpRequests extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    developer.log('Building HelpRequests');
-
     final isLoading = context
         .select<HelpRequestsNotifier, bool>((notifier) => notifier.isLoading);
     final error = context
@@ -38,15 +34,15 @@ class HelpRequests extends StatelessWidget {
     return Selector<HelpRequestsNotifier, List<HelpRequestModel>?>(
       selector: (_, notifier) => notifier.helpRequests,
       builder: (context, helpRequests, child) {
-        developer.log('building help requests list');
-
         if (helpRequests == null || helpRequests.isEmpty) {
           return const Center(
-              child: Card(
+              child: Card.filled(
                   child: Padding(
             padding: EdgeInsets.all(15),
             child: const Text(
-                'No help requests are currently available. Please check back later for updates.'),
+              'No help requests are currently available. Please check back later for updates',
+              style: TextStyle(fontSize: 16),
+            ),
           )));
         }
 
@@ -106,7 +102,7 @@ class HelpRequestsList extends StatelessWidget {
                                   builder: (_, distance, __) {
                                     return Text(
                                       distance != 1.1
-                                          ? '${distance.toInt()} meters'
+                                          ? '${distance.toInt()} Km'
                                           : 'Calculating ...',
                                       overflow: TextOverflow.ellipsis,
                                     );
@@ -117,7 +113,7 @@ class HelpRequestsList extends StatelessWidget {
                           ),
                           Selector<ActivityNotifier, bool>(
                             selector: (_, activityNotifier) => activityNotifier
-                                .isHelping(request.help_request_owner_id),
+                                .isHelping(request.hr_id.toString()),
                             builder: (context, isHelping, _) {
                               return isHelping
                                   ? Icon(

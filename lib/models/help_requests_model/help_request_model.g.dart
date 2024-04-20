@@ -9,7 +9,7 @@ part of 'help_request_model.dart';
 _$HelpRequestModelImpl _$$HelpRequestModelImplFromJson(
         Map<String, dynamic> json) =>
     _$HelpRequestModelImpl(
-      id: json['id'] as int,
+      hr_id: json['hr_id'] as int,
       help_request_owner_id: json['help_request_owner_id'] as String,
       category: json['category'] as String?,
       content: json['content'] as String?,
@@ -26,12 +26,14 @@ _$HelpRequestModelImpl _$$HelpRequestModelImplFromJson(
       location_sharing_enabled: json['location_sharing_enabled'] as bool?,
       x_username: json['x_username'] as String?,
       instagram_username: json['instagram_username'] as String?,
+      people_helping_count: json['people_helping_count'] as int?,
+      people_provide_help_count: json['people_provide_help_count'] as int?,
     );
 
 Map<String, dynamic> _$$HelpRequestModelImplToJson(
         _$HelpRequestModelImpl instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'hr_id': instance.hr_id,
       'help_request_owner_id': instance.help_request_owner_id,
       'category': instance.category,
       'content': instance.content,
@@ -44,4 +46,6 @@ Map<String, dynamic> _$$HelpRequestModelImplToJson(
       'location_sharing_enabled': instance.location_sharing_enabled,
       'x_username': instance.x_username,
       'instagram_username': instance.instagram_username,
+      'people_helping_count': instance.people_helping_count,
+      'people_provide_help_count': instance.people_provide_help_count,
     };

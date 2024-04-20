@@ -20,8 +20,8 @@ HelpRequestModel _$HelpRequestModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$HelpRequestModel {
-  int get id => throw _privateConstructorUsedError;
-  set id(int value) => throw _privateConstructorUsedError;
+  int get hr_id => throw _privateConstructorUsedError;
+  set hr_id(int value) => throw _privateConstructorUsedError;
   String get help_request_owner_id => throw _privateConstructorUsedError;
   set help_request_owner_id(String value) => throw _privateConstructorUsedError;
   String? get category => throw _privateConstructorUsedError;
@@ -47,6 +47,11 @@ mixin _$HelpRequestModel {
   set x_username(String? value) => throw _privateConstructorUsedError;
   String? get instagram_username => throw _privateConstructorUsedError;
   set instagram_username(String? value) => throw _privateConstructorUsedError;
+  int? get people_helping_count => throw _privateConstructorUsedError;
+  set people_helping_count(int? value) => throw _privateConstructorUsedError;
+  int? get people_provide_help_count => throw _privateConstructorUsedError;
+  set people_provide_help_count(int? value) =>
+      throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -61,7 +66,7 @@ abstract class $HelpRequestModelCopyWith<$Res> {
       _$HelpRequestModelCopyWithImpl<$Res, HelpRequestModel>;
   @useResult
   $Res call(
-      {int id,
+      {int hr_id,
       String help_request_owner_id,
       String? category,
       String? content,
@@ -73,7 +78,9 @@ abstract class $HelpRequestModelCopyWith<$Res> {
       String? avatar_url,
       bool? location_sharing_enabled,
       String? x_username,
-      String? instagram_username});
+      String? instagram_username,
+      int? people_helping_count,
+      int? people_provide_help_count});
 }
 
 /// @nodoc
@@ -89,7 +96,7 @@ class _$HelpRequestModelCopyWithImpl<$Res, $Val extends HelpRequestModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? hr_id = null,
     Object? help_request_owner_id = null,
     Object? category = freezed,
     Object? content = freezed,
@@ -102,11 +109,13 @@ class _$HelpRequestModelCopyWithImpl<$Res, $Val extends HelpRequestModel>
     Object? location_sharing_enabled = freezed,
     Object? x_username = freezed,
     Object? instagram_username = freezed,
+    Object? people_helping_count = freezed,
+    Object? people_provide_help_count = freezed,
   }) {
     return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      hr_id: null == hr_id
+          ? _value.hr_id
+          : hr_id // ignore: cast_nullable_to_non_nullable
               as int,
       help_request_owner_id: null == help_request_owner_id
           ? _value.help_request_owner_id
@@ -156,6 +165,14 @@ class _$HelpRequestModelCopyWithImpl<$Res, $Val extends HelpRequestModel>
           ? _value.instagram_username
           : instagram_username // ignore: cast_nullable_to_non_nullable
               as String?,
+      people_helping_count: freezed == people_helping_count
+          ? _value.people_helping_count
+          : people_helping_count // ignore: cast_nullable_to_non_nullable
+              as int?,
+      people_provide_help_count: freezed == people_provide_help_count
+          ? _value.people_provide_help_count
+          : people_provide_help_count // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 }
@@ -169,7 +186,7 @@ abstract class _$$HelpRequestModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id,
+      {int hr_id,
       String help_request_owner_id,
       String? category,
       String? content,
@@ -181,7 +198,9 @@ abstract class _$$HelpRequestModelImplCopyWith<$Res>
       String? avatar_url,
       bool? location_sharing_enabled,
       String? x_username,
-      String? instagram_username});
+      String? instagram_username,
+      int? people_helping_count,
+      int? people_provide_help_count});
 }
 
 /// @nodoc
@@ -195,7 +214,7 @@ class __$$HelpRequestModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? hr_id = null,
     Object? help_request_owner_id = null,
     Object? category = freezed,
     Object? content = freezed,
@@ -208,11 +227,13 @@ class __$$HelpRequestModelImplCopyWithImpl<$Res>
     Object? location_sharing_enabled = freezed,
     Object? x_username = freezed,
     Object? instagram_username = freezed,
+    Object? people_helping_count = freezed,
+    Object? people_provide_help_count = freezed,
   }) {
     return _then(_$HelpRequestModelImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
+      hr_id: null == hr_id
+          ? _value.hr_id
+          : hr_id // ignore: cast_nullable_to_non_nullable
               as int,
       help_request_owner_id: null == help_request_owner_id
           ? _value.help_request_owner_id
@@ -262,6 +283,14 @@ class __$$HelpRequestModelImplCopyWithImpl<$Res>
           ? _value.instagram_username
           : instagram_username // ignore: cast_nullable_to_non_nullable
               as String?,
+      people_helping_count: freezed == people_helping_count
+          ? _value.people_helping_count
+          : people_helping_count // ignore: cast_nullable_to_non_nullable
+              as int?,
+      people_provide_help_count: freezed == people_provide_help_count
+          ? _value.people_provide_help_count
+          : people_provide_help_count // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -270,7 +299,7 @@ class __$$HelpRequestModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$HelpRequestModelImpl implements _HelpRequestModel {
   _$HelpRequestModelImpl(
-      {required this.id,
+      {required this.hr_id,
       required this.help_request_owner_id,
       this.category,
       this.content,
@@ -282,13 +311,15 @@ class _$HelpRequestModelImpl implements _HelpRequestModel {
       this.avatar_url,
       this.location_sharing_enabled,
       this.x_username,
-      this.instagram_username});
+      this.instagram_username,
+      this.people_helping_count,
+      this.people_provide_help_count});
 
   factory _$HelpRequestModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$HelpRequestModelImplFromJson(json);
 
   @override
-  int id;
+  int hr_id;
   @override
   String help_request_owner_id;
   @override
@@ -313,10 +344,14 @@ class _$HelpRequestModelImpl implements _HelpRequestModel {
   String? x_username;
   @override
   String? instagram_username;
+  @override
+  int? people_helping_count;
+  @override
+  int? people_provide_help_count;
 
   @override
   String toString() {
-    return 'HelpRequestModel(id: $id, help_request_owner_id: $help_request_owner_id, category: $category, content: $content, inserted_at: $inserted_at, receive_help_at: $receive_help_at, lat: $lat, long: $long, username: $username, avatar_url: $avatar_url, location_sharing_enabled: $location_sharing_enabled, x_username: $x_username, instagram_username: $instagram_username)';
+    return 'HelpRequestModel(hr_id: $hr_id, help_request_owner_id: $help_request_owner_id, category: $category, content: $content, inserted_at: $inserted_at, receive_help_at: $receive_help_at, lat: $lat, long: $long, username: $username, avatar_url: $avatar_url, location_sharing_enabled: $location_sharing_enabled, x_username: $x_username, instagram_username: $instagram_username, people_helping_count: $people_helping_count, people_provide_help_count: $people_provide_help_count)';
   }
 
   @JsonKey(ignore: true)
@@ -336,7 +371,7 @@ class _$HelpRequestModelImpl implements _HelpRequestModel {
 
 abstract class _HelpRequestModel implements HelpRequestModel {
   factory _HelpRequestModel(
-      {required int id,
+      {required int hr_id,
       required String help_request_owner_id,
       String? category,
       String? content,
@@ -348,14 +383,16 @@ abstract class _HelpRequestModel implements HelpRequestModel {
       String? avatar_url,
       bool? location_sharing_enabled,
       String? x_username,
-      String? instagram_username}) = _$HelpRequestModelImpl;
+      String? instagram_username,
+      int? people_helping_count,
+      int? people_provide_help_count}) = _$HelpRequestModelImpl;
 
   factory _HelpRequestModel.fromJson(Map<String, dynamic> json) =
       _$HelpRequestModelImpl.fromJson;
 
   @override
-  int get id;
-  set id(int value);
+  int get hr_id;
+  set hr_id(int value);
   @override
   String get help_request_owner_id;
   set help_request_owner_id(String value);
@@ -392,6 +429,12 @@ abstract class _HelpRequestModel implements HelpRequestModel {
   @override
   String? get instagram_username;
   set instagram_username(String? value);
+  @override
+  int? get people_helping_count;
+  set people_helping_count(int? value);
+  @override
+  int? get people_provide_help_count;
+  set people_provide_help_count(int? value);
   @override
   @JsonKey(ignore: true)
   _$$HelpRequestModelImplCopyWith<_$HelpRequestModelImpl> get copyWith =>

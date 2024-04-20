@@ -10,11 +10,12 @@ class Activity with _$Activity {
   factory Activity({
     int? activity_id,
     String? activity_type, // Change this to String
-    required String? activity_owner,
+    required String? activity_owner_id,
+    String? help_request_owner_username,
     required DateTime? inserted_at,
     bool? status,
     DateTime? status_updated_at,
-    String? help_request_owner_id,
+    int? help_request_id,
   }) = _Activity;
 
   factory Activity.fromJson(Map<String, dynamic> json) =>

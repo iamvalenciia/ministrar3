@@ -22,118 +22,182 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final UserModel? user = context.read<UserNotifier>().user;
+    final peopleHelped = context.read<UserNotifier>().peopleHelped;
 
     return Scaffold(
       body: Column(
         children: [
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: Container(
-                  width: 100, // Adjust width as needed
-                  height: 100, // Adjust height as needed
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider('${user?.avatar_url}'),
-                      fit: BoxFit.fill,
+          ListTile(
+            leading: CircleAvatar(
+                radius: 30,
+                backgroundImage:
+                    CachedNetworkImageProvider('${user?.avatar_url}')),
+            title: Row(
+              children: [
+                Flexible(
+                  child: Selector<UserNotifier, String>(
+                    selector: (_, notifier) =>
+                        notifier.user?.username ?? 'error',
+                    builder: (_, username, __) => Text(
+                      '@$username',
+                      overflow: TextOverflow.fade,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Selector<UserNotifier, String>(
-                              selector: (_, notifier) =>
-                                  notifier.user?.username ?? 'error',
-                              builder: (_, username, __) => Text(
-                                '@$username',
-                                overflow: TextOverflow.fade,
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            ),
-                          ),
-                          MenuAnchor(
-                            builder: (BuildContext context,
-                                MenuController controller, Widget? child) {
-                              return IconButton(
-                                onPressed: () {
-                                  if (controller.isOpen) {
-                                    controller.close();
-                                  } else {
-                                    controller.open();
-                                  }
-                                },
-                                icon: const Icon(Icons.more_vert),
-                                tooltip: 'Settings for your Help Request',
-                              );
-                            },
-                            menuChildren: <Widget>[
-                              MenuItemButton(
-                                  // leadingIcon: const Icon(Icons.edit),
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text('Edit Username',
-                                        style: TextStyle()),
-                                  ),
-                                  onPressed: () =>
-                                      context.go('/username-form')),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Ministered persons'),
-                          Row(
-                            children: [
-                              Icon(Icons.people),
-                              const SizedBox(width: 10),
-                              Text('0'),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                MenuAnchor(
+                  builder: (BuildContext context, MenuController controller,
+                      Widget? child) {
+                    return IconButton(
+                      onPressed: () {
+                        if (controller.isOpen) {
+                          controller.close();
+                        } else {
+                          controller.open();
+                        }
+                      },
+                      icon: const Icon(Icons.more_vert),
+                      tooltip: 'Settings for your Help Request',
+                    );
+                  },
+                  menuChildren: <Widget>[
+                    MenuItemButton(
+                        // leadingIcon: const Icon(Icons.edit),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('Edit Username',
+                              style: TextStyle(fontSize: 16)),
+                        ),
+                        onPressed: () => context.go('/username-form')),
+                  ],
                 ),
-              ),
+              ],
+            ),
+            subtitle: Row(
+              children: [
+                Icon(Icons.volunteer_activism,
+                    color: Theme.of(context).colorScheme.primary),
+                Text(' $peopleHelped ', style: const TextStyle(fontSize: 16)),
+                Text(peopleHelped == 1 ? 'Person Helped' : 'People Helped',
+                    style: const TextStyle(fontSize: 16)),
+              ],
+            ),
+          ),
+          const SizedBox(height: 40),
+          Row(
+            children: [
+              Icon(Icons.history, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(width: 10),
+              const Text('Recent Activities',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ],
           ),
-          const SizedBox(height: 10),
-          // Add some spacing between the text and the divider
           Selector<ActivityNotifier, List<Activity>>(
-            selector: (_, notifier) => notifier.activityPosts ?? [],
-            builder: (_, activityModel, __) => Card.outlined(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: activityModel
-                      .expand((activity) => [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                  'Created a help request ${timeago.format(activity.inserted_at!)}',
-                                  style: const TextStyle(
-                                      fontSize: 15, color: Colors.grey)),
-                            ),
-                            const Divider(),
-                          ])
-                      .toList()
-                    ..removeLast(),
-                ),
-              ),
-            ),
+            selector: (_, notifier) => notifier.activities ?? [],
+            builder: (_, activity, __) {
+              if (activity.isEmpty) {
+                return const Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'There are no activities to show yet',
+                          style: const TextStyle(fontSize: 15),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListView.builder(
+                      itemCount: activity.length,
+                      itemBuilder: (context, index) {
+                        final currentActivity = activity[index];
+                        if (currentActivity.status == null &&
+                            currentActivity.activity_type == 'help') {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Is trying to help to ${currentActivity.help_request_owner_username}',
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              const Divider(),
+                            ],
+                          );
+                        } else if (currentActivity.status ??
+                            true && currentActivity.activity_type == 'help') {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Helped to @${currentActivity.help_request_owner_username} ${timeago.format(currentActivity.status_updated_at!)}',
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              const Divider(),
+                            ],
+                          );
+                        } else if (currentActivity.status == false &&
+                            currentActivity.activity_type == 'help') {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Failed to help to @${currentActivity.help_request_owner_username} ${timeago.format(currentActivity.status_updated_at!)}',
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              const Divider(),
+                            ],
+                          );
+                        } else if (currentActivity.activity_type == 'post') {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Created a Help Request ${timeago.format(currentActivity.inserted_at!)}',
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              const Divider(),
+                            ],
+                          );
+                        } else {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Activity type not recognized status: ${currentActivity.status}, type: ${currentActivity.activity_type}',
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              const Divider(),
+                            ],
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                );
+              }
+            },
           ),
         ],
       ),

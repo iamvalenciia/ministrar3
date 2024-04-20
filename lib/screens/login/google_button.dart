@@ -49,12 +49,13 @@ class SigninGoogleButton extends StatelessWidget {
                             final PeopleHelpingNotifier peopleHelpingNotifier =
                                 Provider.of<PeopleHelpingNotifier>(context,
                                     listen: false);
+                            // null
                             Future.wait(
                               [
                                 helpRequestsNotifier.fetchHelpRequests(),
                                 myHelpRequestNotifier.fetchMyHelpRequest(),
-                                activityNotifier.activities(),
-                                activityNotifier.fetchMyHelpActivities(),
+                                activityNotifier.fetchTheLastFourActivities(),
+                                activityNotifier.fetchHelpActivities(),
                                 peopleHelpingNotifier
                                     .fetchPeopleHelpingInMyHelpRequest()
                               ],

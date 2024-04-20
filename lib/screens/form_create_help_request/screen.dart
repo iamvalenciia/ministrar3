@@ -101,7 +101,7 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
                                   dropdownValue, _contentController.text);
 
                           if (success) {
-                            activitiesNotifier.createLocalActivity();
+                            activitiesNotifier.createLocalPostActivity();
                             // DON'T use BuildContext across asynchronous gaps.
                             if (!context.mounted) {
                               return;

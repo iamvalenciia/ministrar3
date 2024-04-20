@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/my_hr_provider.dart';
+import '../../provider/people_helping_provider.dart';
 import '../../utility_functions.dart';
 
 class HelpRequestSettings extends StatefulWidget {
@@ -16,8 +17,8 @@ class HelpRequestSettings extends StatefulWidget {
 class _HelpRequestSettingsState extends State<HelpRequestSettings> {
   @override
   Widget build(BuildContext context) {
-    final MyHelpRequestNotifier myHelpRequestNotifier =
-        Provider.of<MyHelpRequestNotifier>(context, listen: false);
+    final myHelpRequestNotifier = context.read<MyHelpRequestNotifier>();
+    final peopleHelpingNotifier = context.read<PeopleHelpingNotifier>();
     return MenuAnchor(
       builder:
           (BuildContext context, MenuController controller, Widget? child) {
@@ -55,7 +56,7 @@ class _HelpRequestSettingsState extends State<HelpRequestSettings> {
                       'Are you sure you want to delete your help request?',
                       style: TextStyle(fontSize: 18)),
                   actions: <Widget>[
-                    ElevatedButton(
+                    TextButton(
                       child: const Text('Yes, I am sure'),
                       onPressed: () {
                         Navigator.of(dialogContext).pop();
@@ -63,6 +64,7 @@ class _HelpRequestSettingsState extends State<HelpRequestSettings> {
                           (bool response) {
                             if (response) {
                               myHelpRequestNotifier.clearHelpRequest();
+                              peopleHelpingNotifier.clearPeopleHelping();
                               context.go('/');
                               showFlashSuccess(context, 'Help Request Deleted');
                             }

@@ -8,7 +8,7 @@ part 'help_request_model.g.dart';
 @unfreezed
 class HelpRequestModel with _$HelpRequestModel {
   factory HelpRequestModel({
-    required int id,
+    required int hr_id,
     required String help_request_owner_id,
     String? category,
     String? content,
@@ -21,6 +21,8 @@ class HelpRequestModel with _$HelpRequestModel {
     bool? location_sharing_enabled,
     String? x_username,
     String? instagram_username,
+    int? people_helping_count,
+    int? people_provide_help_count,
   }) = _HelpRequestModel;
 
   factory HelpRequestModel.fromJson(Map<String, dynamic> json) =>

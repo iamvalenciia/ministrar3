@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as developer;
+import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
 
@@ -11,84 +12,88 @@ import '../services/supabase.dart';
 //------------------------------
 
 class ActivityNotifier extends ChangeNotifier {
-  List<Activity>? _activityPosts;
+  List<Activity>? _last4Activities;
   List<Activity>? _helpActivities;
-  List<Activity>? _helpActivitiesFromMyHelpRequest;
-  bool _isLoading = true;
+
   bool _isHelpActivityLoading = true;
   final Map<String, bool> _isHelping = {};
 
-  List<Activity>? get activityPosts => _activityPosts;
+  List<Activity>? get activities => _last4Activities;
   List<Activity>? get helpActivities => _helpActivities;
-  List<Activity>? get helpActivitiesFromMyHelpRequest =>
-      _helpActivitiesFromMyHelpRequest;
   bool get isHelpActivityLoading => _isHelpActivityLoading;
-  bool get isLoading => _isLoading;
-
-  Future<void> activities() async {
-    _isLoading = true;
-    notifyListeners();
-    try {
-      final userId = supabase.auth.currentUser?.id;
-
-      final List<dynamic> response =
-          await supabase.rpc('get_last_activities', params: {
-        'p_user_id': userId,
-      });
-
-      developer.log('fetchPostActivity',
-          error: response, name: 'fetchPostActivity');
-
-      _activityPosts =
-          // ignore: inference_failure_on_untyped_parameter, avoid_dynamic_calls
-          response
-              .map((json) => Activity.fromJson(json as Map<String, dynamic>))
-              .toList();
-    } catch (e) {
-      developer.log('ERROR fetchPostActivity',
-          error: e, name: 'ERROR fetchPostActivity');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
 
   // Add a new method to get the helping state for a specific user
-  bool isHelping(String userId) {
-    return _isHelping[userId] ?? false;
+  bool isHelping(String helpRequestId) {
+    developer.log('helpRequestId: $helpRequestId', name: 'isHelping function');
+    developer.log('_isHelping: $_isHelping', name: 'isHelping function');
+    developer.log('_isHelping[helpRequestId]: ${_isHelping[helpRequestId]}',
+        name: 'isHelping function');
+    developer.log('activities: $_helpActivities', name: 'isHelping function');
+    return _isHelping[helpRequestId] ?? false;
   }
 
-  void createLocalActivity() {
-    final postOwnerId = supabase.auth.currentUser?.id;
-    final Activity newActivity = Activity(
-      activity_owner: postOwnerId!,
-      inserted_at: DateTime.now(),
-      help_request_owner_id: postOwnerId,
+  bool? helped(String helpRequestId) {
+    final activity = _helpActivities?.firstWhereOrNull(
+      (activity) => activity.help_request_id.toString() == helpRequestId,
     );
 
-    // Remove the last activity if the list is not empty
-    if (_activityPosts != null && _activityPosts!.isNotEmpty) {
-      _activityPosts!.removeLast();
-    }
+    return activity?.status;
+  }
+
+  void createLocalPostActivity() {
+    final postOwnerId = supabase.auth.currentUser?.id;
+    final Activity newActivity = Activity(
+      activity_type: 'post',
+      activity_owner_id: postOwnerId,
+      inserted_at: DateTime.now(),
+    );
 
     // Add the new activity to the beginning of the list
-    _activityPosts?.insert(0, newActivity);
+    _last4Activities?.insert(0, newActivity);
     notifyListeners();
   }
 
-  Future<void> fetchMyHelpActivities() async {
+  Future<void> fetchTheLastFourActivities() async {
     _isHelpActivityLoading = true;
     notifyListeners();
     try {
       final userId = supabase.auth.currentUser?.id;
 
       final List<dynamic> response =
-          await supabase.rpc('fetch_my_help_activities', params: {
+          await supabase.rpc('get_4_activities', params: {
         'p_activity_owner': userId,
       });
 
-      developer.log('fetchMyHelpActivities',
-          error: response, name: 'fetchMyHelpActivities');
+      developer.log('fetchTheLastFourActivities',
+          error: response, name: 'fetchTheLastFourActivities');
+
+      _last4Activities =
+          // ignore: inference_failure_on_untyped_parameter, avoid_dynamic_calls
+          response
+              .map((json) => Activity.fromJson(json as Map<String, dynamic>))
+              .toList();
+    } catch (e) {
+      developer.log('ERROR fetchTheLastFourActivities',
+          error: e, name: 'ERROR fetchTheLastFourActivities');
+    } finally {
+      _isHelpActivityLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchHelpActivities() async {
+    _isHelpActivityLoading = true;
+    notifyListeners();
+    try {
+      final userId = supabase.auth.currentUser?.id;
+
+      final List<dynamic> response =
+          await supabase.rpc('get_help_activities', params: {
+        'p_activity_owner': userId,
+      });
+
+      developer.log('fetchHelpActivities',
+          error: response, name: 'fetchHelpActivities');
 
       _helpActivities =
           // ignore: inference_failure_on_untyped_parameter, avoid_dynamic_calls
@@ -97,60 +102,98 @@ class ActivityNotifier extends ChangeNotifier {
               .toList();
       // Update _isHelping for each fetched help activity
       for (final activity in _helpActivities!) {
-        _isHelping[activity.help_request_owner_id.toString()] = true;
+        _isHelping[activity.help_request_id.toString()] = true;
       }
     } catch (e) {
-      developer.log('ERROR fetchMyHelpActivities',
-          error: e, name: 'ERROR fetchMyHelpActivities');
+      developer.log('ERROR fetchHelpActivities',
+          error: e, name: 'ERROR fetchHelpActivities');
     } finally {
       _isHelpActivityLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> createHelpActivity(String postOwnerId) async {
-    final activityOwner = supabase.auth.currentUser?.id;
-    final response = await supabase.from('activities').insert([
-      <String, dynamic>{
-        'activity_type': 'help',
-        'activity_owner': activityOwner,
-        'help_request_owner_id': postOwnerId,
-      }
-    ]).select();
-
-    final newActivity = Activity.fromJson(response[0]);
-
-    // Add the new activity to the beginning of the list
-    _helpActivities?.insert(0, newActivity);
-    developer.log(helpActivities.toString(),
-        name: 'helpActivities after creating new help activity');
-    _isHelping[postOwnerId] = true;
-    developer.log(_isHelping.toString(),
-        name:
-            'The list of the variable _isHelping after creating new help activity');
-    notifyListeners();
-  }
-
-  Future<void> removeMyHelpActivity(String? postOwnerId) async {
-    developer.log(helpActivities.toString(), name: 'helpActivities');
+  Future<void> createHelpActivity(
+      int helpRequestId, String helpRequestOwnerid) async {
     try {
       final activityOwner = supabase.auth.currentUser?.id;
-      final activity = _helpActivities?.firstWhere(
-        (activity) => activity.help_request_owner_id == postOwnerId,
+      await supabase.from('activities').insert([
+        <String, dynamic>{
+          'activity_type': 'help',
+          'activity_owner_id': activityOwner,
+          'help_request_id': helpRequestId,
+          'help_request_owner_id': helpRequestOwnerid,
+        }
+      ]);
+
+      final Activity helpActivity = Activity(
+        activity_type: 'help',
+        activity_owner_id: activityOwner,
+        inserted_at: DateTime.now(),
+        help_request_id: helpRequestId,
       );
-      developer.log('${activity?.activity_id}', name: 'activity_id');
-      await supabase
-          .from('activities')
-          .delete()
-          .eq('activity_id', '${activity?.activity_id}');
-      _helpActivities?.removeWhere((activity) =>
-          activity.activity_owner == activityOwner &&
-          activity.help_request_owner_id == postOwnerId);
+      _helpActivities?.insert(0, helpActivity);
+      _isHelping[helpRequestId.toString()] = true;
+      notifyListeners();
+    } catch (e) {
+      developer.log('Error in createHelpActivity', error: e);
+    }
+  }
+
+  Future<void> removeMyHelpActivity(int helpRequestId) async {
+    final activity = _helpActivities?.firstWhere(
+      (activity) => activity.help_request_id == helpRequestId,
+    );
+    try {
+      await supabase.rpc('delete_my_help_activity', params: {
+        'p_activity_owner_id': activity?.activity_owner_id,
+        'p_activity_type': activity?.activity_type,
+        'p_help_request_id': helpRequestId,
+      });
+
+      // Remove the activity from _helpActivities
+      _helpActivities?.remove(activity);
       // Update the helping state
-      _isHelping[postOwnerId!] = false;
+      _isHelping[helpRequestId.toString()] = false;
       notifyListeners();
     } catch (e) {
       developer.log(e.toString(), name: 'ERROR removeMyHelpActivity');
     }
+  }
+
+  bool wasLastActivityHelp() {
+    // If there are no activities, return true
+    if (_last4Activities == null || _last4Activities!.isEmpty) {
+      return true;
+    }
+
+    _last4Activities!
+        .sort((a, b) => b.inserted_at?.compareTo(a.inserted_at!) ?? 0);
+
+    // Get the most recent activity
+    final Activity lastActivity = _last4Activities!.first;
+
+    // Check if the most recent activity was a help activity and its status was true
+    if (lastActivity.activity_type == 'help' && lastActivity.status == true) {
+      return true;
+    }
+
+    // If the most recent activity was not a help activity or its status was not true, return false
+    return false;
+  }
+
+  void clearIsHelping() {
+    _isHelping.clear();
+    notifyListeners();
+  }
+
+  void clearHelpActivities() {
+    _helpActivities = null;
+    notifyListeners();
+  }
+
+  void clearLastFourActivities() {
+    _last4Activities = null;
+    notifyListeners();
   }
 }

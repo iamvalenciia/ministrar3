@@ -25,11 +25,13 @@ class HelpRequestsNotifier extends ChangeNotifier {
   bool isFirstLoad = true;
   String? _error;
   StreamSubscription<Position>? _positionStreamSubscription;
+  bool _isDistanceInKilometers = true;
 
   List<HelpRequestModel>? get helpRequests => _helpRequests;
   List<double>? get distances => _distances;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  bool get isDistanceInKilometers => _isDistanceInKilometers;
 
   // This method is called whenever the user's position updates.
   // It calculates the distance from the user to each help request,
@@ -43,15 +45,27 @@ class HelpRequestsNotifier extends ChangeNotifier {
       final double helpRequestLat = helpRequest.lat ?? 0.0;
       final double helpRequestLong = helpRequest.long ?? 0.0;
 
-      return Geolocator.distanceBetween(
-        userLat,
-        userLong,
-        helpRequestLat,
-        helpRequestLong,
-      );
-    }).toList();
+      double distance = Geolocator.distanceBetween(
+            userLat,
+            userLong,
+            helpRequestLat,
+            helpRequestLong,
+          ) /
+          1000; // Convert meters to kilometers
 
+      // Convert to miles if _isDistanceInKilometers is false
+      if (!_isDistanceInKilometers) {
+        distance *= 0.621371; // 1 kilometer is approximately 0.621371 miles
+      }
+
+      return distance;
+    }).toList();
     notifyListeners();
+  }
+
+  void switchDistanceUnit() {
+    _isDistanceInKilometers = !_isDistanceInKilometers;
+    notifyListeners(); // Notify listeners to update the UI
   }
 
   // This method fetches help requests from the server.
@@ -124,5 +138,35 @@ class HelpRequestsNotifier extends ChangeNotifier {
   void clearError() {
     _error = null;
     notifyListeners();
+  }
+
+  void incrementPeopleHelpingCount(int helpRequestId) {
+    final index = _helpRequests?.indexWhere((hr) => hr.hr_id == helpRequestId);
+    if (index != null && index != -1) {
+      final currentCount = _helpRequests![index].people_helping_count ?? 0;
+      final updatedHelpRequest = _helpRequests?[index]
+          .copyWith(people_helping_count: currentCount + 1);
+      // ignore: unnecessary_null_comparison
+      if (updatedHelpRequest != null) {
+        _helpRequests![index] = updatedHelpRequest;
+        notifyListeners();
+      }
+    }
+  }
+
+  void decrementPeopleHelpingCount(int helpRequestId) {
+    final index = _helpRequests?.indexWhere((hr) => hr.hr_id == helpRequestId);
+    if (index != null && index != -1) {
+      final currentCount = _helpRequests![index].people_helping_count ?? 0;
+      if (currentCount > 0) {
+        final updatedHelpRequest = _helpRequests?[index]
+            .copyWith(people_helping_count: currentCount - 1);
+        // ignore: unnecessary_null_comparison
+        if (updatedHelpRequest != null) {
+          _helpRequests![index] = updatedHelpRequest;
+          notifyListeners();
+        }
+      }
+    }
   }
 }

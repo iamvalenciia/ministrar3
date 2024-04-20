@@ -6,6 +6,7 @@ import 'package:provider/provider.dart' as provider; // Import Provider
 import 'go_router.dart';
 import 'provider/activity_provider.dart';
 import 'provider/close_hrs_provider.dart';
+import 'provider/km_mi_notifier.dart';
 import 'provider/location_permission.dart';
 import 'provider/my_hr_provider.dart';
 import 'provider/people_helping_provider.dart';
@@ -37,7 +38,7 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
           fontFamily: GoogleFonts.notoSans().fontFamily,
           colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.teal, brightness: Brightness.dark),
+              seedColor: Colors.teal, brightness: Brightness.light),
           useMaterial3: true,
         ),
         routerConfig: goRouter,
@@ -57,4 +58,5 @@ final providers = <SingleChildWidget>[
   provider.ChangeNotifierProvider(create: (_) => ActivityNotifier()),
   provider.ChangeNotifierProvider(create: (_) => LocationPermissionNotifier()),
   provider.ChangeNotifierProvider(create: (_) => PeopleHelpingNotifier()),
+  provider.ChangeNotifierProvider(create: (_) => DistanceUnitNotifier()),
 ];

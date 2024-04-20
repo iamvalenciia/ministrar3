@@ -21,12 +21,18 @@ PeopleHelpingInMyHelpRequest _$PeopleHelpingInMyHelpRequestFromJson(
 
 /// @nodoc
 mixin _$PeopleHelpingInMyHelpRequest {
-  int? get activity_id =>
+  int? get activity_id => throw _privateConstructorUsedError;
+  set activity_id(int? value) =>
       throw _privateConstructorUsedError; // Change this to String
-  String? get activity_owner => throw _privateConstructorUsedError;
+  String? get activity_owner =>
+      throw _privateConstructorUsedError; // Change this to String
+  set activity_owner(String? value) => throw _privateConstructorUsedError;
   bool? get status => throw _privateConstructorUsedError;
+  set status(bool? value) => throw _privateConstructorUsedError;
   String? get username => throw _privateConstructorUsedError;
+  set username(String? value) => throw _privateConstructorUsedError;
   String? get avatar_url => throw _privateConstructorUsedError;
+  set avatar_url(String? value) => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -172,42 +178,21 @@ class _$PeopleHelpingInMyHelpRequestImpl
       _$$PeopleHelpingInMyHelpRequestImplFromJson(json);
 
   @override
-  final int? activity_id;
+  int? activity_id;
 // Change this to String
   @override
-  final String? activity_owner;
+  String? activity_owner;
   @override
-  final bool? status;
+  bool? status;
   @override
-  final String? username;
+  String? username;
   @override
-  final String? avatar_url;
+  String? avatar_url;
 
   @override
   String toString() {
     return 'PeopleHelpingInMyHelpRequest(activity_id: $activity_id, activity_owner: $activity_owner, status: $status, username: $username, avatar_url: $avatar_url)';
   }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$PeopleHelpingInMyHelpRequestImpl &&
-            (identical(other.activity_id, activity_id) ||
-                other.activity_id == activity_id) &&
-            (identical(other.activity_owner, activity_owner) ||
-                other.activity_owner == activity_owner) &&
-            (identical(other.status, status) || other.status == status) &&
-            (identical(other.username, username) ||
-                other.username == username) &&
-            (identical(other.avatar_url, avatar_url) ||
-                other.avatar_url == avatar_url));
-  }
-
-  @JsonKey(ignore: true)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, activity_id, activity_owner, status, username, avatar_url);
 
   @JsonKey(ignore: true)
   @override
@@ -228,25 +213,30 @@ class _$PeopleHelpingInMyHelpRequestImpl
 abstract class _PeopleHelpingInMyHelpRequest
     implements PeopleHelpingInMyHelpRequest {
   factory _PeopleHelpingInMyHelpRequest(
-      {final int? activity_id,
-      required final String? activity_owner,
-      final bool? status,
-      final String? username,
-      final String? avatar_url}) = _$PeopleHelpingInMyHelpRequestImpl;
+      {int? activity_id,
+      required String? activity_owner,
+      bool? status,
+      String? username,
+      String? avatar_url}) = _$PeopleHelpingInMyHelpRequestImpl;
 
   factory _PeopleHelpingInMyHelpRequest.fromJson(Map<String, dynamic> json) =
       _$PeopleHelpingInMyHelpRequestImpl.fromJson;
 
   @override
   int? get activity_id;
+  set activity_id(int? value);
   @override // Change this to String
-  String? get activity_owner;
+  String? get activity_owner; // Change this to String
+  set activity_owner(String? value);
   @override
   bool? get status;
+  set status(bool? value);
   @override
   String? get username;
+  set username(String? value);
   @override
   String? get avatar_url;
+  set avatar_url(String? value);
   @override
   @JsonKey(ignore: true)
   _$$PeopleHelpingInMyHelpRequestImplCopyWith<

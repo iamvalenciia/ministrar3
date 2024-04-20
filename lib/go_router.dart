@@ -1,12 +1,10 @@
-import 'dart:developer' as developer;
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
-import 'provider/close_hrs_provider.dart';
-import 'provider/my_hr_provider.dart';
+import 'provider/activity_provider.dart';
+import 'provider/people_helping_provider.dart';
 import 'provider/user_provider.dart';
 import 'screens/form_create_help_request/screen.dart';
 import 'screens/form_edit_help_request/screen.dart';
@@ -16,8 +14,8 @@ import 'screens/help_request_for_owners/screen.dart';
 import 'screens/home/screen.dart';
 import 'screens/login/screen.dart';
 import 'screens/profile/screen.dart';
+import 'screens/settings/screent.dart';
 import 'services/google.dart';
-import 'services/supabase.dart';
 import 'utility_functions.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -38,7 +36,7 @@ final goRouter = GoRouter(
             appBarTitle = 'Help Request';
           } else if (state.fullPath ==
               '/help-request-for-owners/:helpRequestUserId') {
-            appBarTitle = 'Your Help Request';
+            appBarTitle = 'My Help Request';
           } else if (state.fullPath == '/') {
             appBarTitle = 'Ministrar';
           } else if (state.fullPath == '/login') {
@@ -51,6 +49,8 @@ final goRouter = GoRouter(
             appBarTitle = 'Create Help Request';
           } else if (state.fullPath == '/edit-help-request') {
             appBarTitle = 'Edit Help Request';
+          } else if (state.fullPath == '/settings') {
+            appBarTitle = 'Settings';
           }
           return BaseScaffold(
             externalBody: child,
@@ -100,7 +100,6 @@ final goRouter = GoRouter(
           createGoRoute(
             path: '/help-request-for-owners/:helpRequestUserId',
             childBuilder: (state) => HelpRequestForOwners(
-              helpRequestUserId: state.pathParameters['helpRequestUserId'],
               index: int.tryParse(state.pathParameters['index'] ?? '0') ?? 0,
             ),
           ),
@@ -130,6 +129,10 @@ final goRouter = GoRouter(
           createGoRoute(
             path: '/help-request-form',
             childBuilder: (state) => const HelpRequestFormScreen(),
+          ),
+          createGoRoute(
+            path: '/settings',
+            childBuilder: (state) => const SettingsScreen(),
           ),
         ]),
   ],
@@ -177,6 +180,8 @@ class CustomeNavigationDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.read<UserNotifier>();
+    final activityNotifier = context.read<ActivityNotifier>();
+    final peopleHelpingNotifier = context.read<PeopleHelpingNotifier>();
     return NavigationDrawer(
       children: <Widget>[
         DrawerHeader(
@@ -205,25 +210,41 @@ class CustomeNavigationDrawer extends StatelessWidget {
             title: const Text('Logout'),
             leading: const Icon(Icons.logout),
             onTap: () async {
-              try {
-                final googleService = await GoogleProvider.getGoogleSignIn();
-                await Future.wait([
-                  user.logout(),
-                  googleService.signOut(),
-                ]).then((value) {
-                  Navigator.pop(context);
-                  context.go('/login');
-                  checkPermissionsAndFetchRequests(context);
-                });
-              } catch (e) {
-                // Check for mounted state before UI interactions
-                if (!context.mounted) {
-                  return;
+              if (context.mounted) {
+                activityNotifier.clearIsHelping();
+                activityNotifier.clearHelpActivities();
+                activityNotifier.clearLastFourActivities();
+                peopleHelpingNotifier.clearPeopleHelping();
+                try {
+                  final googleService = await GoogleProvider.getGoogleSignIn();
+                  await Future.wait([
+                    user.logout(),
+                    googleService.signOut(),
+                  ]).then((value) {
+                    if (context.mounted) {
+                      // Check if context is still mounted
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+                      context.go('/login');
+                      checkPermissionsAndFetchRequests(context);
+                    }
+                  });
+                } catch (e) {
+                  showFlashError(context, 'Error - Logout Button: $e');
                 }
-                showFlashError(context, 'Error - Logout Button: $e');
               }
             },
           ),
+        ),
+        ListTile(
+          selectedColor: Theme.of(context).colorScheme.primary,
+          title: const Text('Settings'),
+          leading: const Icon(Icons.settings),
+          onTap: () {
+            Navigator.pop(context);
+            context.go('/settings');
+          },
         ),
       ],
     );

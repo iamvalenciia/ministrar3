@@ -32,6 +32,9 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
     final helpRequest = helpRequestsNotifier.helpRequests?.firstWhere(
         (r) => r.help_request_owner_id == widget.helpRequestUserId);
 
+    final bool? helped =
+        context.read<ActivityNotifier>().helped(helpRequest!.hr_id.toString());
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -41,9 +44,58 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  Visibility(
+                    visible: helpRequest.receive_help_at != null,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Card.outlined(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'The help request will be hidden 24 hours after assistance has been provided',
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .outline,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10), // Add some spacing
+                        Row(
+                          children: [
+                            Expanded(
+                              child: LinearProgressIndicator(
+                                value: helpRequest.receive_help_at == null
+                                    ? 0
+                                    : DateTime.now()
+                                            .difference(
+                                                helpRequest.receive_help_at!)
+                                            .inHours /
+                                        24,
+                              ),
+                            ),
+                            const SizedBox(width: 10), // Add some spacing
+                            Text(
+                              '${helpRequest.receive_help_at == null ? 0 : DateTime.now().difference(helpRequest.receive_help_at!).inHours}/24 hours',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Theme.of(context).colorScheme.outline),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                   ListTile(
                     title: Text(
-                      '@${helpRequest?.username}',
+                      '@${helpRequest.username}',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -54,13 +106,25 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                           child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Selector<HelpRequestsNotifier, double>(
-                              selector: (_, notifier) =>
-                                  notifier.distances![widget.index],
-                              builder: (_, distance, __) {
+                            child: Selector<HelpRequestsNotifier,
+                                ({double distance, bool unit})>(
+                              selector: (_, notifier) => (
+                                distance: notifier.distances![widget.index],
+                                unit: notifier.isDistanceInKilometers
+                              ),
+                              builder: (_, data, __) {
+                                final distance = data.distance;
+                                final isDistanceInKilometers = data.unit;
+                                developer.log('distance: $distance',
+                                    name: 'HelpRequestForHelpers');
+                                developer.log(
+                                    'isDistanceInKilometers: $isDistanceInKilometers',
+                                    name: 'HelpRequestForHelpers');
+                                final unit =
+                                    isDistanceInKilometers ? 'km' : 'mi';
                                 return Text(
                                   distance != 1.1
-                                      ? '${distance.toInt()} m'
+                                      ? '${distance.toInt()} $unit'
                                       : 'Calculating ...',
                                 );
                               },
@@ -70,9 +134,9 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                       ],
                     ),
                     leading: CircleAvatar(
-                      radius: 20,
+                      radius: 25,
                       backgroundImage: CachedNetworkImageProvider(
-                          '${helpRequest?.avatar_url}'),
+                          '${helpRequest.avatar_url}'),
                     ),
                     trailing: IconButton(
                       icon: const FaIcon(FontAwesomeIcons.earthAmericas),
@@ -81,66 +145,172 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                       },
                     ),
                   ),
-                  Card.outlined(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text('${helpRequest?.content}',
-                          style: const TextStyle(fontSize: 18)),
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('${helpRequest.content}',
+                        style: const TextStyle(fontSize: 18)),
                   ),
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Row(
+                    child: Column(
                       children: [
-                        Text(
-                          timeago.format(helpRequest!.inserted_at!),
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).colorScheme.outline),
-                        ),
-                        const SizedBox(width: 5),
-                        const Text('/'),
-                        const SizedBox(width: 5),
-                        Text(
-                          helpRequest.category.toString(),
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).colorScheme.outline),
-                        ),
-                        const SizedBox(width: 5),
-                        const Text('•'),
-                        const SizedBox(width: 5),
-                        Icon(
-                          Icons.people,
-                          size: 14,
-                          color: Theme.of(context).colorScheme.outline,
-                        ),
-                        const SizedBox(width: 5),
-                        Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: '100',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color:
-                                        Theme.of(context).colorScheme.outline,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: ' People Helping',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color:
-                                        Theme.of(context).colorScheme.outline,
-                                  ),
-                                ),
-                              ],
+                        Row(
+                          children: [
+                            Text(
+                              timeago.format(helpRequest.inserted_at!),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(context).colorScheme.outline),
                             ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                            const SizedBox(width: 5),
+                            const Text('/'),
+                            const SizedBox(width: 5),
+                            Text(
+                              helpRequest.category.toString(),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(context).colorScheme.outline),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.people,
+                              size: 14,
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                            const SizedBox(width: 5),
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    WidgetSpan(
+                                      child:
+                                          Selector<HelpRequestsNotifier, int?>(
+                                        selector: (_, helpRequestsNotifier) =>
+                                            helpRequestsNotifier.helpRequests!
+                                                .firstWhere((hr) =>
+                                                    hr.hr_id ==
+                                                    helpRequest.hr_id)
+                                                .people_helping_count,
+                                        builder:
+                                            (context, peopleHelpingCount, _) {
+                                          return Text(
+                                            '$peopleHelpingCount',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .outline,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    WidgetSpan(
+                                      child: Selector<HelpRequestsNotifier,
+                                          String>(
+                                        selector: (_, helpRequestsNotifier) {
+                                          final peopleHelpingCount =
+                                              helpRequestsNotifier.helpRequests!
+                                                  .firstWhere((hr) =>
+                                                      hr.hr_id ==
+                                                      helpRequest.hr_id)
+                                                  .people_helping_count;
+                                          return peopleHelpingCount == 1
+                                              ? ' Person helping'
+                                              : ' People helping';
+                                        },
+                                        builder: (context, helpingText, _) {
+                                          return Text(
+                                            helpingText,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .outline,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.people,
+                              size: 14,
+                              color: Theme.of(context).colorScheme.outline,
+                            ),
+                            const SizedBox(width: 5),
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  children: [
+                                    WidgetSpan(
+                                      child:
+                                          Selector<HelpRequestsNotifier, int?>(
+                                        selector: (_, helpRequestsNotifier) =>
+                                            helpRequestsNotifier.helpRequests!
+                                                .firstWhere((hr) =>
+                                                    hr.hr_id ==
+                                                    helpRequest.hr_id)
+                                                .people_provide_help_count,
+                                        builder: (context,
+                                            peopleProvideHelpCount, _) {
+                                          return Text(
+                                            '$peopleProvideHelpCount',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .outline,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    WidgetSpan(
+                                      child: Selector<HelpRequestsNotifier,
+                                          String>(
+                                        selector: (_, helpRequestsNotifier) {
+                                          final peopleProvideHelpCount =
+                                              helpRequestsNotifier.helpRequests!
+                                                  .firstWhere((hr) =>
+                                                      hr.hr_id ==
+                                                      helpRequest.hr_id)
+                                                  .people_provide_help_count;
+                                          return peopleProvideHelpCount == 1
+                                              ? ' Person provided help'
+                                              : ' People provided help';
+                                        },
+                                        builder: (context, helpingText, _) {
+                                          return Text(
+                                            helpingText,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .outline,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -148,186 +318,242 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                 ],
               ),
             ),
-            Row(
-              children: [
-                const SizedBox(width: 1),
-                Expanded(
-                  child: Selector<ActivityNotifier, bool>(
-                    selector: (_, activityNotifier) => activityNotifier
-                        .isHelping(helpRequest.help_request_owner_id),
-                    builder: (context, isHelping, _) {
-                      return ElevatedButton(
-                        onPressed: userId != null
-                            ? () {
-                                if (isHelping) {
-                                  Provider.of<ActivityNotifier>(context,
-                                          listen: false)
-                                      .removeMyHelpActivity(
-                                          helpRequest.help_request_owner_id);
-                                  developer.log(
-                                      helpRequest.help_request_owner_id,
-                                      name: 'removeMyHelpActivity');
-                                } else {
-                                  Provider.of<ActivityNotifier>(context,
-                                          listen: false)
-                                      .createHelpActivity(
-                                          helpRequest.help_request_owner_id);
-                                }
-                              }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: isHelping && userId != null
-                            ? Text(
-                                'Cancel Help',
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.error,
-                                  overflow: TextOverflow.ellipsis,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                            : const Text(
-                                'Help',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                      );
-                    },
+            Visibility(visible: helped != null, child: const Divider()),
+            Visibility(
+              visible: helped == true,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Thank you for your help!',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ],
+              ),
             ),
-            const SizedBox(height: 10),
-            Selector<ActivityNotifier, bool>(
-              selector: (_, activityNotifier) =>
-                  activityNotifier.isHelping(helpRequest.help_request_owner_id),
-              builder: (context, isHelping, _) {
-                return Visibility(
-                  visible: isHelping,
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Please use the following contact information to coordinate the help',
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.outline,
-                                    overflow: TextOverflow.fade),
+            Visibility(
+              visible: helped == false,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Thank you for trying to help!',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.outline,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            Visibility(
+              visible: helped == null,
+              child: Row(
+                children: [
+                  const SizedBox(width: 1),
+                  Expanded(
+                    child: Selector<ActivityNotifier, bool>(
+                      selector: (_, activityNotifier) => activityNotifier
+                          .isHelping(helpRequest.hr_id.toString()),
+                      builder: (context, isHelping, _) {
+                        return ElevatedButton(
+                          onPressed: userId != null
+                              ? () {
+                                  if (isHelping) {
+                                    developer.log(
+                                        'helpRequest.hr_id: ${helpRequest.hr_id}',
+                                        name: 'removeMyHelpActivity');
+                                    context
+                                        .read<ActivityNotifier>()
+                                        .removeMyHelpActivity(
+                                          helpRequest.hr_id,
+                                        );
+                                    helpRequestsNotifier
+                                        .decrementPeopleHelpingCount(
+                                      helpRequest.hr_id,
+                                    );
+                                    developer.log(
+                                        helpRequest.help_request_owner_id,
+                                        name: 'removeMyHelpActivity');
+                                  } else {
+                                    context
+                                        .read<ActivityNotifier>()
+                                        .createHelpActivity(helpRequest.hr_id,
+                                            helpRequest.help_request_owner_id);
+                                    helpRequestsNotifier
+                                        .incrementPeopleHelpingCount(
+                                      helpRequest.hr_id,
+                                    );
+                                  }
+                                }
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: isHelping && userId != null
+                              ? Text(
+                                  'Cancel Help',
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.error,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              : const Text(
+                                  'Help',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Visibility(
+              visible: helped == null,
+              child: Selector<ActivityNotifier, bool>(
+                selector: (_, activityNotifier) =>
+                    activityNotifier.isHelping(helpRequest.hr_id.toString()),
+                builder: (context, isHelping, _) {
+                  return Visibility(
+                    visible: isHelping,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Please use the following contact information to coordinate the help',
+                                  style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                      overflow: TextOverflow.fade),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Card.outlined(
+                          child: DefaultTabController(
+                            length: 3,
+                            child: SizedBox(
+                              height: 120,
+                              child: Column(
+                                children: [
+                                  const TabBar(
+                                    tabs: [
+                                      Tab(icon: Icon(Icons.phone)),
+                                      Tab(
+                                          icon: FaIcon(
+                                              FontAwesomeIcons.xTwitter)),
+                                      Tab(
+                                          icon: FaIcon(
+                                              FontAwesomeIcons.instagram)),
+                                    ],
+                                  ),
+                                  Expanded(
+                                    child: TabBarView(
+                                      children: [
+                                        // Phone Number Tab
+                                        ListTile(
+                                          title: const Text(
+                                            'Phone Number',
+                                          ),
+                                          subtitle: const Text(
+                                            '0994732982',
+                                            style: TextStyle(
+                                                overflow: TextOverflow.fade),
+                                          ),
+                                          trailing: IconButton(
+                                            icon: const Icon(Icons.copy),
+                                            onPressed: () {
+                                              Clipboard.setData(
+                                                  const ClipboardData(
+                                                      text: '0994732982'));
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Phone number copied to clipboard'),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        ListTile(
+                                          title: const Text(
+                                            'X Twitter',
+                                          ),
+                                          subtitle: const Text(
+                                            'iamvalencia4',
+                                            style: TextStyle(
+                                                overflow: TextOverflow.fade),
+                                          ),
+                                          trailing: IconButton(
+                                            icon: const Icon(Icons.copy),
+                                            onPressed: () {
+                                              Clipboard.setData(
+                                                  const ClipboardData(
+                                                      text: '0994732982'));
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Phone number copied to clipboard'),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        ListTile(
+                                          title: const Text(
+                                            'Instagram',
+                                          ),
+                                          subtitle: const Text(
+                                            'iamvalenci4',
+                                            style: TextStyle(
+                                                overflow: TextOverflow.fade),
+                                          ),
+                                          trailing: IconButton(
+                                            icon: const Icon(Icons.copy),
+                                            onPressed: () {
+                                              Clipboard.setData(
+                                                  const ClipboardData(
+                                                      text: '0994732982'));
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Phone number copied to clipboard'),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        // Other tabs content here
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      DefaultTabController(
-                        length: 3,
-                        child: SizedBox(
-                          height: 500,
-                          child: Column(
-                            children: [
-                              const TabBar(
-                                tabs: [
-                                  Tab(icon: Icon(Icons.phone)),
-                                  Tab(icon: FaIcon(FontAwesomeIcons.xTwitter)),
-                                  Tab(icon: FaIcon(FontAwesomeIcons.instagram)),
-                                ],
-                              ),
-                              Expanded(
-                                child: TabBarView(
-                                  children: [
-                                    // Phone Number Tab
-                                    ListTile(
-                                      title: const Text(
-                                        'Phone Number',
-                                      ),
-                                      subtitle: const Text(
-                                        '0994732982',
-                                        style: TextStyle(
-                                            overflow: TextOverflow.fade),
-                                      ),
-                                      trailing: IconButton(
-                                        icon: const Icon(Icons.copy),
-                                        onPressed: () {
-                                          Clipboard.setData(const ClipboardData(
-                                              text: '0994732982'));
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                  'Phone number copied to clipboard'),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    ListTile(
-                                      title: const Text(
-                                        'X Twitter',
-                                      ),
-                                      subtitle: const Text(
-                                        'iamvalencia4',
-                                        style: TextStyle(
-                                            overflow: TextOverflow.fade),
-                                      ),
-                                      trailing: IconButton(
-                                        icon: const Icon(Icons.copy),
-                                        onPressed: () {
-                                          Clipboard.setData(const ClipboardData(
-                                              text: '0994732982'));
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                  'Phone number copied to clipboard'),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    ListTile(
-                                      title: const Text(
-                                        'Instagram',
-                                      ),
-                                      subtitle: const Text(
-                                        'iamvalenci4',
-                                        style: TextStyle(
-                                            overflow: TextOverflow.fade),
-                                      ),
-                                      trailing: IconButton(
-                                        icon: const Icon(Icons.copy),
-                                        onPressed: () {
-                                          Clipboard.setData(const ClipboardData(
-                                              text: '0994732982'));
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                  'Phone number copied to clipboard'),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    // Other tabs content here
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),

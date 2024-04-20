@@ -11,8 +11,10 @@ import '../services/supabase.dart';
 class UserNotifier extends ChangeNotifier {
   UserModel? _user;
   bool _isLoading = false;
+  int _peopleHelped = 0;
 
   bool get isLoading => _isLoading;
+  int get peopleHelped => _peopleHelped;
   UserModel? get user => _user;
   bool get isUserLoggedIn => supabase.auth.currentUser != null;
 
@@ -65,12 +67,28 @@ class UserNotifier extends ChangeNotifier {
       developer.log('Fetching from profiles table',
           error: data.toString(), name: 'UserModel provider');
 
+      fetchPeopleHelped();
+
       _user = UserModel.fromJson(data);
     } catch (error) {
       developer.log(
         'An error occurred during Google Sign In',
         error: error,
       );
+    }
+  }
+
+  Future<void> fetchPeopleHelped() async {
+    try {
+      final userId = supabase.auth.currentUser?.id;
+      final response =
+          await supabase.rpc('get_total_people_helped_count', params: {
+        'query_user_id': userId,
+      });
+
+      _peopleHelped = response as int;
+    } catch (error) {
+      developer.log('An error occurred during Google Sign In', error: error);
     }
   }
 

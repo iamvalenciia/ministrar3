@@ -44,11 +44,12 @@ class MyHelpRequestNotifier extends ChangeNotifier {
       final double helpRequestLat = _myHelpRequest!.lat ?? 0.0;
       final double helpRequestLong = _myHelpRequest!.long ?? 0.0;
       _distance = Geolocator.distanceBetween(
-        userLat,
-        userLong,
-        helpRequestLat,
-        helpRequestLong,
-      );
+            userLat,
+            userLong,
+            helpRequestLat,
+            helpRequestLong,
+          ) /
+          1000; // Convert meters to kilometers
     }
 
     notifyListeners();
@@ -67,7 +68,7 @@ class MyHelpRequestNotifier extends ChangeNotifier {
         'f_user_id': userId,
       });
 
-      if (response is List) {
+      if (response is List && response.isNotEmpty) {
         final List<HelpRequestModel> helpRequests = response.map((item) {
           if (item is Map<String, dynamic>) {
             return HelpRequestModel.fromJson(item);
@@ -75,16 +76,14 @@ class MyHelpRequestNotifier extends ChangeNotifier {
           throw TypeError();
         }).toList();
 
-        developer.log('fetchMyHelpRequest',
-            error: helpRequests[0], name: 'fetchMyHelpRequest');
+        developer.log(helpRequests[0].toString(), name: 'fetchMyHelpRequest');
 
         _myHelpRequest = helpRequests[0];
       } else {
-        throw TypeError();
+        developer.log(response.toString(), name: 'fetchMyHelpRequest');
       }
     } catch (e) {
-      developer.log(' fetchMyHelpRequest ERROR',
-          error: e, name: ' fetchMyHelpRequest ERROR');
+      developer.log(e.toString(), name: ' fetchMyHelpRequest ERROR');
       _error = e.toString();
     } finally {
       isFirstLoad = false;
@@ -102,7 +101,7 @@ class MyHelpRequestNotifier extends ChangeNotifier {
       final String? userId = supabase.auth.currentUser?.id;
       final response = await supabase
           .rpc('create_hr_and_activity', params: <String, dynamic>{
-        'p_user_id': userId,
+        'p_help_request_owner_id': userId,
         'p_category': category,
         'p_content': content,
         'p_latitude': latitude,
@@ -120,8 +119,7 @@ class MyHelpRequestNotifier extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      developer.log('createMyHelpRequest ERROR',
-          error: e, name: 'createMyHelpRequest ERROR');
+      developer.log(e.toString(), name: 'createMyHelpRequest ERROR');
       _error = e.toString();
     }
     return false;
@@ -137,15 +135,14 @@ class MyHelpRequestNotifier extends ChangeNotifier {
       await supabase.from('help_requests').update(<String, dynamic>{
         'category': category,
         'content': content,
-      }).eq('user_id', userId);
+      }).eq('help_request_owner_id', userId);
 
       _myHelpRequest?.category = category;
       _myHelpRequest?.content = content;
       notifyListeners();
       return true;
     } catch (e) {
-      developer.log('updateMyHelpRequest ERROR',
-          error: e, name: 'updateMyHelpRequest ERROR');
+      developer.log(e.toString(), name: 'updateMyHelpRequest ERROR');
       _error = e.toString();
     }
     return false;
@@ -156,14 +153,17 @@ class MyHelpRequestNotifier extends ChangeNotifier {
     // will delete all activities where status is either null or false
     try {
       final String? userId = supabase.auth.currentUser?.id;
+      developer.log('p_user_id: $userId', name: 'delete_hr_and_activity');
+      developer.log('_myHelpRequest?.hr_id: ${_myHelpRequest?.hr_id}',
+          name: 'delete_hr_and_activity');
       await supabase.rpc('delete_hr_and_activity', params: <String, dynamic>{
         'p_user_id': userId,
+        'p_hr_id': _myHelpRequest?.hr_id,
       });
 
       return true;
     } catch (e) {
-      developer.log('deleteMyHelpRequest ERROR',
-          error: e, name: 'deleteMyHelpRequest ERROR');
+      developer.log(e.toString(), name: 'deleteMyHelpRequest ERROR');
       _error = e.toString();
     }
     return false;
@@ -171,6 +171,11 @@ class MyHelpRequestNotifier extends ChangeNotifier {
 
   void clearHelpRequest() {
     _myHelpRequest = null;
+    notifyListeners();
+  }
+
+  void updateReceiveHelpAt() {
+    _myHelpRequest?.receive_help_at = DateTime.now();
     notifyListeners();
   }
 }

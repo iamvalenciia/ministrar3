@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
@@ -27,28 +25,22 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   static bool _isFirstLoad = true;
 
   Future<void> fetchData() async {
-    developer.log('Fetching data', name: 'HomeScreenBody');
     final UserNotifier userNotifier =
         Provider.of<UserNotifier>(context, listen: false);
     final ActivityNotifier activityNotifier =
         Provider.of<ActivityNotifier>(context, listen: false);
 
     Geolocator.checkPermission().then((value) {
-      developer.log('Permission status: $value', name: 'HelpRequestsNotifier');
       if (value == LocationPermission.whileInUse ||
           value == LocationPermission.always) {
-        developer.log('before declare the help request notifier');
         final HelpRequestsNotifier helpRequestsNotifier =
             Provider.of<HelpRequestsNotifier>(context, listen: false);
-        developer.log('before declare the MY HELP REQUEST NOTIFIER');
         final MyHelpRequestNotifier myHelpRequestNotifier =
             Provider.of<MyHelpRequestNotifier>(context, listen: false);
         final PeopleHelpingNotifier peopleHelpingNotifier =
             Provider.of<PeopleHelpingNotifier>(context, listen: false);
 
-        developer.log('before fetch help request');
         helpRequestsNotifier.fetchHelpRequests();
-        developer.log('before fetch My help request');
         myHelpRequestNotifier.fetchMyHelpRequest();
         peopleHelpingNotifier.fetchPeopleHelpingInMyHelpRequest();
       }
@@ -57,8 +49,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
     if (supabase.auth.currentUser?.id != null) {
       await Future.wait([
         userNotifier.fetchUserProfile(),
-        activityNotifier.activities(),
-        activityNotifier.fetchMyHelpActivities(),
+        activityNotifier.fetchTheLastFourActivities(),
+        activityNotifier.fetchHelpActivities(),
       ]);
     }
   }
@@ -78,7 +70,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
 
   @override
   Widget build(BuildContext context) {
-    developer.log('Building HomeScreenBody');
     final locationPermissionNotifier =
         Provider.of<LocationPermissionNotifier>(context);
     final UserNotifier userNotifier = context.watch<UserNotifier>();
