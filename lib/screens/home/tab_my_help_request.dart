@@ -31,12 +31,19 @@ class MyHelpRequest extends StatelessWidget {
                   username.toString(),
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Selector<MyHelpRequestNotifier, double>(
-                  selector: (_, notifier) => notifier.distance ?? 1.1,
-                  builder: (_, distance, __) {
+                subtitle: Selector<MyHelpRequestNotifier,
+                    ({double distance, bool unit})>(
+                  selector: (_, notifier) => (
+                    distance: notifier.distance!,
+                    unit: notifier.isDistanceInKilometers
+                  ),
+                  builder: (_, data, __) {
+                    final distance = data.distance;
+                    final isDistanceInKilometers = data.unit;
+                    final unit = isDistanceInKilometers ? 'km' : 'mi';
                     return Text(
                       distance != 1.1
-                          ? '${distance.toInt()} Km'
+                          ? '${distance.toInt()} $unit'
                           : 'Calculating ...',
                     );
                   },

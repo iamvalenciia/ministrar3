@@ -96,15 +96,21 @@ class HelpRequestsList extends StatelessWidget {
                                   '@$userName',
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                Selector<HelpRequestsNotifier, double>(
-                                  selector: (_, notifier) =>
-                                      notifier.distances?[index] ?? 1.1,
-                                  builder: (_, distance, __) {
+                                Selector<HelpRequestsNotifier,
+                                    ({double distance, bool unit})>(
+                                  selector: (_, notifier) => (
+                                    distance: notifier.distances![index],
+                                    unit: notifier.isDistanceInKilometers
+                                  ),
+                                  builder: (_, data, __) {
+                                    final distance = data.distance;
+                                    final isDistanceInKilometers = data.unit;
+                                    final unit =
+                                        isDistanceInKilometers ? 'km' : 'mi';
                                     return Text(
                                       distance != 1.1
-                                          ? '${distance.toInt()} Km'
+                                          ? '${distance.toInt()} $unit'
                                           : 'Calculating ...',
-                                      overflow: TextOverflow.ellipsis,
                                     );
                                   },
                                 ),

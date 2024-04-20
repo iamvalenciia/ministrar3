@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/help_requests_model/help_request_model.dart';
 import '../services/supabase.dart';
@@ -14,6 +15,7 @@ class HelpRequestsNotifier extends ChangeNotifier {
   // It starts listening to the position stream from the Geolocator.
   // Whenever the position updates, it calls the _updateDistances method.
   HelpRequestsNotifier() {
+    _loadDistancePreference();
     _positionStreamSubscription = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(),
     ).listen(_updateDistances);
@@ -63,8 +65,16 @@ class HelpRequestsNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void switchDistanceUnit() {
+  Future<void> _loadDistancePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    _isDistanceInKilometers = prefs.getBool('isDistanceInKilometers') ?? true;
+    notifyListeners();
+  }
+
+  Future<void> switchDistanceUnit() async {
     _isDistanceInKilometers = !_isDistanceInKilometers;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDistanceInKilometers', _isDistanceInKilometers);
     notifyListeners(); // Notify listeners to update the UI
   }
 

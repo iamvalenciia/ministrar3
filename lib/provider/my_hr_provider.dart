@@ -1,18 +1,14 @@
 import 'dart:async';
 import 'dart:developer' as developer;
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/help_requests_model/help_request_model.dart';
 import '../services/supabase.dart';
 
-//---------------------------
-// MY HELP REQUEST NOTIFIER
-//---------------------------
-
 class MyHelpRequestNotifier extends ChangeNotifier {
   MyHelpRequestNotifier() {
+    _loadDistancePreference();
     _positionStreamSubscription = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(),
     ).listen(_updateDistance);
@@ -24,11 +20,13 @@ class MyHelpRequestNotifier extends ChangeNotifier {
   bool isFirstLoad = true;
   String? _error;
   StreamSubscription<Position>? _positionStreamSubscription;
+  bool _isDistanceInKilometers = true;
 
   HelpRequestModel? get myHelpRequest => _myHelpRequest;
   double? get distance => _distance;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  bool get isDistanceInKilometers => _isDistanceInKilometers;
 
   @override
   void dispose() {
@@ -50,9 +48,28 @@ class MyHelpRequestNotifier extends ChangeNotifier {
             helpRequestLong,
           ) /
           1000; // Convert meters to kilometers
+
+      // Convert to miles if _isDistanceInKilometers is false
+      if (!_isDistanceInKilometers) {
+        _distance = _distance! *
+            0.621371; // 1 kilometer is approximately 0.621371 miles
+      }
     }
 
     notifyListeners();
+  }
+
+  Future<void> _loadDistancePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    _isDistanceInKilometers = prefs.getBool('isDistanceInKilometers') ?? true;
+    notifyListeners();
+  }
+
+  Future<void> switchDistanceUnit() async {
+    _isDistanceInKilometers = !_isDistanceInKilometers;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDistanceInKilometers', _isDistanceInKilometers);
+    notifyListeners(); // Notify listeners to update the UI
   }
 
   Future<void> fetchMyHelpRequest() async {

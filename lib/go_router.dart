@@ -203,6 +203,15 @@ class CustomeNavigationDrawer extends StatelessWidget {
             },
           ),
         ),
+        ListTile(
+          selectedColor: Theme.of(context).colorScheme.primary,
+          title: const Text('Settings'),
+          leading: const Icon(Icons.settings),
+          onTap: () {
+            Navigator.pop(context);
+            context.go('/settings');
+          },
+        ),
         Selector<UserNotifier, bool>(
           selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
           builder: (_, userExist, __) => ListTile(
@@ -236,15 +245,6 @@ class CustomeNavigationDrawer extends StatelessWidget {
               }
             },
           ),
-        ),
-        ListTile(
-          selectedColor: Theme.of(context).colorScheme.primary,
-          title: const Text('Settings'),
-          leading: const Icon(Icons.settings),
-          onTap: () {
-            Navigator.pop(context);
-            context.go('/settings');
-          },
         ),
       ],
     );

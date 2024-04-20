@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart' as provider; // Import Provider
 
@@ -10,8 +9,9 @@ import 'provider/km_mi_notifier.dart';
 import 'provider/location_permission.dart';
 import 'provider/my_hr_provider.dart';
 import 'provider/people_helping_provider.dart';
+import 'provider/theme_provider.dart';
 import 'provider/user_provider.dart';
-import 'services/supabase.dart';
+import 'services/supabase.dart'; // Import ThemeNotifier
 
 Future<void> main() async {
   await initializeSupabase();
@@ -32,18 +32,16 @@ class _MyAppState extends State<MyApp> {
         GlobalKey<ScaffoldMessengerState>();
     return provider.MultiProvider(
       providers: providers,
-      child: MaterialApp.router(
-        scaffoldMessengerKey: scaffoldKey,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          fontFamily: GoogleFonts.notoSans().fontFamily,
-          colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.teal, brightness: Brightness.light),
-          useMaterial3: true,
-        ),
-        routerConfig: goRouter,
-        debugShowCheckedModeBanner: false,
-      ),
+      builder: (context, child) {
+        return MaterialApp.router(
+            scaffoldMessengerKey: scaffoldKey,
+            title: 'Flutter Demo',
+            routerConfig: goRouter,
+            debugShowCheckedModeBanner: false,
+            theme: provider.Provider.of<ThemeProvider>(context)
+                .themeDataStyle // Add dark theme
+            );
+      },
     );
   }
 }
@@ -59,4 +57,5 @@ final providers = <SingleChildWidget>[
   provider.ChangeNotifierProvider(create: (_) => LocationPermissionNotifier()),
   provider.ChangeNotifierProvider(create: (_) => PeopleHelpingNotifier()),
   provider.ChangeNotifierProvider(create: (_) => DistanceUnitNotifier()),
+  provider.ChangeNotifierProvider(create: (_) => ThemeProvider()),
 ];
