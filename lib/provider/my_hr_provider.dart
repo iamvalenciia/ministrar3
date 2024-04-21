@@ -109,7 +109,13 @@ class MyHelpRequestNotifier extends ChangeNotifier {
     }
   }
 
-  Future<bool> createMyHelpRequest(String category, String content) async {
+  Future<bool> createMyHelpRequest(
+      String category,
+      String content,
+      String phone,
+      String xTwitter,
+      String instagram,
+      bool locationSharingEnable) async {
     developer.log(category, name: 'category');
     try {
       final Position position = await Geolocator.getCurrentPosition();
@@ -123,6 +129,10 @@ class MyHelpRequestNotifier extends ChangeNotifier {
         'p_content': content,
         'p_latitude': latitude,
         'p_longitude': longitude,
+        'p_phone': phone,
+        'p_twitter': xTwitter,
+        'p_instagram': instagram,
+        'p_location_sharing_enable': locationSharingEnable,
       });
 
       developer.log('createMyHelpRequest',
@@ -142,20 +152,42 @@ class MyHelpRequestNotifier extends ChangeNotifier {
     return false;
   }
 
-  Future<bool> updateMyHelpRequest(String category, String content) async {
+  Future<bool> updateMyHelpRequest(
+    String category,
+    String content,
+    String? phone,
+    String? xTwitter,
+    String? instagram,
+    bool locationSharingEnable,
+  ) async {
     try {
       final String? userId = supabase.auth.currentUser?.id;
       if (userId == null) {
         return false;
       }
 
+      // Assign null to phone, xTwitter, and instagram if they are empty
+      phone = phone?.isNotEmpty ?? false ? phone : null;
+      xTwitter = xTwitter?.isNotEmpty ?? false ? xTwitter : null;
+      instagram = instagram?.isNotEmpty ?? false ? instagram : null;
+
       await supabase.from('help_requests').update(<String, dynamic>{
         'category': category,
         'content': content,
+        'phone_number': phone,
+        'x_username': xTwitter,
+        'instagram_username': instagram,
+        'location_sharing_enabled': locationSharingEnable,
       }).eq('help_request_owner_id', userId);
 
+      // Update local data
       _myHelpRequest?.category = category;
       _myHelpRequest?.content = content;
+      _myHelpRequest?.phone_number = phone;
+      _myHelpRequest?.x_username = xTwitter;
+      _myHelpRequest?.instagram_username = instagram;
+      _myHelpRequest?.location_sharing_enabled = locationSharingEnable;
+
       notifyListeners();
       return true;
     } catch (e) {

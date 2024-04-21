@@ -156,7 +156,7 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
                               child: Selector<MyHelpRequestNotifier,
                                   ({double distance, bool unit})>(
                                 selector: (_, notifier) => (
-                                  distance: notifier.distance!,
+                                  distance: notifier.distance ?? 1.1,
                                   unit: notifier.isDistanceInKilometers
                                 ),
                                 builder: (_, data, __) {

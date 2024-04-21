@@ -43,6 +43,8 @@ mixin _$HelpRequestModel {
   bool? get location_sharing_enabled => throw _privateConstructorUsedError;
   set location_sharing_enabled(bool? value) =>
       throw _privateConstructorUsedError;
+  String? get phone_number => throw _privateConstructorUsedError;
+  set phone_number(String? value) => throw _privateConstructorUsedError;
   String? get x_username => throw _privateConstructorUsedError;
   set x_username(String? value) => throw _privateConstructorUsedError;
   String? get instagram_username => throw _privateConstructorUsedError;
@@ -77,6 +79,7 @@ abstract class $HelpRequestModelCopyWith<$Res> {
       String? username,
       String? avatar_url,
       bool? location_sharing_enabled,
+      String? phone_number,
       String? x_username,
       String? instagram_username,
       int? people_helping_count,
@@ -107,6 +110,7 @@ class _$HelpRequestModelCopyWithImpl<$Res, $Val extends HelpRequestModel>
     Object? username = freezed,
     Object? avatar_url = freezed,
     Object? location_sharing_enabled = freezed,
+    Object? phone_number = freezed,
     Object? x_username = freezed,
     Object? instagram_username = freezed,
     Object? people_helping_count = freezed,
@@ -157,6 +161,10 @@ class _$HelpRequestModelCopyWithImpl<$Res, $Val extends HelpRequestModel>
           ? _value.location_sharing_enabled
           : location_sharing_enabled // ignore: cast_nullable_to_non_nullable
               as bool?,
+      phone_number: freezed == phone_number
+          ? _value.phone_number
+          : phone_number // ignore: cast_nullable_to_non_nullable
+              as String?,
       x_username: freezed == x_username
           ? _value.x_username
           : x_username // ignore: cast_nullable_to_non_nullable
@@ -197,6 +205,7 @@ abstract class _$$HelpRequestModelImplCopyWith<$Res>
       String? username,
       String? avatar_url,
       bool? location_sharing_enabled,
+      String? phone_number,
       String? x_username,
       String? instagram_username,
       int? people_helping_count,
@@ -225,6 +234,7 @@ class __$$HelpRequestModelImplCopyWithImpl<$Res>
     Object? username = freezed,
     Object? avatar_url = freezed,
     Object? location_sharing_enabled = freezed,
+    Object? phone_number = freezed,
     Object? x_username = freezed,
     Object? instagram_username = freezed,
     Object? people_helping_count = freezed,
@@ -275,6 +285,10 @@ class __$$HelpRequestModelImplCopyWithImpl<$Res>
           ? _value.location_sharing_enabled
           : location_sharing_enabled // ignore: cast_nullable_to_non_nullable
               as bool?,
+      phone_number: freezed == phone_number
+          ? _value.phone_number
+          : phone_number // ignore: cast_nullable_to_non_nullable
+              as String?,
       x_username: freezed == x_username
           ? _value.x_username
           : x_username // ignore: cast_nullable_to_non_nullable
@@ -310,6 +324,7 @@ class _$HelpRequestModelImpl implements _HelpRequestModel {
       this.username,
       this.avatar_url,
       this.location_sharing_enabled,
+      this.phone_number,
       this.x_username,
       this.instagram_username,
       this.people_helping_count,
@@ -341,6 +356,8 @@ class _$HelpRequestModelImpl implements _HelpRequestModel {
   @override
   bool? location_sharing_enabled;
   @override
+  String? phone_number;
+  @override
   String? x_username;
   @override
   String? instagram_username;
@@ -351,7 +368,7 @@ class _$HelpRequestModelImpl implements _HelpRequestModel {
 
   @override
   String toString() {
-    return 'HelpRequestModel(hr_id: $hr_id, help_request_owner_id: $help_request_owner_id, category: $category, content: $content, inserted_at: $inserted_at, receive_help_at: $receive_help_at, lat: $lat, long: $long, username: $username, avatar_url: $avatar_url, location_sharing_enabled: $location_sharing_enabled, x_username: $x_username, instagram_username: $instagram_username, people_helping_count: $people_helping_count, people_provide_help_count: $people_provide_help_count)';
+    return 'HelpRequestModel(hr_id: $hr_id, help_request_owner_id: $help_request_owner_id, category: $category, content: $content, inserted_at: $inserted_at, receive_help_at: $receive_help_at, lat: $lat, long: $long, username: $username, avatar_url: $avatar_url, location_sharing_enabled: $location_sharing_enabled, phone_number: $phone_number, x_username: $x_username, instagram_username: $instagram_username, people_helping_count: $people_helping_count, people_provide_help_count: $people_provide_help_count)';
   }
 
   @JsonKey(ignore: true)
@@ -382,6 +399,7 @@ abstract class _HelpRequestModel implements HelpRequestModel {
       String? username,
       String? avatar_url,
       bool? location_sharing_enabled,
+      String? phone_number,
       String? x_username,
       String? instagram_username,
       int? people_helping_count,
@@ -423,6 +441,9 @@ abstract class _HelpRequestModel implements HelpRequestModel {
   @override
   bool? get location_sharing_enabled;
   set location_sharing_enabled(bool? value);
+  @override
+  String? get phone_number;
+  set phone_number(String? value);
   @override
   String? get x_username;
   set x_username(String? value);

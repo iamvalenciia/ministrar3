@@ -10,12 +10,11 @@ import 'package:timeago/timeago.dart' as timeago;
 import '../../provider/activity_provider.dart';
 import '../../provider/close_hrs_provider.dart';
 import '../../services/supabase.dart';
+import '../../utility_functions.dart';
 
 class HelpRequestForHelpers extends StatefulWidget {
-  HelpRequestForHelpers(
-      {super.key, required this.helpRequestUserId, required this.index});
+  HelpRequestForHelpers({super.key, required this.helpRequestUserId});
   final String? helpRequestUserId;
-  final int index;
 
   @override
   State<HelpRequestForHelpers> createState() => _HelpRequestForHelpersState();
@@ -31,9 +30,70 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
 
     final helpRequest = helpRequestsNotifier.helpRequests?.firstWhere(
         (r) => r.help_request_owner_id == widget.helpRequestUserId);
-
+    final index = helpRequestsNotifier.helpRequests?.indexWhere(
+        (r) => r.help_request_owner_id == widget.helpRequestUserId);
     final bool? helped =
         context.read<ActivityNotifier>().helped(helpRequest!.hr_id.toString());
+
+    final List<Widget> tabs = [];
+    final List<Widget> tabViews = [];
+
+    if (helpRequest.phone_number != null) {
+      tabs.add(const Tab(icon: Icon(Icons.phone)));
+      tabViews.add(
+        ListTile(
+          title: const Text('Phone Number'),
+          subtitle: Text(helpRequest.phone_number!,
+              style: const TextStyle(overflow: TextOverflow.fade)),
+          trailing: IconButton(
+            icon: const Icon(Icons.copy),
+            onPressed: () {
+              Clipboard.setData(
+                  ClipboardData(text: helpRequest.phone_number.toString()));
+              showFlashSuccess(context, 'Phone number copied to clipboard');
+            },
+          ),
+        ),
+      );
+    }
+
+    if (helpRequest.x_username != null) {
+      tabs.add(const Tab(icon: FaIcon(FontAwesomeIcons.xTwitter)));
+      tabViews.add(
+        ListTile(
+          title: const Text('X Twitter'),
+          subtitle: Text(helpRequest.x_username!,
+              style: const TextStyle(overflow: TextOverflow.fade)),
+          trailing: IconButton(
+            icon: const Icon(Icons.copy),
+            onPressed: () {
+              Clipboard.setData(
+                  ClipboardData(text: helpRequest.x_username.toString()));
+              showFlashSuccess(context, 'Phone number copied to clipboard');
+            },
+          ),
+        ),
+      );
+    }
+
+    if (helpRequest.instagram_username != null) {
+      tabs.add(const Tab(icon: Icon(FontAwesomeIcons.instagram)));
+      tabViews.add(
+        ListTile(
+          title: const Text('Instagram'),
+          subtitle: Text(helpRequest.instagram_username!,
+              style: const TextStyle(overflow: TextOverflow.fade)),
+          trailing: IconButton(
+            icon: const Icon(Icons.copy),
+            onPressed: () {
+              Clipboard.setData(ClipboardData(
+                  text: helpRequest.instagram_username.toString()));
+              showFlashSuccess(context, 'Phone number copied to clipboard');
+            },
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -109,17 +169,12 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                             child: Selector<HelpRequestsNotifier,
                                 ({double distance, bool unit})>(
                               selector: (_, notifier) => (
-                                distance: notifier.distances![widget.index],
+                                distance: notifier.distances![index!],
                                 unit: notifier.isDistanceInKilometers
                               ),
                               builder: (_, data, __) {
                                 final distance = data.distance;
                                 final isDistanceInKilometers = data.unit;
-                                developer.log('distance: $distance',
-                                    name: 'HelpRequestForHelpers');
-                                developer.log(
-                                    'isDistanceInKilometers: $isDistanceInKilometers',
-                                    name: 'HelpRequestForHelpers');
                                 final unit =
                                     isDistanceInKilometers ? 'km' : 'mi';
                                 return Text(
@@ -139,7 +194,10 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                           '${helpRequest.avatar_url}'),
                     ),
                     trailing: IconButton(
-                      icon: const FaIcon(FontAwesomeIcons.earthAmericas),
+                      icon: FaIcon(
+                        FontAwesomeIcons.treeCity,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                       onPressed: () {
                         // ...
                       },
@@ -445,104 +503,16 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                         const SizedBox(height: 10),
                         Card.outlined(
                           child: DefaultTabController(
-                            length: 3,
+                            length: tabs.length,
                             child: SizedBox(
                               height: 120,
                               child: Column(
                                 children: [
-                                  const TabBar(
-                                    tabs: [
-                                      Tab(icon: Icon(Icons.phone)),
-                                      Tab(
-                                          icon: FaIcon(
-                                              FontAwesomeIcons.xTwitter)),
-                                      Tab(
-                                          icon: FaIcon(
-                                              FontAwesomeIcons.instagram)),
-                                    ],
+                                  TabBar(
+                                    tabs: tabs,
                                   ),
                                   Expanded(
-                                    child: TabBarView(
-                                      children: [
-                                        // Phone Number Tab
-                                        ListTile(
-                                          title: const Text(
-                                            'Phone Number',
-                                          ),
-                                          subtitle: const Text(
-                                            '0994732982',
-                                            style: TextStyle(
-                                                overflow: TextOverflow.fade),
-                                          ),
-                                          trailing: IconButton(
-                                            icon: const Icon(Icons.copy),
-                                            onPressed: () {
-                                              Clipboard.setData(
-                                                  const ClipboardData(
-                                                      text: '0994732982'));
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                  content: Text(
-                                                      'Phone number copied to clipboard'),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        ListTile(
-                                          title: const Text(
-                                            'X Twitter',
-                                          ),
-                                          subtitle: const Text(
-                                            'iamvalencia4',
-                                            style: TextStyle(
-                                                overflow: TextOverflow.fade),
-                                          ),
-                                          trailing: IconButton(
-                                            icon: const Icon(Icons.copy),
-                                            onPressed: () {
-                                              Clipboard.setData(
-                                                  const ClipboardData(
-                                                      text: '0994732982'));
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                  content: Text(
-                                                      'Phone number copied to clipboard'),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        ListTile(
-                                          title: const Text(
-                                            'Instagram',
-                                          ),
-                                          subtitle: const Text(
-                                            'iamvalenci4',
-                                            style: TextStyle(
-                                                overflow: TextOverflow.fade),
-                                          ),
-                                          trailing: IconButton(
-                                            icon: const Icon(Icons.copy),
-                                            onPressed: () {
-                                              Clipboard.setData(
-                                                  const ClipboardData(
-                                                      text: '0994732982'));
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                const SnackBar(
-                                                  content: Text(
-                                                      'Phone number copied to clipboard'),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        // Other tabs content here
-                                      ],
-                                    ),
+                                    child: TabBarView(children: tabViews),
                                   ),
                                 ],
                               ),

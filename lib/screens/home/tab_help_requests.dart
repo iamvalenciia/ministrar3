@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -69,8 +71,8 @@ class HelpRequestsList extends StatelessWidget {
         final userName = request.username.toString();
         final category = request.category.toString();
         return GestureDetector(
-          onTap: () => context.go(
-              '/help-request-for-helpers/${request.help_request_owner_id}?index=$index'),
+          onTap: () => context
+              .go('/help-request-for-helpers/${request.help_request_owner_id}'),
           child: Card(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -105,6 +107,13 @@ class HelpRequestsList extends StatelessWidget {
                                   builder: (_, data, __) {
                                     final distance = data.distance;
                                     final isDistanceInKilometers = data.unit;
+                                    developer.log('index TAB: $index',
+                                        name: 'HelpRequestForHelpers');
+                                    developer.log('distance TAB: $distance',
+                                        name: 'HelpRequestForHelpers');
+                                    developer.log(
+                                        'isDistanceInKilometers TAB: $isDistanceInKilometers',
+                                        name: 'HelpRequestForHelpers');
                                     final unit =
                                         isDistanceInKilometers ? 'km' : 'mi';
                                     return Text(

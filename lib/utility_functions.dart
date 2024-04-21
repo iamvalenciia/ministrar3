@@ -32,8 +32,6 @@ void showFlashError(BuildContext context, String message) {
 void showFlashSuccess(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       backgroundColor: Theme.of(context).colorScheme.primary,
       content: Text(message),
     ),

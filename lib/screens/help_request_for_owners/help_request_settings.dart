@@ -40,7 +40,7 @@ class _HelpRequestSettingsState extends State<HelpRequestSettings> {
               padding: EdgeInsets.all(8.0),
               child: Text('Edit'),
             ),
-            onPressed: () => context.go('/edit-help-request')),
+            onPressed: () => context.go('/help-request-form')),
         MenuItemButton(
           child: const Padding(
             padding: EdgeInsets.all(8.0),
