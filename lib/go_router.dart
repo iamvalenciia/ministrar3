@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 import 'provider/activity_provider.dart';
+import 'provider/location_permission.dart';
 import 'provider/people_helping_provider.dart';
 import 'provider/user_provider.dart';
 import 'screens/form_help_request/screen.dart';
@@ -199,14 +200,21 @@ class CustomeNavigationDrawer extends StatelessWidget {
             },
           ),
         ),
-        ListTile(
-          selectedColor: Theme.of(context).colorScheme.primary,
-          title: const Text('Settings'),
-          leading: const Icon(Icons.settings),
-          onTap: () {
-            Navigator.pop(context);
-            context.go('/settings');
-          },
+        Selector<LocationPermissionNotifier, bool>(
+          selector: (_, locationPermissionNotifier) =>
+              locationPermissionNotifier.hasLocationPermission,
+          builder: (_, hasLocationPermission, __) => ListTile(
+            enabled: hasLocationPermission,
+            selectedColor: Theme.of(context).colorScheme.primary,
+            title: const Text('Settings'),
+            leading: const Icon(Icons.settings),
+            onTap: () {
+              if (hasLocationPermission) {
+                Navigator.pop(context);
+                context.go('/settings');
+              }
+            },
+          ),
         ),
         Selector<UserNotifier, bool>(
           selector: (_, userNotifier) => userNotifier.isUserLoggedIn,

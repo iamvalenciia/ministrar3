@@ -179,7 +179,7 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                                     isDistanceInKilometers ? 'km' : 'mi';
                                 return Text(
                                   distance != 1.1
-                                      ? '${distance.toInt()} $unit'
+                                      ? '${distance.toStringAsFixed(1)} $unit'
                                       : 'Calculating ...',
                                 );
                               },

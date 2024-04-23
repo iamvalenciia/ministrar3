@@ -47,6 +47,9 @@ class HelpRequestsNotifier extends ChangeNotifier {
       final double helpRequestLat = helpRequest.lat ?? 0.0;
       final double helpRequestLong = helpRequest.long ?? 0.0;
 
+      developer.log(
+          'userLat: $userLat userlong: $userLong, helprlat: $helpRequestLat, helprlong: $helpRequestLong',
+          name: 'userLat');
       double distance = Geolocator.distanceBetween(
             userLat,
             userLong,

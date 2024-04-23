@@ -20,8 +20,7 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
   void initState() {
     super.initState();
     final user = context.read<UserNotifier>().user;
-    _usernameController =
-        TextEditingController(text: user?.username ?? 'Empty error code');
+    _usernameController = TextEditingController(text: user?.username ?? '');
   }
 
   @override
