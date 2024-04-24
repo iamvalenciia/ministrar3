@@ -1,6 +1,4 @@
 # ministrar3
-
-A new Flutter project.
 [Dart/ flutter: application crashes on startup](https://stackoverflow.com/questions/50297571/dart-flutter-application-crashes-on-startup)
 
 ## Getting Started
