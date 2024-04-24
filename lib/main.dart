@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart' as provider; // Import Provider
@@ -15,6 +16,12 @@ import 'services/supabase.dart'; // Import ThemeNotifier
 
 Future<void> main() async {
   await initializeSupabase();
+  try {
+    runApp(const MyApp());
+  } catch (error, stackTrace) {
+    developer.log('error: $error', name: 'main()');
+    developer.log('$stackTrace', name: 'main()');
+  }
   runApp(const MyApp());
 }
 
