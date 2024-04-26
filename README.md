@@ -1,7 +1,10 @@
 # ministrar3
-
-A new Flutter project.
-
+[Dart/ flutter: application crashes on startup](https://stackoverflow.com/questions/50297571/dart-flutter-application-crashes-on-startup)
+# NEMESIS ERROR WHEN LOGOUT
+Exception has occurred.
+FlutterError (Looking up a deactivated widget's ancestor is unsafe.
+At this point the state of the widget's element tree is no longer stable.
+To safely refer to a widget's ancestor in its dispose() method, save a reference to the ancestor by calling dependOnInheritedWidgetOfExactType() in the widget's didChangeDependencies() method.)
 ## Getting Started
 
 This project is a starting point for a Flutter application.
