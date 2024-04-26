@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 import 'provider/activity_provider.dart';
@@ -15,7 +14,7 @@ import 'screens/home/screen.dart';
 import 'screens/login/screen.dart';
 import 'screens/profile/screen.dart';
 import 'screens/settings/screent.dart';
-import 'services/google.dart';
+import 'services/supabase.dart';
 import 'utility_functions.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -63,10 +62,8 @@ final goRouter = GoRouter(
                           context.go('/account');
                         } else {
                           context.go('/login');
-                          final GoogleSignIn googleSignIn =
-                              await GoogleProvider.getGoogleSignIn();
-                          user.logout();
-                          await googleSignIn.signOut();
+                          await user.logOut();
+                          user.updateLoginStatus();
                         }
                       } catch (e) {
                         // Check for mounted state before UI interactions
@@ -179,6 +176,7 @@ class CustomeNavigationDrawer extends StatelessWidget {
     final user = context.read<UserNotifier>();
     final activityNotifier = context.read<ActivityNotifier>();
     final peopleHelpingNotifier = context.read<PeopleHelpingNotifier>();
+
     return NavigationDrawer(
       children: <Widget>[
         DrawerHeader(
@@ -224,27 +222,27 @@ class CustomeNavigationDrawer extends StatelessWidget {
             leading: const Icon(Icons.logout),
             onTap: () async {
               if (context.mounted) {
-                activityNotifier.clearIsHelping();
-                activityNotifier.clearHelpActivities();
-                activityNotifier.clearLastFourActivities();
-                peopleHelpingNotifier.clearPeopleHelping();
                 try {
-                  final googleService = await GoogleProvider.getGoogleSignIn();
-                  await Future.wait([
-                    user.logout(),
-                    googleService.signOut(),
-                  ]).then((value) {
-                    if (context.mounted) {
-                      // Check if context is still mounted
-                      if (Navigator.canPop(context)) {
-                        Navigator.pop(context);
-                      }
-                      context.go('/login');
-                      checkPermissionsAndFetchRequests(context);
+                  activityNotifier.clearIsHelping();
+                  activityNotifier.clearHelpActivities();
+                  activityNotifier.clearLastFourActivities();
+                  peopleHelpingNotifier.clearPeopleHelping();
+                  await user.logOut();
+                  user.updateLoginStatus();
+                  // Await the logout operation
+                  if (context.mounted) {
+                    // Check if context is still mounted
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
                     }
-                  });
+                    context.go('/login');
+                    checkPermissionsAndFetchRequests(context);
+                  }
                 } catch (e) {
-                  showFlashError(context, 'Error - Logout Button: $e');
+                  if (context.mounted) {
+                    // Check if context is still mounted
+                    showFlashError(context, 'Error - Logout Button: $e');
+                  }
                 }
               }
             },

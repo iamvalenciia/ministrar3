@@ -29,7 +29,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
         Provider.of<UserNotifier>(context, listen: false);
     final ActivityNotifier activityNotifier =
         Provider.of<ActivityNotifier>(context, listen: false);
-
+    userNotifier.updateLoginStatus();
     Geolocator.checkPermission().then((value) {
       if (value == LocationPermission.whileInUse ||
           value == LocationPermission.always) {
@@ -72,7 +72,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   Widget build(BuildContext context) {
     final locationPermissionNotifier =
         Provider.of<LocationPermissionNotifier>(context);
-    final UserNotifier userNotifier = context.watch<UserNotifier>();
     return RefreshIndicator(
       onRefresh: () async {
         try {
@@ -86,9 +85,12 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
       },
       child: ListView(
         children: <Widget>[
-          Visibility(
-            visible: !userNotifier.isUserLoggedIn,
-            child: const LoginCard(),
+          Selector<UserNotifier, bool>(
+            selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
+            builder: (_, userExist, __) => Visibility(
+              visible: !userExist,
+              child: const LoginCard(),
+            ),
           ),
           Visibility(
             visible: !locationPermissionNotifier.hasLocationPermission,

@@ -7,7 +7,11 @@ import 'package:timeago/timeago.dart' as timeago;
 import '../../models/activity_model/activity_model.dart';
 import '../../models/user_model/user_model.dart';
 import '../../provider/activity_provider.dart';
+import '../../provider/loading_provider.dart';
+import '../../provider/people_helping_provider.dart';
 import '../../provider/user_provider.dart';
+import '../../services/supabase.dart';
+import '../../utility_functions.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -22,7 +26,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final UserModel? user = context.read<UserNotifier>().user;
+    final userNotifier = context.read<UserNotifier>();
     final peopleHelped = context.read<UserNotifier>().peopleHelped;
+    final activityNotifier = context.read<ActivityNotifier>();
+    final peopleHelpingNotifier = context.read<PeopleHelpingNotifier>();
 
     return Scaffold(
       body: Column(
@@ -63,13 +70,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                   menuChildren: <Widget>[
                     MenuItemButton(
-                        // leadingIcon: const Icon(Icons.edit),
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Edit Username',
-                              style: TextStyle(fontSize: 16)),
-                        ),
-                        onPressed: () => context.go('/username-form')),
+                      // leadingIcon: const Icon(Icons.edit),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Edit Username',
+                            style: TextStyle(fontSize: 16)),
+                      ),
+                      onPressed: () => context.go('/username-form'),
+                    ),
+                    MenuItemButton(
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Delete Account',
+                            style: TextStyle(fontSize: 16)),
+                      ),
+                      onPressed: () => showDialog<void>(
+                        context: context,
+                        builder: (BuildContext dialogContext) {
+                          return AlertDialog(
+                            content: const Text(
+                                'Are you sure you want to delete your account?',
+                                style: TextStyle(fontSize: 18)),
+                            actions: <Widget>[
+                              Consumer<LoadingNotifier>(
+                                builder: (_, loadingNotifier, __) => TextButton(
+                                  child: loadingNotifier.isLoading
+                                      ? const CircularProgressIndicator()
+                                      : const Text('Yes, I am sure'),
+                                  onPressed: () async {
+                                    loadingNotifier.setLoading(true);
+                                    try {
+                                      await userNotifier.deleteMyAccount();
+                                      activityNotifier.clearIsHelping();
+                                      activityNotifier.clearHelpActivities();
+                                      activityNotifier
+                                          .clearLastFourActivities();
+                                      peopleHelpingNotifier
+                                          .clearPeopleHelping();
+                                      await supabase.auth.signOut();
+                                    } catch (e) {
+                                      if (context.mounted) {
+                                        showFlashError(context, '$e');
+                                      }
+                                    } finally {
+                                      userNotifier.updateLoginStatus();
+                                      loadingNotifier.setLoading(false);
+                                      if (context.mounted) {
+                                        Navigator.of(dialogContext).pop();
+                                        context.go('/login');
+                                        showFlashSuccess(context,
+                                            'Account deleted successfully');
+                                      }
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ],

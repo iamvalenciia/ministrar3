@@ -14,7 +14,7 @@ class PeopleHelpingNotifier extends ChangeNotifier {
 
   Future<void> fetchPeopleHelpingInMyHelpRequest() async {
     clearPeopleHelping();
-    final String helpRequestOwnerId = supabase.auth.currentUser?.id ?? 'xd';
+    final helpRequestOwnerId = supabase.auth.currentUser?.id;
     _isLoading = true;
     notifyListeners();
     try {

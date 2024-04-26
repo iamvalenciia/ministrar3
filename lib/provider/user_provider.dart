@@ -12,11 +12,12 @@ class UserNotifier extends ChangeNotifier {
   UserModel? _user;
   bool _isLoading = false;
   int _peopleHelped = 0;
+  bool _isUserLoggedIn = false;
 
   bool get isLoading => _isLoading;
   int get peopleHelped => _peopleHelped;
   UserModel? get user => _user;
-  bool get isUserLoggedIn => supabase.auth.currentUser != null;
+  bool get isUserLoggedIn => _isUserLoggedIn;
 
   Future<bool> loginWithGoogle() async {
     _isLoading = true;
@@ -141,8 +142,42 @@ class UserNotifier extends ChangeNotifier {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> logOut() async {
+    final googleService = await GoogleProvider.getGoogleSignIn();
     await supabase.auth.signOut();
+    googleService.signOut();
+    _user = null;
+    notifyListeners();
+  }
+
+  Future<void> deleteMyAccount() async {
+    final userId = supabase.auth.currentUser?.id;
+    // final googleService = await GoogleProvider.getGoogleSignIn();
+
+    await supabase
+        .from('activities')
+        .delete()
+        .eq('activity_owner_id', userId.toString());
+    await supabase
+        .from('help_requests')
+        .delete()
+        .eq('help_request_owner_id', userId.toString());
+    await supabase.from('profiles').delete().eq('id', userId.toString());
+
+    _user = null;
+    notifyListeners();
+  }
+
+  void updateLoginStatus() {
+    final supabase = Supabase.instance.client;
+    final userId = supabase.auth.currentUser?.id;
+    developer.log('supabase.auth.currentUser?.id: $userId',
+        name: 'updateLoginStatus');
+    if (userId != null) {
+      _isUserLoggedIn = true;
+    } else {
+      _isUserLoggedIn = false;
+    }
     notifyListeners();
   }
 }

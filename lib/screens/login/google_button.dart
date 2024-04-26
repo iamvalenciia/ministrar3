@@ -50,6 +50,7 @@ class SigninGoogleButton extends StatelessWidget {
                                 Provider.of<PeopleHelpingNotifier>(context,
                                     listen: false);
                             // null
+                            userNotifier.updateLoginStatus();
                             Future.wait(
                               [
                                 helpRequestsNotifier.fetchHelpRequests(),

@@ -38,7 +38,9 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
     final List<Widget> tabs = [];
     final List<Widget> tabViews = [];
 
-    if (helpRequest.phone_number != null) {
+    if (helpRequest.phone_number != null &&
+        helpRequest.phone_number != '' &&
+        helpRequest.phone_number!.isNotEmpty) {
       tabs.add(const Tab(icon: Icon(Icons.phone)));
       tabViews.add(
         ListTile(
@@ -57,7 +59,9 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
       );
     }
 
-    if (helpRequest.x_username != null) {
+    if (helpRequest.x_username != null &&
+        helpRequest.x_username != '' &&
+        helpRequest.x_username!.isNotEmpty) {
       tabs.add(const Tab(icon: FaIcon(FontAwesomeIcons.xTwitter)));
       tabViews.add(
         ListTile(
@@ -76,7 +80,9 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
       );
     }
 
-    if (helpRequest.instagram_username != null) {
+    if (helpRequest.instagram_username != null &&
+        helpRequest.instagram_username != '' &&
+        helpRequest.instagram_username!.isNotEmpty) {
       tabs.add(const Tab(icon: Icon(FontAwesomeIcons.instagram)));
       tabViews.add(
         ListTile(
