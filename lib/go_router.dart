@@ -14,7 +14,6 @@ import 'screens/home/screen.dart';
 import 'screens/login/screen.dart';
 import 'screens/profile/screen.dart';
 import 'screens/settings/screent.dart';
-import 'services/supabase.dart';
 import 'utility_functions.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
