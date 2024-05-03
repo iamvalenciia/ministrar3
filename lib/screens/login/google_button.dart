@@ -29,9 +29,6 @@ class SigninGoogleButton extends StatelessWidget {
                   userNotifier.loginWithGoogle().then((value) async {
                     if (value) {
                       userNotifier.fetchUserProfile().then((_) {
-                        if (!context.mounted) {
-                          return;
-                        }
                         if (userNotifier.user?.username == null) {
                           context.go('/username-form');
                         } else {
@@ -65,6 +62,8 @@ class SigninGoogleButton extends StatelessWidget {
                         });
                       });
                     }
+                    showFlashError(context,
+                        "value from userNotifier.loginWithGoogle() doesn't exist");
                   });
                 } catch (e) {
                   showFlashError(

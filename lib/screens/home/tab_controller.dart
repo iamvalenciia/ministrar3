@@ -15,9 +15,11 @@ class CustomeTabController extends StatelessWidget {
           tabs: <Widget>[
             Tab(
               icon: Icon(Icons.people),
+              text: 'Help Requests',
             ),
             Tab(
               icon: Icon(Icons.person),
+              text: 'My Help Request',
             ),
           ],
         ),
