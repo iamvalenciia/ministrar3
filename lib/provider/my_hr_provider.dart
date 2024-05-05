@@ -166,10 +166,30 @@ class MyHelpRequestNotifier extends ChangeNotifier {
         return false;
       }
 
+      // Check if values are the same as before
+      if (_myHelpRequest!.category == category &&
+          _myHelpRequest!.content == content &&
+          _myHelpRequest!.phone_number ==
+              // ignore: use_if_null_to_convert_nulls_to_bools
+              (phone?.isEmpty == true ? null : phone) &&
+          _myHelpRequest!.x_username ==
+              // ignore: use_if_null_to_convert_nulls_to_bools
+              (xTwitter?.isEmpty == true ? null : xTwitter) &&
+          _myHelpRequest!.instagram_username ==
+              // ignore: use_if_null_to_convert_nulls_to_bools
+              (instagram?.isEmpty == true ? null : instagram) &&
+          _myHelpRequest!.location_sharing_enabled == locationSharingEnable) {
+        // Values are the same, no need to update
+        return false;
+      }
+
       // Assign null to phone, xTwitter, and instagram if they are empty
       phone = phone?.isNotEmpty ?? false ? phone : null;
       xTwitter = xTwitter?.isNotEmpty ?? false ? xTwitter : null;
       instagram = instagram?.isNotEmpty ?? false ? instagram : null;
+
+      developer.log('help request is getting update in the database :)',
+          name: 'updateMyHelpRequest');
 
       await supabase.from('help_requests').update(<String, dynamic>{
         'category': category,
@@ -224,7 +244,9 @@ class MyHelpRequestNotifier extends ChangeNotifier {
   }
 
   void updateReceiveHelpAt() {
-    _myHelpRequest?.receive_help_at = DateTime.now();
+    if (_myHelpRequest == null) {
+      _myHelpRequest?.receive_help_at = DateTime.now();
+    }
     notifyListeners();
   }
 }

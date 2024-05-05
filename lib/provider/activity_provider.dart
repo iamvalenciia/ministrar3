@@ -24,11 +24,6 @@ class ActivityNotifier extends ChangeNotifier {
 
   // Add a new method to get the helping state for a specific user
   bool isHelping(String helpRequestId) {
-    developer.log('helpRequestId: $helpRequestId', name: 'isHelping function');
-    developer.log('_isHelping: $_isHelping', name: 'isHelping function');
-    developer.log('_isHelping[helpRequestId]: ${_isHelping[helpRequestId]}',
-        name: 'isHelping function');
-    developer.log('activities: $_helpActivities', name: 'isHelping function');
     return _isHelping[helpRequestId] ?? false;
   }
 

@@ -19,7 +19,7 @@ class UserNotifier extends ChangeNotifier {
   UserModel? get user => _user;
   bool get isUserLoggedIn => _isUserLoggedIn;
 
-  Future<bool> loginWithGoogle() async {
+  Future<void> loginWithGoogle() async {
     _isLoading = true;
     notifyListeners();
     try {
@@ -35,19 +35,8 @@ class UserNotifier extends ChangeNotifier {
         idToken: idToken,
         accessToken: accessToken,
       );
-
-      // Check if the user is successfully logged in
-      final userId = supabase.auth.currentUser?.id;
-      if (userId != null) {
-        // Login successful
-        return true;
-      } else {
-        // Login unsuccessful
-        return false;
-      }
     } catch (error) {
       developer.log('An error occurred during Google Sign In', error: error);
-      return false;
     } finally {
       _isLoading = false;
       notifyListeners();

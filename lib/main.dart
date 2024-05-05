@@ -68,3 +68,9 @@ final providers = <SingleChildWidget>[
   provider.ChangeNotifierProvider(create: (_) => ThemeProvider()),
   provider.ChangeNotifierProvider(create: (_) => LoadingNotifier()),
 ];
+
+
+// solucionar issue:
+// after login with google update all the providers and the ui of the home, becasue curerntly
+// after loginc the app is not getting update so we need to make a manually update ...
+// probably providers receive and update and is not working properly ...

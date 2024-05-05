@@ -3,8 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/activity_provider.dart';
+import '../../provider/loading_provider.dart';
 import '../../provider/my_hr_provider.dart';
-import '../../utility_functions.dart';
 
 enum Category { food, medicine, others }
 
@@ -72,18 +72,22 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
   Widget build(BuildContext context) {
     final myHelpRequestNotifier = context.read<MyHelpRequestNotifier>();
     final activitiesNotifier = context.read<ActivityNotifier>();
-
     return Scaffold(
       body: Form(
         key: _formKey,
         child: ListView(
           children: [
             const SizedBox(height: 20),
-            const Card(
+            Card.filled(
               child: Padding(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
-                      'This app will use your current location at the time of this request to help nearby users see your help request and the distance to you')),
+                    'This app will use your current location at the time of this request to help nearby users see your help request and the distance to you',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.outline,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )),
             ),
             const SizedBox(height: 20),
             CategoryChoice(
@@ -112,11 +116,16 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
               },
             ),
             const SizedBox(height: 20),
-            const Card(
+            Card.filled(
               child: Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Text(
-                    'Fill out at least one of the following contact fields'),
+                  'Fill out at least one of the following contact fields',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.outline,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -162,80 +171,114 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
               },
             ),
             const SizedBox(height: 20),
-            CheckboxListTile(
-              title: const Text(
-                  "Let users view this request's location on Google Maps"),
-              value: _locationSharingEnable,
-              onChanged: (bool? value) {
-                setState(() {
-                  _locationSharingEnable = value!;
-                });
-              },
-              controlAffinity: ListTileControlAffinity
-                  .trailing, //  places the control on the start or leading side
+            Card.filled(
+              child: CheckboxListTile(
+                title: Text(
+                  'Enable others to view the location of this help request on a map',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.outline,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                value: _locationSharingEnable,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _locationSharingEnable = value!;
+                  });
+                },
+                controlAffinity: ListTileControlAffinity
+                    .trailing, //  places the control on the start or leading side
+              ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                try {
-                  if (_contentController.text.isNotEmpty &&
-                      (_phoneController.text.isNotEmpty ||
-                          _twitterController.text.isNotEmpty ||
-                          _instagramController.text.isNotEmpty)) {
-                    if (_isEditing) {
-                      // Update existing help request
-                      final success =
-                          await myHelpRequestNotifier.updateMyHelpRequest(
-                        dropdownValue.name,
-                        _contentController.text,
-                        _phoneController.text,
-                        _twitterController.text,
-                        _instagramController.text,
-                        _locationSharingEnable,
-                      );
+            Consumer<LoadingNotifier>(
+              builder: (_, loadingNotifier, __) => ElevatedButton(
+                onPressed: () async {
+                  loadingNotifier.setLoading(true);
 
-                      if (success) {
-                        activitiesNotifier.createLocalPostActivity();
-                        if (!context.mounted) {
-                          return;
+                  final messenger = ScaffoldMessenger.of(context);
+                  final themeContext = Theme.of(context);
+                  final navigateTo = GoRouter.of(context);
+
+                  try {
+                    if (_contentController.text.isNotEmpty &&
+                        (_phoneController.text.isNotEmpty ||
+                            _twitterController.text.isNotEmpty ||
+                            _instagramController.text.isNotEmpty)) {
+                      if (_isEditing) {
+                        // Update existing help request
+                        final success =
+                            await myHelpRequestNotifier.updateMyHelpRequest(
+                          dropdownValue.name,
+                          _contentController.text,
+                          _phoneController.text,
+                          _twitterController.text,
+                          _instagramController.text,
+                          _locationSharingEnable,
+                        );
+
+                        if (success) {
+                          activitiesNotifier.createLocalPostActivity();
+
+                          navigateTo.go('/');
+                          messenger.showSnackBar(
+                            SnackBar(
+                              backgroundColor: themeContext.colorScheme.primary,
+                              content: const Text('Help request updated'),
+                            ),
+                          );
+                        } else if (!success) {
+                          navigateTo.go('/');
                         }
-                        context.go('/');
-                        showFlashSuccess(context, 'Help request updated');
+                      } else {
+                        // Create new help request
+                        final success =
+                            await myHelpRequestNotifier.createMyHelpRequest(
+                          dropdownValue.name,
+                          _contentController.text,
+                          _phoneController.text,
+                          _twitterController.text,
+                          _instagramController.text,
+                          _locationSharingEnable,
+                        );
+
+                        if (success) {
+                          activitiesNotifier.createLocalPostActivity();
+                          navigateTo.go('/');
+                          messenger.showSnackBar(
+                            SnackBar(
+                              backgroundColor: themeContext.colorScheme.primary,
+                              content: const Text('Help request created'),
+                            ),
+                          );
+                        }
                       }
                     } else {
-                      // Create new help request
-                      final success =
-                          await myHelpRequestNotifier.createMyHelpRequest(
-                        dropdownValue.name,
-                        _contentController.text,
-                        _phoneController.text,
-                        _twitterController.text,
-                        _instagramController.text,
-                        _locationSharingEnable,
+                      messenger.showSnackBar(
+                        SnackBar(
+                          backgroundColor: themeContext.colorScheme.error,
+                          content: const Text(
+                              'Please fill out at least one contact field'),
+                        ),
                       );
-
-                      if (success) {
-                        activitiesNotifier.createLocalPostActivity();
-                        if (!context.mounted) {
-                          return;
-                        }
-                        context.go('/');
-                        showFlashSuccess(context, 'Help request created');
-                      }
                     }
-                  } else {
-                    showFlashError(
-                        context, 'Please fill out at least one contact field');
+                  } catch (e) {
+                    messenger.showSnackBar(
+                      SnackBar(
+                        backgroundColor: themeContext.colorScheme.error,
+                        content: Text(e.toString()),
+                      ),
+                    );
+                  } finally {
+                    loadingNotifier.setLoading(false);
                   }
-                } catch (e) {
-                  if (!context.mounted) {
-                    return;
-                  }
-                  showFlashError(context, 'Error: $e');
-                }
-              },
-              child: Text(
-                  _isEditing ? 'Update Help Request' : 'Create Help Request'),
+                },
+                child: loadingNotifier.isLoading
+                    ? const LinearProgressIndicator()
+                    : Text(_isEditing
+                        ? 'Update Help Request'
+                        : 'Create Help Request'),
+              ),
             ),
             const SizedBox(height: 100),
           ],

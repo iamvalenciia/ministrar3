@@ -107,13 +107,6 @@ class HelpRequestsList extends StatelessWidget {
                                   builder: (_, data, __) {
                                     final distance = data.distance;
                                     final isDistanceInKilometers = data.unit;
-                                    developer.log('index TAB: $index',
-                                        name: 'HelpRequestForHelpers');
-                                    developer.log('distance TAB: $distance',
-                                        name: 'HelpRequestForHelpers');
-                                    developer.log(
-                                        'isDistanceInKilometers TAB: $isDistanceInKilometers',
-                                        name: 'HelpRequestForHelpers');
                                     final unit =
                                         isDistanceInKilometers ? 'km' : 'mi';
                                     return Text(

@@ -99,7 +99,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
           Visibility(
             visible: locationPermissionNotifier.hasLocationPermission,
             child: const SizedBox(
-              height: 200,
+              height: 220,
               child: CustomeTabController(),
             ),
           ),

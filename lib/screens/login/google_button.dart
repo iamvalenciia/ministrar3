@@ -5,10 +5,10 @@ import 'package:provider/provider.dart';
 
 import '../../provider/activity_provider.dart';
 import '../../provider/close_hrs_provider.dart';
+import '../../provider/loading_provider.dart';
 import '../../provider/my_hr_provider.dart';
 import '../../provider/people_helping_provider.dart';
 import '../../provider/user_provider.dart';
-import '../../utility_functions.dart';
 
 class SigninGoogleButton extends StatelessWidget {
   const SigninGoogleButton({super.key});
@@ -16,58 +16,62 @@ class SigninGoogleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserNotifier userNotifier = context.watch<UserNotifier>();
-
+    final loadingNotifier = context.watch<LoadingNotifier>();
     final bool isLoggingIn = userNotifier.isLoading;
+    // final bool isLoggingIn = userNotifier.isLoading;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 60),
       child: ElevatedButton(
         onPressed: isLoggingIn
             ? null
-            : () {
+            : () async {
+                loadingNotifier.setLoading(true);
+                final contextRead = context.read;
+                final messenger = ScaffoldMessenger.of(context);
+                final color = Theme.of(context);
+                final navigateTo = GoRouter.of(context);
                 try {
-                  userNotifier.loginWithGoogle().then((value) async {
-                    if (value) {
-                      userNotifier.fetchUserProfile().then((_) {
-                        if (userNotifier.user?.username == null) {
-                          context.go('/username-form');
-                        } else {
-                          context.go('/');
-                        }
-                        Geolocator.checkPermission().then((value) {
-                          if (value == LocationPermission.whileInUse ||
-                              value == LocationPermission.always) {
-                            final MyHelpRequestNotifier myHelpRequestNotifier =
-                                context.read<MyHelpRequestNotifier>();
-                            final HelpRequestsNotifier helpRequestsNotifier =
-                                context.read<HelpRequestsNotifier>();
-                            final ActivityNotifier activityNotifier =
-                                context.read<ActivityNotifier>();
-                            final PeopleHelpingNotifier peopleHelpingNotifier =
-                                Provider.of<PeopleHelpingNotifier>(context,
-                                    listen: false);
-                            // null
-                            userNotifier.updateLoginStatus();
-                            Future.wait(
-                              [
-                                helpRequestsNotifier.fetchHelpRequests(),
-                                myHelpRequestNotifier.fetchMyHelpRequest(),
-                                activityNotifier.fetchTheLastFourActivities(),
-                                activityNotifier.fetchHelpActivities(),
-                                peopleHelpingNotifier
-                                    .fetchPeopleHelpingInMyHelpRequest()
-                              ],
-                            );
-                          }
-                        });
-                      });
+                  await userNotifier.loginWithGoogle();
+                  await userNotifier.fetchUserProfile();
+
+                  final permission = await Geolocator.checkPermission();
+                  if (permission == LocationPermission.whileInUse ||
+                      permission == LocationPermission.always) {
+                    final myHelpRequest = contextRead<MyHelpRequestNotifier>();
+                    final helpRequests = contextRead<HelpRequestsNotifier>();
+                    final activities = contextRead<ActivityNotifier>();
+                    final peopleHelping = contextRead<PeopleHelpingNotifier>();
+
+                    userNotifier.updateLoginStatus();
+
+                    await Future.wait(
+                      [
+                        helpRequests.fetchHelpRequests(),
+                        myHelpRequest.fetchMyHelpRequest(),
+                        activities.fetchTheLastFourActivities(),
+                        activities.fetchHelpActivities(),
+                        peopleHelping.fetchPeopleHelpingInMyHelpRequest()
+                      ],
+                    );
+
+                    if (userNotifier.isUserLoggedIn) {
+                      if (userNotifier.user?.username == null) {
+                        navigateTo.go('/username-form');
+                      } else {
+                        navigateTo.go('/');
+                      }
                     }
-                    showFlashError(context,
-                        "value from userNotifier.loginWithGoogle() doesn't exist");
-                  });
+                  }
+                  loadingNotifier.setLoading(false);
                 } catch (e) {
-                  showFlashError(
-                      context, 'Error - Signin with Google Button: $e');
+                  messenger.showSnackBar(
+                    SnackBar(
+                      backgroundColor: color.colorScheme.error,
+                      content: Text(e.toString()),
+                    ),
+                  );
+                  loadingNotifier.setLoading(false);
                 }
               },
         child: isLoggingIn

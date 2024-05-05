@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -30,6 +31,7 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
 
     final helpRequest = helpRequestsNotifier.helpRequests?.firstWhere(
         (r) => r.help_request_owner_id == widget.helpRequestUserId);
+
     final index = helpRequestsNotifier.helpRequests?.indexWhere(
         (r) => r.help_request_owner_id == widget.helpRequestUserId);
     final bool? helped =
@@ -156,6 +158,7 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 10),
                       ],
                     ),
                   ),
@@ -199,14 +202,21 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                       backgroundImage: CachedNetworkImageProvider(
                           '${helpRequest.avatar_url}'),
                     ),
-                    trailing: IconButton(
-                      icon: FaIcon(
-                        FontAwesomeIcons.treeCity,
-                        color: Theme.of(context).colorScheme.primary,
+                    trailing: Visibility(
+                      visible: helpRequest.location_sharing_enabled == true,
+                      child: IconButton(
+                        icon: FaIcon(
+                          FontAwesomeIcons.locationDot,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        onPressed: () {
+                          developer.log(
+                              'helpRequest.lat: ${helpRequest.lat}, helpRequest.long: ${helpRequest.long}',
+                              name: 'MapsLauncher.launchCoordinates');
+                          MapsLauncher.launchCoordinates(
+                              helpRequest.lat!, helpRequest.long!);
+                        },
                       ),
-                      onPressed: () {
-                        // ...
-                      },
                     ),
                   ),
                   Padding(
@@ -385,16 +395,22 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
             Visibility(visible: helped != null, child: const Divider()),
             Visibility(
               visible: helped == true,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Thank you for your help!',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Thank you for having helped this user!',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.outline,
+                        fontSize: 16,
+                        // fontWeight: FontWeight.bold,
+                        // fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
             Visibility(

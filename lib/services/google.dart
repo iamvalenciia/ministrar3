@@ -8,11 +8,17 @@ class GoogleProvider {
   static Future<GoogleSignIn> getGoogleSignIn() async {
     if (_googleSignIn == null) {
       await dotenv.load();
-
+      // Release in the play store
       _googleSignIn = GoogleSignIn(
         clientId: dotenv.env['IOS_CLIENT_ID'],
         serverClientId: dotenv.env['WEB_CLIENT_ID'],
       );
+
+      // // Test in the laptop
+      // _googleSignIn = GoogleSignIn(
+      //   clientId: dotenv.env['IOS_CLIENT_ID'],
+      //   serverClientId: dotenv.env['WEB_CLIENT_ID'],
+      // );
     }
 
     return _googleSignIn!;
