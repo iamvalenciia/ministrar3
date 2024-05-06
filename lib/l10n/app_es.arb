@@ -48,7 +48,7 @@
   },
   "homeScrollToTheRight": "Desplázate a la derecha >>",
   "homeCreateAHelpRequest": "Crear una solicitud de ayuda",
-  "homeToMakeAnotherRequest": "Para hacer otra solicitud de ayuda, por favor ayuda a alguien más primero",
+  "homeToMakeAnotherRequest": "Para crear otra solicitud de ayuda, primero debes ayudar a alguien",
   "homePleaseLogin": "Inicia sesión para crear una solicitud de ayuda",
   "homeAllowLocation": "Permite que la aplicación acceda a tu ubicación",
   "homeEnable": "Permitir",

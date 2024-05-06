@@ -48,7 +48,7 @@
   },
   "homeScrollToTheRight": "Scroll to the right >>",
   "homeCreateAHelpRequest": "Create a Help Request",
-  "homeToMakeAnotherRequest": "To make another help request, please help someone else first",
+  "homeToMakeAnotherRequest": "To create another help request, you must first help someone",
   "homePleaseLogin": "Login to create a help request",
   "homeAllowLocation": "Allow the app to access your location",
   "homeEnable": "Enable",
