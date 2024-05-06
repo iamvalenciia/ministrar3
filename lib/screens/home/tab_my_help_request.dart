@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -16,71 +17,99 @@ class MyHelpRequest extends StatelessWidget {
     final myHelpRequest =
         context.select((MyHelpRequestNotifier mhrn) => mhrn.myHelpRequest);
     final bool wasLastActivityHelpTrue =
-        context.read<ActivityNotifier>().wasLastActivityHelp();
+        context.read<ActivityNotifier>().wasLastActivityHelpTrue;
     if (myHelpRequest != null) {
-      return ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 1,
-        itemBuilder: (context, index) {
-          return Card(
-            child: SizedBox(
-              width: 300, // Set a finite width here
-              child: ListTile(
-                leading: const Icon(Icons.account_circle),
-                title: Text(
-                  username.toString(),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: Selector<MyHelpRequestNotifier,
-                    ({double distance, bool unit})>(
-                  selector: (_, notifier) => (
-                    distance: notifier.distance ?? 1.1,
-                    unit: notifier.isDistanceInKilometers
+      return Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 1,
+              itemBuilder: (context, index) {
+                return Card(
+                  child: SizedBox(
+                    width: 300, // Set a finite width here
+                    child: ListTile(
+                      leading: const Icon(Icons.account_circle),
+                      title: Text(
+                        username.toString(),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Selector<MyHelpRequestNotifier,
+                          ({double distance, bool unit})>(
+                        selector: (_, notifier) => (
+                          distance: notifier.distance ?? 1.1,
+                          unit: notifier.isDistanceInKilometers
+                        ),
+                        builder: (_, data, __) {
+                          final distance = data.distance;
+                          final isDistanceInKilometers = data.unit;
+                          final unit = isDistanceInKilometers ? 'km' : 'mi';
+                          return Text(
+                            distance != 1.1
+                                ? '${distance.toStringAsFixed(1)} $unit'
+                                : AppLocalizations.of(context)!.homeDistance,
+                          );
+                        },
+                      ),
+                      trailing: Text(
+                        AppLocalizations.of(context)!
+                            .homeCategory(myHelpRequest.category.toString()),
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                      onTap: () => context.go(
+                          '/help-request-for-owners/${myHelpRequest.help_request_owner_id}'),
+                    ),
                   ),
-                  builder: (_, data, __) {
-                    final distance = data.distance;
-                    final isDistanceInKilometers = data.unit;
-                    final unit = isDistanceInKilometers ? 'km' : 'mi';
-                    return Text(
-                      distance != 1.1
-                          ? '${distance.toStringAsFixed(1)} $unit'
-                          : 'Calculating ...',
-                    );
-                  },
-                ),
-                trailing: Text(myHelpRequest.category.toString()),
-                onTap: () => context.go(
-                    '/help-request-for-owners/${myHelpRequest.help_request_owner_id}'),
-              ),
+                );
+              },
             ),
-          );
-        },
-      );
-    } else if (wasLastActivityHelpTrue) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 65, vertical: 50),
-        child: ElevatedButton(
-          onPressed: userExist ? () => context.go('/help-request-form') : null,
-          child: const Row(
+          ),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.post_add),
-              SizedBox(width: 10),
-              Text('Create a Help Request'),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Wrap(
+                  children: [
+                    Text(
+                      '',
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
-        ),
+        ],
       );
-    } else if (!wasLastActivityHelpTrue) {
+    } else if (wasLastActivityHelpTrue && userExist) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ElevatedButton(
+            onPressed:
+                userExist ? () => context.go('/help-request-form') : null,
+            child: Row(
+              children: [
+                const Icon(Icons.post_add),
+                const SizedBox(width: 10),
+                Text(AppLocalizations.of(context)!.homeCreateAHelpRequest),
+              ],
+            ),
+          ),
+        ],
+      );
+    } else if (!wasLastActivityHelpTrue && userExist) {
       return Center(
         child: Card.filled(
           child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'To make another help request, please help someone else first',
-                      style: TextStyle(fontSize: 16),
+                      AppLocalizations.of(context)!.homeToMakeAnotherRequest,
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ),
                   Padding(
@@ -90,6 +119,18 @@ class MyHelpRequest extends StatelessWidget {
                   ),
                 ],
               )),
+        ),
+      );
+    } else if (!userExist) {
+      return Center(
+        child: Card.filled(
+          child: Padding(
+            padding: const EdgeInsets.all(25),
+            child: Text(
+              AppLocalizations.of(context)!.homePleaseLogin,
+              // style: const TextStyle(fontSize: 16),
+            ),
+          ),
         ),
       );
     } else {

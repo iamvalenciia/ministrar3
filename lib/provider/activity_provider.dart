@@ -14,13 +14,14 @@ import '../services/supabase.dart';
 class ActivityNotifier extends ChangeNotifier {
   List<Activity>? _last4Activities;
   List<Activity>? _helpActivities;
-
+  bool _wasLastActivityHelpTrue = false;
   bool _isHelpActivityLoading = true;
   final Map<String, bool> _isHelping = {};
 
   List<Activity>? get activities => _last4Activities;
   List<Activity>? get helpActivities => _helpActivities;
   bool get isHelpActivityLoading => _isHelpActivityLoading;
+  bool get wasLastActivityHelpTrue => _wasLastActivityHelpTrue;
 
   // Add a new method to get the helping state for a specific user
   bool isHelping(String helpRequestId) {
@@ -58,6 +59,9 @@ class ActivityNotifier extends ChangeNotifier {
           await supabase.rpc('get_4_activities', params: {
         'p_activity_owner': userId,
       });
+      // Check if the last activity was a help activity so
+      // this allow user if can create help request or no
+      await wasLastActivityHelp();
 
       developer.log('fetchTheLastFourActivities',
           error: response, name: 'fetchTheLastFourActivities');
@@ -156,25 +160,12 @@ class ActivityNotifier extends ChangeNotifier {
     }
   }
 
-  bool wasLastActivityHelp() {
-    // If there are no activities, return true
-    if (_last4Activities == null || _last4Activities!.isEmpty) {
-      return true;
-    }
-
-    _last4Activities!
-        .sort((a, b) => b.inserted_at?.compareTo(a.inserted_at!) ?? 0);
-
-    // Get the most recent activity
-    final Activity lastActivity = _last4Activities!.first;
-
-    // Check if the most recent activity was a help activity and its status was true
-    if (lastActivity.activity_type == 'help' && lastActivity.status == true) {
-      return true;
-    }
-
-    // If the most recent activity was not a help activity or its status was not true, return false
-    return false;
+  Future<void> wasLastActivityHelp() async {
+    final userId = supabase.auth.currentUser?.id;
+    final bool response = await supabase.rpc('was_last_activity_help', params: {
+      'p_activity_owner': userId,
+    });
+    _wasLastActivityHelpTrue = response;
   }
 
   void clearIsHelping() {

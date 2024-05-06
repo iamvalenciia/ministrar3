@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -31,20 +32,20 @@ class _HelpRequestSettingsState extends State<HelpRequestSettings> {
             }
           },
           icon: const Icon(Icons.settings),
-          tooltip: 'Settings for your Help Request',
+          tooltip: AppLocalizations.of(context)!.ownersSettings,
         );
       },
       menuChildren: <Widget>[
         MenuItemButton(
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('Edit'),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(AppLocalizations.of(context)!.ownerEdit),
             ),
             onPressed: () => context.go('/help-request-form')),
         MenuItemButton(
-          child: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text('Delete'),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(AppLocalizations.of(context)!.ownerDelete),
           ),
           onPressed: () => showDialog<void>(
             context: context,
@@ -52,12 +53,11 @@ class _HelpRequestSettingsState extends State<HelpRequestSettings> {
               return Padding(
                 padding: const EdgeInsets.all(8),
                 child: AlertDialog(
-                  content: const Text(
-                      'Are you sure you want to delete your help request?',
-                      style: TextStyle(fontSize: 18)),
+                  content: Text(AppLocalizations.of(context)!.ownerAreYouSure,
+                      style: const TextStyle(fontSize: 18)),
                   actions: <Widget>[
                     TextButton(
-                      child: const Text('Yes, I am sure'),
+                      child: Text(AppLocalizations.of(context)!.ownerYesImSure),
                       onPressed: () {
                         Navigator.of(dialogContext).pop();
                         myHelpRequestNotifier.deleteMyHelpRequest().then(
@@ -66,7 +66,10 @@ class _HelpRequestSettingsState extends State<HelpRequestSettings> {
                               myHelpRequestNotifier.clearHelpRequest();
                               peopleHelpingNotifier.clearPeopleHelping();
                               context.go('/');
-                              showFlashSuccess(context, 'Help Request Deleted');
+                              showFlashSuccess(
+                                  context,
+                                  AppLocalizations.of(context)!
+                                      .ownerHelpRequestDeleted);
                             }
                           },
                         );

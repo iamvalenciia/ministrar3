@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomeDivider extends StatelessWidget {
   const CustomeDivider({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       children: [
-        Expanded(child: Divider()),
+        const Expanded(child: Divider()),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
-            'Login or create an account',
-            style: TextStyle(
+            AppLocalizations.of(context)!.loginOrCreateAccount,
+            style: const TextStyle(
               color: Colors.grey,
               fontSize: 16,
             ),
           ),
         ),
-        Expanded(child: Divider()),
+        const Expanded(child: Divider()),
       ],
     );
   }

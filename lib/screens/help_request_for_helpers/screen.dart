@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../provider/activity_provider.dart';
 import '../../provider/close_hrs_provider.dart';
 import '../../services/supabase.dart';
@@ -46,7 +46,7 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
       tabs.add(const Tab(icon: Icon(Icons.phone)));
       tabViews.add(
         ListTile(
-          title: const Text('Phone Number'),
+          title: Text(AppLocalizations.of(context)!.helperPhoneNumber),
           subtitle: Text(helpRequest.phone_number!,
               style: const TextStyle(overflow: TextOverflow.fade)),
           trailing: IconButton(
@@ -54,7 +54,8 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
             onPressed: () {
               Clipboard.setData(
                   ClipboardData(text: helpRequest.phone_number.toString()));
-              showFlashSuccess(context, 'Phone number copied to clipboard');
+              showFlashSuccess(context,
+                  AppLocalizations.of(context)!.helperPhoneNumberCopied);
             },
           ),
         ),
@@ -75,7 +76,8 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
             onPressed: () {
               Clipboard.setData(
                   ClipboardData(text: helpRequest.x_username.toString()));
-              showFlashSuccess(context, 'Phone number copied to clipboard');
+              showFlashSuccess(
+                  context, AppLocalizations.of(context)!.helperXTwitterCopied);
             },
           ),
         ),
@@ -96,7 +98,8 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
             onPressed: () {
               Clipboard.setData(ClipboardData(
                   text: helpRequest.instagram_username.toString()));
-              showFlashSuccess(context, 'Phone number copied to clipboard');
+              showFlashSuccess(
+                  context, AppLocalizations.of(context)!.helperXTwitterCopied);
             },
           ),
         ),
@@ -119,16 +122,13 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                         Row(
                           children: [
                             Expanded(
-                              child: Card.outlined(
+                              child: Card.filled(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    'The help request will be hidden 24 hours after assistance has been provided',
-                                    style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .outline,
-                                        fontSize: 15),
+                                    AppLocalizations.of(context)!
+                                        .helperHelpRequestWillBeHidden,
+                                    style: const TextStyle(fontSize: 15),
                                   ),
                                 ),
                               ),
@@ -151,7 +151,7 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                             ),
                             const SizedBox(width: 10), // Add some spacing
                             Text(
-                              '${helpRequest.receive_help_at == null ? 0 : DateTime.now().difference(helpRequest.receive_help_at!).inHours}/24 hours',
+                              '${helpRequest.receive_help_at == null ? 0 : DateTime.now().difference(helpRequest.receive_help_at!).inHours}/${AppLocalizations.of(context)!.owner24Hours}',
                               style: TextStyle(
                                   fontSize: 16,
                                   color: Theme.of(context).colorScheme.outline),
@@ -189,7 +189,8 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                                 return Text(
                                   distance != 1.1
                                       ? '${distance.toStringAsFixed(1)} $unit'
-                                      : 'Calculating ...',
+                                      : AppLocalizations.of(context)!
+                                          .homeDistance,
                                 );
                               },
                             ),
@@ -210,19 +211,18 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                           color: Theme.of(context).colorScheme.primary,
                         ),
                         onPressed: () {
-                          developer.log(
-                              'helpRequest.lat: ${helpRequest.lat}, helpRequest.long: ${helpRequest.long}',
-                              name: 'MapsLauncher.launchCoordinates');
                           MapsLauncher.launchCoordinates(
                               helpRequest.lat!, helpRequest.long!);
                         },
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text('${helpRequest.content}',
-                        style: const TextStyle(fontSize: 18)),
+                  Card.outlined(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('${helpRequest.content}',
+                          style: const TextStyle(fontSize: 18)),
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Padding(
@@ -232,7 +232,8 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                         Row(
                           children: [
                             Text(
-                              timeago.format(helpRequest.inserted_at!),
+                              timeago.format(helpRequest.inserted_at!,
+                                  locale: AppLocalizations.of(context)!.locale),
                               style: TextStyle(
                                   fontSize: 14,
                                   color: Theme.of(context).colorScheme.outline),
@@ -241,7 +242,8 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                             const Text('/'),
                             const SizedBox(width: 5),
                             Text(
-                              helpRequest.category.toString(),
+                              AppLocalizations.of(context)!.homeCategory(
+                                  helpRequest.category.toString()),
                               style: TextStyle(
                                   fontSize: 14,
                                   color: Theme.of(context).colorScheme.outline),
@@ -294,8 +296,8 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                                                       helpRequest.hr_id)
                                                   .people_helping_count;
                                           return peopleHelpingCount == 1
-                                              ? ' Person helping'
-                                              : ' People helping';
+                                              ? ' ${AppLocalizations.of(context)!.helperPersonHelping}'
+                                              : ' ${AppLocalizations.of(context)!.helperPeopleHelping}';
                                         },
                                         builder: (context, helpingText, _) {
                                           return Text(
@@ -363,8 +365,8 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                                                       helpRequest.hr_id)
                                                   .people_provide_help_count;
                                           return peopleProvideHelpCount == 1
-                                              ? ' Person provided help'
-                                              : ' People provided help';
+                                              ? ' ${AppLocalizations.of(context)!.helperPersonProvidedHelp}'
+                                              : ' ${AppLocalizations.of(context)!.helperPeopleProvidedHelp}';
                                         },
                                         builder: (context, helpingText, _) {
                                           return Text(
@@ -392,25 +394,25 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                 ],
               ),
             ),
-            Visibility(visible: helped != null, child: const Divider()),
+            // Visibility(
+            //     visible: helped != null, child: const SizedBox(height: 20)),
             Visibility(
               visible: helped == true,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Thank you for having helped this user!',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.outline,
-                        fontSize: 16,
-                        // fontWeight: FontWeight.bold,
-                        // fontStyle: FontStyle.italic,
+              child: Card.filled(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        AppLocalizations.of(context)!.helperThankYou,
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             Visibility(
@@ -418,7 +420,7 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  'Thank you for trying to help!',
+                  AppLocalizations.of(context)!.helperThanksForTrying,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.outline,
                     fontSize: 16,
@@ -441,9 +443,6 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                           onPressed: userId != null
                               ? () {
                                   if (isHelping) {
-                                    developer.log(
-                                        'helpRequest.hr_id: ${helpRequest.hr_id}',
-                                        name: 'removeMyHelpActivity');
                                     context
                                         .read<ActivityNotifier>()
                                         .removeMyHelpActivity(
@@ -453,9 +452,6 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                                         .decrementPeopleHelpingCount(
                                       helpRequest.hr_id,
                                     );
-                                    developer.log(
-                                        helpRequest.help_request_owner_id,
-                                        name: 'removeMyHelpActivity');
                                   } else {
                                     context
                                         .read<ActivityNotifier>()
@@ -475,16 +471,17 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                           ),
                           child: isHelping && userId != null
                               ? Text(
-                                  'Cancel Help',
+                                  AppLocalizations.of(context)!
+                                      .helperCalcelhelp,
                                   style: TextStyle(
                                     color: Theme.of(context).colorScheme.error,
                                     overflow: TextOverflow.ellipsis,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 )
-                              : const Text(
-                                  'Help',
-                                  style: TextStyle(
+                              : Text(
+                                  AppLocalizations.of(context)!.helperHelp,
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -506,21 +503,22 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                     child: Column(
                       children: [
                         const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Please use the following contact information to coordinate the help',
-                                  style: TextStyle(
-                                      color:
-                                          Theme.of(context).colorScheme.outline,
-                                      overflow: TextOverflow.fade),
+                        Card.filled(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    AppLocalizations.of(context)!
+                                        .helperUseTheFollowingInformation,
+                                    style: const TextStyle(
+                                        overflow: TextOverflow.fade),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 10),
                         Card.outlined(

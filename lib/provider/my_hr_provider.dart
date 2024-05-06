@@ -244,7 +244,7 @@ class MyHelpRequestNotifier extends ChangeNotifier {
   }
 
   void updateReceiveHelpAt() {
-    if (_myHelpRequest == null) {
+    if (_myHelpRequest != null) {
       _myHelpRequest?.receive_help_at = DateTime.now();
     }
     notifyListeners();

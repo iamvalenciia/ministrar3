@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -65,38 +66,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         }
                       },
                       icon: const Icon(Icons.more_vert),
-                      tooltip: 'Settings for your Help Request',
                     );
                   },
                   menuChildren: <Widget>[
                     MenuItemButton(
                       // leadingIcon: const Icon(Icons.edit),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('Edit Username',
-                            style: TextStyle(fontSize: 16)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                            AppLocalizations.of(context)!.profileEditUserName,
+                            style: const TextStyle(fontSize: 16)),
                       ),
                       onPressed: () => context.go('/username-form'),
                     ),
                     MenuItemButton(
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('Delete Account',
-                            style: TextStyle(fontSize: 16)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                            AppLocalizations.of(context)!.profileDeleteAccount,
+                            style: const TextStyle(fontSize: 16)),
                       ),
                       onPressed: () => showDialog<void>(
                         context: context,
                         builder: (BuildContext dialogContext) {
                           return AlertDialog(
-                            content: const Text(
-                                'Are you sure you want to delete your account?',
-                                style: TextStyle(fontSize: 18)),
+                            content: Text(
+                                AppLocalizations.of(context)!.profileAreYouSure,
+                                style: const TextStyle(fontSize: 18)),
                             actions: <Widget>[
                               Consumer<LoadingNotifier>(
                                 builder: (_, loadingNotifier, __) => TextButton(
                                   child: loadingNotifier.isLoading
                                       ? const CircularProgressIndicator()
-                                      : const Text('Yes, I am sure'),
+                                      : Text(AppLocalizations.of(context)!
+                                          .profileYesImSure),
                                   onPressed: () async {
                                     loadingNotifier.setLoading(true);
                                     try {
@@ -118,8 +121,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       if (context.mounted) {
                                         Navigator.of(dialogContext).pop();
                                         context.go('/login');
-                                        showFlashSuccess(context,
-                                            'Account deleted successfully');
+                                        showFlashSuccess(
+                                            context,
+                                            AppLocalizations.of(context)!
+                                                .profileAccountDeleted);
                                       }
                                     }
                                   },
@@ -136,11 +141,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             subtitle: Row(
               children: [
-                Icon(Icons.volunteer_activism,
-                    color: Theme.of(context).colorScheme.primary),
-                Text(' $peopleHelped ', style: const TextStyle(fontSize: 16)),
-                Text(peopleHelped == 1 ? 'Person Helped' : 'People Helped',
+                Text(AppLocalizations.of(context)!.profileHelped,
                     style: const TextStyle(fontSize: 16)),
+                Text(' $peopleHelped ', style: const TextStyle(fontSize: 16)),
+                Text(
+                    peopleHelped == 1
+                        ? AppLocalizations.of(context)!.profilePersonHelped
+                        : AppLocalizations.of(context)!.profilePeopleHelped,
+                    style: const TextStyle(fontSize: 16)),
+                const SizedBox(
+                  width: 10,
+                ),
+                // Icon(Icons.volunteer_activism,
+                //     color: Theme.of(context).colorScheme.primary),
               ],
             ),
           ),
@@ -149,21 +162,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Icon(Icons.history, color: Theme.of(context).colorScheme.primary),
               const SizedBox(width: 10),
-              const Text('Recent Activities',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text(AppLocalizations.of(context)!.profileRecentActivities,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
             ],
           ),
           Selector<ActivityNotifier, List<Activity>>(
             selector: (_, notifier) => notifier.activities ?? [],
             builder: (_, activity, __) {
               if (activity.isEmpty) {
-                return const Row(
+                return Row(
                   children: [
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          'There are no activities to show yet',
+                          AppLocalizations.of(context)!
+                              .profileThereAreNoActivities,
                           style: const TextStyle(fontSize: 15),
                         ),
                       ),
@@ -186,7 +201,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Is trying to help to ${currentActivity.help_request_owner_username}',
+                                  '${AppLocalizations.of(context)!.profileIsTryingToHelpTo} @${currentActivity.help_request_owner_username}',
                                   style: const TextStyle(fontSize: 15),
                                 ),
                               ),
@@ -201,7 +216,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Helped to @${currentActivity.help_request_owner_username} ${timeago.format(currentActivity.status_updated_at!)}',
+                                  '${AppLocalizations.of(context)!.profileHelpedTo} @${currentActivity.help_request_owner_username} ${timeago.format(currentActivity.status_updated_at!, locale: AppLocalizations.of(context)!.locale)}',
                                   style: const TextStyle(fontSize: 15),
                                 ),
                               ),
@@ -216,7 +231,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Failed to help to @${currentActivity.help_request_owner_username} ${timeago.format(currentActivity.status_updated_at!)}',
+                                  '${AppLocalizations.of(context)!.profileFailedToHelpTo} @${currentActivity.help_request_owner_username} ${timeago.format(currentActivity.status_updated_at!, locale: AppLocalizations.of(context)!.locale)}',
                                   style: const TextStyle(fontSize: 15),
                                 ),
                               ),
@@ -230,7 +245,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Created a Help Request ${timeago.format(currentActivity.inserted_at!)}',
+                                  '${AppLocalizations.of(context)!.profileCreatedAhelpRequest} ${timeago.format(currentActivity.inserted_at!, locale: AppLocalizations.of(context)!.locale)}',
                                   style: const TextStyle(fontSize: 15),
                                 ),
                               ),
@@ -244,7 +259,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  'Activity type not recognized status: ${currentActivity.status}, type: ${currentActivity.activity_type}',
+                                  '${AppLocalizations.of(context)!.profileActivityTypeNotRecognzed} ${currentActivity.status}, ${AppLocalizations.of(context)!.profileType}: ${currentActivity.activity_type}',
                                   style: const TextStyle(fontSize: 15),
                                 ),
                               ),

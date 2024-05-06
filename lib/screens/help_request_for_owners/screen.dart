@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../provider/my_hr_provider.dart';
 import '../../provider/people_helping_provider.dart';
 import '../../provider/user_provider.dart';
-import '../../services/supabase.dart';
 import 'help_request_settings.dart';
 
 class HelpRequestForOwners extends StatefulWidget {
@@ -30,7 +30,9 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
       myHelpRequestNotifier.updateReceiveHelpAt();
     }
     setState(() {
-      userResponse = status ? 'Yes' : 'No';
+      userResponse = status
+          ? AppLocalizations.of(context)!.ownerResponseYes
+          : AppLocalizations.of(context)!.ownerResponseNo;
     });
   }
 
@@ -42,20 +44,27 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: Text(
-            '@$username helps you?',
-            style: const TextStyle(fontSize: 18),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '@$username',
+                style: const TextStyle(fontSize: 18),
+              ),
+              Text(AppLocalizations.of(context)!.ownerUserHelpsYou,
+                  style: const TextStyle(fontSize: 18)),
+            ],
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Yes'),
+              child: Text(AppLocalizations.of(context)!.ownerResponseYes),
               onPressed: () {
                 _updateActivityStatusAndHelpRequest(activityId, true, username);
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text('No'),
+              child: Text(AppLocalizations.of(context)!.ownerResponseNo),
               onPressed: () {
                 _updateActivityStatusAndHelpRequest(
                     activityId, false, username);
@@ -70,8 +79,6 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
 
   @override
   Widget build(BuildContext context) {
-    final userId = supabase.auth.currentUser?.id;
-
     final myHelpRequestNotifier = context.read<MyHelpRequestNotifier>();
     final peopleHelping = context.read<PeopleHelpingNotifier>().peopleHelping;
     final helpRequest = myHelpRequestNotifier.myHelpRequest!;
@@ -95,16 +102,13 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
                         Row(
                           children: [
                             Expanded(
-                              child: Card.outlined(
+                              child: Card.filled(
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    'Congratulations on receiving help! Your request will automatically be removed in 24 hours, or you can choose to remove it now',
-                                    style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .outline,
-                                        fontSize: 15),
+                                    AppLocalizations.of(context)!
+                                        .ownerCongratulations,
+                                    style: const TextStyle(fontSize: 15),
                                   ),
                                 ),
                               ),
@@ -126,7 +130,7 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
                             ),
                             const SizedBox(width: 10), // Add some spacing
                             Text(
-                              '${receiveHelpAt == null ? 0 : DateTime.now().difference(receiveHelpAt).inHours}/24 hours',
+                              '${receiveHelpAt == null ? 0 : DateTime.now().difference(receiveHelpAt).inHours}/${AppLocalizations.of(context)!.owner24Hours}',
                               style: TextStyle(
                                   fontSize: 16,
                                   color: Theme.of(context).colorScheme.outline),
@@ -145,50 +149,51 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     ListTile(
-                      title: Text('@$username'),
-                      subtitle: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Card.filled(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Selector<MyHelpRequestNotifier,
-                                  ({double distance, bool unit})>(
-                                selector: (_, notifier) => (
-                                  distance: notifier.distance ?? 1.1,
-                                  unit: notifier.isDistanceInKilometers
+                        title: Text('@$username'),
+                        subtitle: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Card.filled(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Selector<MyHelpRequestNotifier,
+                                    ({double distance, bool unit})>(
+                                  selector: (_, notifier) => (
+                                    distance: notifier.distance ?? 1.1,
+                                    unit: notifier.isDistanceInKilometers
+                                  ),
+                                  builder: (_, data, __) {
+                                    final distance = data.distance;
+                                    final isDistanceInKilometers = data.unit;
+                                    final unit =
+                                        isDistanceInKilometers ? 'km' : 'mi';
+                                    return Text(
+                                      distance != 1.1
+                                          ? '${distance.toStringAsFixed(1)} $unit'
+                                          : AppLocalizations.of(context)!
+                                              .homeDistance,
+                                    );
+                                  },
                                 ),
-                                builder: (_, data, __) {
-                                  final distance = data.distance;
-                                  final isDistanceInKilometers = data.unit;
-                                  final unit =
-                                      isDistanceInKilometers ? 'km' : 'mi';
-                                  return Text(
-                                    distance != 1.1
-                                        ? '${distance.toStringAsFixed(1)} $unit'
-                                        : 'Calculating ...',
-                                  );
-                                },
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
+                        leading: CircleAvatar(
+                            radius: 25,
+                            backgroundImage: CachedNetworkImageProvider(
+                                '${helpRequest.avatar_url}')),
+                        trailing: HelpRequestSettings(
+                            helpRequestId: '${helpRequest.hr_id}')),
+                    Card.outlined(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('${helpRequest.content}',
+                            style: const TextStyle(fontSize: 18)),
                       ),
-                      leading: CircleAvatar(
-                          radius: 30,
-                          backgroundImage: CachedNetworkImageProvider(
-                              '${helpRequest.avatar_url}')),
-                      trailing: userId == helpRequest.help_request_owner_id
-                          ? HelpRequestSettings(
-                              helpRequestId: '${helpRequest.hr_id}')
-                          : null,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text('${helpRequest.content}',
-                          style: const TextStyle(fontSize: 18)),
-                    ),
+                    const SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Column(
@@ -196,7 +201,9 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
                           Row(
                             children: [
                               Text(
-                                timeago.format(helpRequest.inserted_at!),
+                                timeago.format(helpRequest.inserted_at!,
+                                    locale:
+                                        AppLocalizations.of(context)!.locale),
                                 style: TextStyle(
                                     fontSize: 14,
                                     color:
@@ -206,7 +213,8 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
                               const Text('/'),
                               const SizedBox(width: 5),
                               Text(
-                                helpRequest.category.toString(),
+                                AppLocalizations.of(context)!.homeCategory(
+                                    helpRequest.category.toString()),
                                 style: TextStyle(
                                     fontSize: 14,
                                     color:
@@ -243,7 +251,7 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
                                   .peopleHelping![index].status,
                           builder: (context, status, _) {
                             return Text(
-                              'helps you?  ${getStatusText(status)}',
+                              '${AppLocalizations.of(context)!.ownerUserHelpsYou}  ${getStatusText(status, context)}',
                               style: TextStyle(
                                   fontSize: 14,
                                   color: Theme.of(context).colorScheme.outline),
@@ -284,11 +292,11 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
   }
 }
 
-String getStatusText(bool? status) {
+String getStatusText(bool? status, BuildContext context) {
   if (status == true) {
-    return 'Yes';
+    return AppLocalizations.of(context)!.ownerResponseYes;
   } else if (status == false) {
-    return 'No';
+    return AppLocalizations.of(context)!.ownerResponseNo;
   } else {
     return '';
   }

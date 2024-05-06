@@ -1,6 +1,5 @@
-import 'dart:developer' as developer;
-
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/close_hrs_provider.dart';
@@ -17,9 +16,9 @@ class LocationCard extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: const Icon(Icons.my_location),
-        title: const Text('Allow the app to access your location'),
+        title: Text(AppLocalizations.of(context)!.homeAllowLocation),
         trailing: TextButton(
-          child: const Text('Enable'),
+          child: Text(AppLocalizations.of(context)!.homeEnable),
           onPressed: () {
             locationPermissionNotifier.requestLocationPermission().then((_) {
               if (locationPermissionNotifier.hasLocationPermission) {
@@ -29,10 +28,6 @@ class LocationCard extends StatelessWidget {
                 // once the permission is granted, we can fetch the help requests
                 Provider.of<HelpRequestsNotifier>(context, listen: false)
                     .fetchHelpRequests();
-                // Log the location permission status
-                developer.log(
-                    '${locationPermissionNotifier.hasLocationPermission}',
-                    name: 'LocationCard');
               }
             });
           },

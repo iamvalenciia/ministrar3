@@ -1,5 +1,7 @@
 import 'dart:developer' as developer;
+
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart' as provider; // Import Provider
 
@@ -7,6 +9,7 @@ import 'go_router.dart';
 import 'provider/activity_provider.dart';
 import 'provider/close_hrs_provider.dart';
 import 'provider/km_mi_notifier.dart';
+import 'provider/l10n_provider.dart';
 import 'provider/loading_provider.dart';
 import 'provider/location_permission.dart';
 import 'provider/my_hr_provider.dart';
@@ -42,13 +45,14 @@ class _MyAppState extends State<MyApp> {
       providers: providers,
       builder: (context, child) {
         return MaterialApp.router(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: provider.Provider.of<L10nNotifier>(context).appLocale,
             scaffoldMessengerKey: scaffoldKey,
             title: 'Flutter Demo',
             routerConfig: goRouter,
             debugShowCheckedModeBanner: false,
-            theme: provider.Provider.of<ThemeProvider>(context)
-                .themeDataStyle // Add dark theme
-            );
+            theme: provider.Provider.of<ThemeProvider>(context).themeDataStyle);
       },
     );
   }
@@ -67,6 +71,7 @@ final providers = <SingleChildWidget>[
   provider.ChangeNotifierProvider(create: (_) => DistanceUnitNotifier()),
   provider.ChangeNotifierProvider(create: (_) => ThemeProvider()),
   provider.ChangeNotifierProvider(create: (_) => LoadingNotifier()),
+  provider.ChangeNotifierProvider(create: (_) => L10nNotifier()),
 ];
 
 

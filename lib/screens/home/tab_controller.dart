@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'tab_help_requests.dart';
 import 'tab_my_help_request.dart';
 
@@ -8,22 +8,22 @@ class CustomeTabController extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const DefaultTabController(
+    return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: TabBar(
           tabs: <Widget>[
             Tab(
-              icon: Icon(Icons.people),
-              text: 'Help Requests',
+              icon: const Icon(Icons.people),
+              text: AppLocalizations.of(context)!.homeHelpRequests,
             ),
             Tab(
-              icon: Icon(Icons.person),
-              text: 'My Help Request',
+              icon: const Icon(Icons.person),
+              text: AppLocalizations.of(context)!.homeMyHelpRequests,
             ),
           ],
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: <Widget>[
             HelpRequests(),
             MyHelpRequest(),

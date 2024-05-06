@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'provider/activity_provider.dart';
+import 'provider/close_hrs_provider.dart';
 import 'provider/location_permission.dart';
+import 'provider/my_hr_provider.dart';
 import 'provider/people_helping_provider.dart';
 import 'provider/user_provider.dart';
 import 'screens/form_help_request/screen.dart';
@@ -31,22 +35,22 @@ final goRouter = GoRouter(
           String appBarTitle = '';
           if (state.fullPath ==
               '/help-request-for-helpers/:helpRequestUserId') {
-            appBarTitle = 'Help Request';
+            appBarTitle = AppLocalizations.of(context)!.helperHelpRequest;
           } else if (state.fullPath ==
               '/help-request-for-owners/:helpRequestUserId') {
-            appBarTitle = 'My Help Request';
+            appBarTitle = AppLocalizations.of(context)!.ownerMyHelpRequest;
           } else if (state.fullPath == '/') {
             appBarTitle = 'Ministrar';
           } else if (state.fullPath == '/login') {
-            appBarTitle = 'Sign In';
+            appBarTitle = AppLocalizations.of(context)!.loginSignIn;
           } else if (state.fullPath == '/account') {
-            appBarTitle = 'Profile';
+            appBarTitle = AppLocalizations.of(context)!.profile;
           } else if (state.fullPath == '/username-form') {
-            appBarTitle = 'Setup your Username';
+            appBarTitle = AppLocalizations.of(context)!.usernameSetup;
           } else if (state.fullPath == '/help-request-form') {
-            appBarTitle = 'Create Help Request';
+            appBarTitle = AppLocalizations.of(context)!.createHelpRequest;
           } else if (state.fullPath == '/settings') {
-            appBarTitle = 'Settings';
+            appBarTitle = AppLocalizations.of(context)!.settings;
           }
           return BaseScaffold(
             externalBody: child,
@@ -182,14 +186,14 @@ class CustomeNavigationDrawer extends StatelessWidget {
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
           ),
-          child: const Text('Drawer Header'),
+          child: const Text(''),
         ),
         Selector<UserNotifier, bool>(
           selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
           builder: (_, userExist, __) => ListTile(
             enabled: userExist,
             selectedColor: Theme.of(context).colorScheme.primary,
-            title: const Text('Profile'),
+            title: Text(AppLocalizations.of(context)!.profile),
             leading: const Icon(Icons.account_circle),
             onTap: () {
               Navigator.pop(context);
@@ -203,7 +207,7 @@ class CustomeNavigationDrawer extends StatelessWidget {
           builder: (_, hasLocationPermission, __) => ListTile(
             enabled: hasLocationPermission,
             selectedColor: Theme.of(context).colorScheme.primary,
-            title: const Text('Settings'),
+            title: Text(AppLocalizations.of(context)!.settings),
             leading: const Icon(Icons.settings),
             onTap: () {
               if (hasLocationPermission) {
@@ -217,32 +221,43 @@ class CustomeNavigationDrawer extends StatelessWidget {
           selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
           builder: (_, userExist, __) => ListTile(
             enabled: userExist,
-            title: const Text('Logout'),
+            title: Text(AppLocalizations.of(context)!.logout),
             leading: const Icon(Icons.logout),
             onTap: () async {
-              if (context.mounted) {
-                try {
-                  activityNotifier.clearIsHelping();
-                  activityNotifier.clearHelpActivities();
-                  activityNotifier.clearLastFourActivities();
-                  peopleHelpingNotifier.clearPeopleHelping();
-                  await user.logOut();
-                  user.updateLoginStatus();
-                  // Await the logout operation
-                  if (context.mounted) {
-                    // Check if context is still mounted
-                    if (Navigator.canPop(context)) {
-                      Navigator.pop(context);
-                    }
-                    context.go('/login');
-                    checkPermissionsAndFetchRequests(context);
+              final navigateTo = GoRouter.of(context);
+              final popFunction = Navigator.of(context).pop;
+              final messenger = ScaffoldMessenger.of(context);
+              final color = Theme.of(context);
+              try {
+                activityNotifier.clearIsHelping();
+                activityNotifier.clearHelpActivities();
+                activityNotifier.clearLastFourActivities();
+                peopleHelpingNotifier.clearPeopleHelping();
+                await user.logOut();
+                user.updateLoginStatus();
+                // Await the logout operation
+
+                navigateTo.go('/login');
+                popFunction();
+
+                Geolocator.checkPermission().then((value) async {
+                  if (value == LocationPermission.whileInUse ||
+                      value == LocationPermission.always) {
+                    final helpRequestsNotifier =
+                        context.read<HelpRequestsNotifier>();
+                    final myHelpRequestNotifier =
+                        context.read<MyHelpRequestNotifier>();
+                    myHelpRequestNotifier.clearHelpRequest();
+                    await helpRequestsNotifier.fetchHelpRequests();
                   }
-                } catch (e) {
-                  if (context.mounted) {
-                    // Check if context is still mounted
-                    showFlashError(context, 'Error - Logout Button: $e');
-                  }
-                }
+                });
+              } catch (e) {
+                messenger.showSnackBar(
+                  SnackBar(
+                    backgroundColor: color.colorScheme.error,
+                    content: Text(e.toString()),
+                  ),
+                );
               }
             },
           ),

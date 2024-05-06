@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -40,17 +41,20 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextFormField(
+              style: const TextStyle(fontSize: 18),
               controller: _usernameController,
               decoration: const InputDecoration(labelText: 'Username'),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return "This field can't be empty";
+                  return AppLocalizations.of(context)!
+                      .usernameThisfieldcantBeEmpty;
                 }
                 if (value.length < 3) {
-                  return 'Username must be at least 3 characters long';
+                  return AppLocalizations.of(context)!
+                      .usernameMustBeAtLeast3Characters;
                 }
                 if (value.contains(' ')) {
-                  return 'Username cannot contain spaces';
+                  return AppLocalizations.of(context)!.usernameCanthaveSpaces;
                 }
                 return null;
               },
@@ -79,12 +83,11 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
                       showFlashError(context, '${result['message']}');
                     }
                   } catch (e) {
-                    showFlashError(
-                        context, 'Error- Update username button: $e');
+                    showFlashError(context, e.toString());
                   }
                 }
               },
-              child: const Text('Update Username'),
+              child: Text(AppLocalizations.of(context)!.usernameUpdateButton),
             ),
           ],
         ),

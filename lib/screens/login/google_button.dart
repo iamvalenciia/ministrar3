@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -84,7 +85,7 @@ class SigninGoogleButton extends StatelessWidget {
                       height: 20,
                     ),
                     const SizedBox(width: 12),
-                    const Text('Sign In with Google'),
+                    Text(AppLocalizations.of(context)!.loginjoinWithGoogle),
                   ]),
       ),
     );

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+
 import '../../provider/close_hrs_provider.dart';
+import '../../provider/l10n_provider.dart';
 import '../../provider/my_hr_provider.dart';
 import '../../provider/theme_provider.dart';
 import '../../theme.dart'; // Import your HelpRequestsNotifier
@@ -13,34 +16,49 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Consumer2<HelpRequestsNotifier, ThemeProvider>(
-        builder: (context, helpRequestsNotifier, themeProvider, child) {
+      body: Consumer3<HelpRequestsNotifier, ThemeProvider, L10nNotifier>(
+        builder: (context, helpRequestsNotifier, themeProvider, l10nNotifier,
+            child) {
           return Padding(
             padding: const EdgeInsets.only(top: 20),
             child: Center(
               child: Column(
                 children: <Widget>[
-                  const Padding(
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Text('Distance Unit',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(AppLocalizations.of(context)!.settingsDistanceUnit,
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
                   SingleChoice(helpRequestsNotifier: helpRequestsNotifier),
                   const SizedBox(height: 20),
-                  const Padding(
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Text('Theme Style',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        Text(AppLocalizations.of(context)!.settingsThemeStyle,
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
                       ],
                     ),
                   ),
                   ThemeChoice(themeProvider: themeProvider),
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Text(AppLocalizations.of(context)!.settingsLanguage,
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                  LanguageChoice(l10nNotifier: l10nNotifier),
                 ],
               ),
             ),
@@ -81,11 +99,14 @@ class _SingleChoiceState extends State<SingleChoice> {
       children: [
         Expanded(
           child: SegmentedButton<DistanceUnit>(
-            segments: const <ButtonSegment<DistanceUnit>>[
+            segments: <ButtonSegment<DistanceUnit>>[
               ButtonSegment<DistanceUnit>(
-                  value: DistanceUnit.kilometers, label: Text('Kilometers')),
+                  value: DistanceUnit.kilometers,
+                  label:
+                      Text(AppLocalizations.of(context)!.settingsKilometers)),
               ButtonSegment<DistanceUnit>(
-                  value: DistanceUnit.miles, label: Text('Miles')),
+                  value: DistanceUnit.miles,
+                  label: Text(AppLocalizations.of(context)!.settingsMiles)),
             ],
             selected: <DistanceUnit>{distanceUnit},
             onSelectionChanged: (Set<DistanceUnit> newSelection) {
@@ -132,17 +153,75 @@ class _ThemeChoiceState extends State<ThemeChoice> {
       children: [
         Expanded(
           child: SegmentedButton<ThemeStyle>(
-            segments: const <ButtonSegment<ThemeStyle>>[
+            segments: <ButtonSegment<ThemeStyle>>[
               ButtonSegment<ThemeStyle>(
-                  value: ThemeStyle.light, label: Text('Light')),
+                  value: ThemeStyle.light,
+                  label: Text(AppLocalizations.of(context)!.settingsLight)),
               ButtonSegment<ThemeStyle>(
-                  value: ThemeStyle.dark, label: Text('Dark')),
+                  value: ThemeStyle.dark,
+                  label: Text(AppLocalizations.of(context)!.settingsDark)),
             ],
             selected: <ThemeStyle>{themeStyle},
             onSelectionChanged: (Set<ThemeStyle> newSelection) {
               setState(() {
                 themeStyle = newSelection.first;
                 widget.themeProvider.changeTheme();
+              });
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// -------------------------------------------/
+//  widget used in the SettingsScreen widget /
+//-------------------------------------------/
+enum Language { english, spanish }
+
+class LanguageChoice extends StatefulWidget {
+  const LanguageChoice({super.key, required this.l10nNotifier});
+  final L10nNotifier l10nNotifier;
+
+  @override
+  State<LanguageChoice> createState() => _LanguageChoiceState();
+}
+
+class _LanguageChoiceState extends State<LanguageChoice> {
+  late Language language;
+
+  @override
+  void initState() {
+    super.initState();
+    language = widget.l10nNotifier.appLocale == const Locale('en')
+        ? Language.english
+        : Language.spanish;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: SegmentedButton<Language>(
+            segments: <ButtonSegment<Language>>[
+              ButtonSegment<Language>(
+                  value: Language.english,
+                  label: Text(AppLocalizations.of(context)!.settingsEnglish)),
+              ButtonSegment<Language>(
+                  value: Language.spanish,
+                  label: Text(AppLocalizations.of(context)!.settingsSpanish)),
+            ],
+            selected: <Language>{language},
+            onSelectionChanged: (Set<Language> newSelection) {
+              setState(() {
+                language = newSelection.first;
+                if (language == Language.english) {
+                  widget.l10nNotifier.setLanguage(const Locale('en'));
+                } else {
+                  widget.l10nNotifier.setLanguage(const Locale('es'));
+                }
               });
             },
           ),

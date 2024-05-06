@@ -60,8 +60,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
     super.initState();
     if (_isFirstLoad) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        // Provider.of<LocationPermissionNotifier>(context, listen: false)
-        //     .checkLocationPermission();
         fetchData();
       });
       _isFirstLoad = false;
@@ -99,7 +97,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
           Visibility(
             visible: locationPermissionNotifier.hasLocationPermission,
             child: const SizedBox(
-              height: 220,
+              height: 260,
               child: CustomeTabController(),
             ),
           ),
@@ -111,7 +109,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                   padding: EdgeInsets.all(25),
                   child: const Text(
                     'Please enable location permission to view nearby help requests',
-                    style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
