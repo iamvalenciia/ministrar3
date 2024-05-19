@@ -1,9 +1,7 @@
-import 'dart:developer' as developer;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:nested/nested.dart';
-import 'package:provider/provider.dart' as provider; // Import Provider
+import 'package:provider/provider.dart' as provider;
 
 import 'go_router.dart';
 import 'provider/activity_provider.dart';
@@ -16,16 +14,10 @@ import 'provider/my_hr_provider.dart';
 import 'provider/people_helping_provider.dart';
 import 'provider/theme_provider.dart';
 import 'provider/user_provider.dart';
-import 'services/supabase.dart'; // Import ThemeNotifier
+import 'services/supabase.dart';
 
 Future<void> main() async {
   await initializeSupabase();
-  try {
-    runApp(const MyApp());
-  } catch (error, stackTrace) {
-    developer.log('error: $error', name: 'main()');
-    developer.log('$stackTrace', name: 'main()');
-  }
   runApp(const MyApp());
 }
 
@@ -62,20 +54,27 @@ class _MyAppState extends State<MyApp> {
 //  variable use in MyApp widget /
 //-------------------------------/
 final providers = <SingleChildWidget>[
+  // Async Network // Get db data
+  // fetchHelpRequests is call when:
+  //            # Login with google
+  //            # Location card
+  //            # Home Screen
+  //            # When LogOut
   provider.ChangeNotifierProvider(create: (_) => HelpRequestsNotifier()),
+  // Async Network // Get db data
   provider.ChangeNotifierProvider(create: (_) => UserNotifier()),
+  // Async Network // Get db data
   provider.ChangeNotifierProvider(create: (_) => MyHelpRequestNotifier()),
+  // Async Network // Get db data
   provider.ChangeNotifierProvider(create: (_) => ActivityNotifier()),
+  // Async Network // Get db data
   provider.ChangeNotifierProvider(create: (_) => LocationPermissionNotifier()),
+  // Async Network // Get db data
   provider.ChangeNotifierProvider(create: (_) => PeopleHelpingNotifier()),
-  provider.ChangeNotifierProvider(create: (_) => DistanceUnitNotifier()),
+  //---------------------------------------------------------------------------
+  //---------------------------------------------------------------------------
   provider.ChangeNotifierProvider(create: (_) => ThemeProvider()),
-  provider.ChangeNotifierProvider(create: (_) => LoadingNotifier()),
   provider.ChangeNotifierProvider(create: (_) => L10nNotifier()),
+  provider.ChangeNotifierProvider(create: (_) => DistanceUnitNotifier()),
+  provider.ChangeNotifierProvider(create: (_) => LoadingNotifier()),
 ];
-
-
-// solucionar issue:
-// after login with google update all the providers and the ui of the home, becasue curerntly
-// after loginc the app is not getting update so we need to make a manually update ...
-// probably providers receive and update and is not working properly ...

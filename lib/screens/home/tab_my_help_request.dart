@@ -20,10 +20,11 @@ class MyHelpRequest extends StatelessWidget {
         context.read<ActivityNotifier>().wasLastActivityHelpTrue;
     if (myHelpRequest != null) {
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: ListView.builder(
-              scrollDirection: Axis.horizontal,
+              // scrollDirection: Axis.horizontal,
               itemCount: 1,
               itemBuilder: (context, index) {
                 return Card(
@@ -57,14 +58,14 @@ class MyHelpRequest extends StatelessWidget {
                             .homeCategory(myHelpRequest.category.toString()),
                         style: const TextStyle(fontSize: 15),
                       ),
-                      onTap: () => context.go(
-                          '/help-request-for-owners/${myHelpRequest.help_request_owner_id}'),
+                      onTap: () => context.go('/help-request-for-owners'),
                     ),
                   ),
                 );
               },
             ),
           ),
+          const Spacer(),
           const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

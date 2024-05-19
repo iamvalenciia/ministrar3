@@ -8,7 +8,7 @@
   "settingsLight": "Claro",
   "settingsDark": "Oscuro",
   "settingsLanguage": "Idioma",
-  "settingsEnglish": "Inglés",
+  "settingsEnglish": "English",
   "settingsSpanish": "Español",
   "settings": "Ajustes",
   "profile": "Perfil",
@@ -52,6 +52,7 @@
   "homePleaseLogin": "Inicia sesión para crear una solicitud de ayuda",
   "homeAllowLocation": "Permite que la aplicación acceda a tu ubicación",
   "homeEnable": "Permitir",
+  "homePleaseLocation": "Para ver las solicitudes de ayuda más cercanas a usted, por favor conceda acceso a la ubicación",
   "ownerMyHelpRequest": "Mi solicitud de ayuda",
   "ownersSettings": "Ajustes para tu solicitud de ayuda",
   "ownerEdit": "Editar",
@@ -94,5 +95,12 @@
   "createHelpRequestCreated": "Solicitud de Ayuda Creada Exitosamente",
   "createPleaseFillout": "Por favor, completa al menos un campo de contacto",
   "createUpdateHelpRequest": "Actualizar Solicitud de Ayuda",
-  "logout": "Salir"
+  "logout": "Salir",
+  "onboardingWelcome": "Bienvenido a Ministrar",
+  "onboardingTheFirst": "La primera aplicación móvil para personas que necesitan ayuda y para aquellos que desean ayudar a otros",
+  "onboardingPleaseSelect": "Por favor, elija su idioma",
+  "onboardingFindHelp": "Encuentra solicitudes de ayuda",
+  "onboardingTheHome": "La pantalla de inicio le mostrará las 5 solicitudes de ayuda más cercanas a su ubicación",
+  "onboardingCreate": "Crear Solicitudes de Ayuda",
+  "onboardingAfter": "Después de solicitar ayuda, la aplicación no le permitirá enviar otra solicitud hasta que primero haya brindado asistencia a un usuario"
 }

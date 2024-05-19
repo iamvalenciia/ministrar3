@@ -66,7 +66,7 @@ class HelpRequestsList extends StatelessWidget {
       children: [
         Expanded(
           child: ListView.builder(
-            scrollDirection: Axis.horizontal,
+            // scrollDirection: Axis.horizontal,
             itemCount: helpRequests.length,
             itemBuilder: (context, index) {
               final request = helpRequests[index];
@@ -88,9 +88,16 @@ class HelpRequestsList extends StatelessWidget {
                             child: Row(
                               children: [
                                 CircleAvatar(
-                                    radius: 20,
-                                    backgroundImage: CachedNetworkImageProvider(
-                                        '${request.avatar_url}')),
+                                  radius: 20,
+                                  backgroundImage: request.avatar_url != null
+                                      ? CachedNetworkImageProvider(
+                                          '${request.avatar_url}')
+                                      : null,
+                                  child: request.avatar_url == null
+                                      ? const Icon(Icons.account_circle,
+                                          size: 40)
+                                      : null,
+                                ),
                                 const SizedBox(width: 18),
                                 Expanded(
                                   child: Column(
@@ -186,26 +193,26 @@ class HelpRequestsList extends StatelessWidget {
             },
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Wrap(
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.homeScrollToTheRight,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.end,
+        //   children: [
+        //     Padding(
+        //       padding: const EdgeInsets.all(8.0),
+        //       child: Wrap(
+        //         children: [
+        //           Text(
+        //             AppLocalizations.of(context)!.homeScrollToTheRight,
+        //             overflow: TextOverflow.ellipsis,
+        //             style: TextStyle(
+        //               fontSize: 14,
+        //               color: Theme.of(context).colorScheme.outline,
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ],
     );
   }

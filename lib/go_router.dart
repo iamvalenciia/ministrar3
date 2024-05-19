@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'provider/activity_provider.dart';
 import 'provider/close_hrs_provider.dart';
@@ -16,6 +17,7 @@ import 'screens/help_request_for_helpers/screen.dart';
 import 'screens/help_request_for_owners/screen.dart';
 import 'screens/home/screen.dart';
 import 'screens/login/screen.dart';
+import 'screens/onboarding/screen.dart';
 import 'screens/profile/screen.dart';
 import 'screens/settings/screent.dart';
 import 'utility_functions.dart';
@@ -36,8 +38,7 @@ final goRouter = GoRouter(
           if (state.fullPath ==
               '/help-request-for-helpers/:helpRequestUserId') {
             appBarTitle = AppLocalizations.of(context)!.helperHelpRequest;
-          } else if (state.fullPath ==
-              '/help-request-for-owners/:helpRequestUserId') {
+          } else if (state.fullPath == '/help-request-for-owners') {
             appBarTitle = AppLocalizations.of(context)!.ownerMyHelpRequest;
           } else if (state.fullPath == '/') {
             appBarTitle = 'Ministrar';
@@ -51,6 +52,8 @@ final goRouter = GoRouter(
             appBarTitle = AppLocalizations.of(context)!.createHelpRequest;
           } else if (state.fullPath == '/settings') {
             appBarTitle = AppLocalizations.of(context)!.settings;
+          } else if (state.fullPath == '/onboarding') {
+            return const OnboardingScreen();
           }
           return BaseScaffold(
             externalBody: child,
@@ -79,11 +82,13 @@ final goRouter = GoRouter(
                     },
                     icon: const Icon(Icons.arrow_back),
                   )
-                : isNotHome
-                    ? IconButton(
-                        onPressed: () => context.go('/'),
-                        icon: const Icon(Icons.arrow_back))
-                    : null,
+                : state.fullPath == '/onboarding'
+                    ? null
+                    : isNotHome
+                        ? IconButton(
+                            onPressed: () => context.go('/'),
+                            icon: const Icon(Icons.arrow_back))
+                        : null,
             externalAppBarTitle: Text(appBarTitle),
             externalDrawer:
                 state.fullPath == '/' ? const CustomeNavigationDrawer() : null,
@@ -96,10 +101,8 @@ final goRouter = GoRouter(
             childBuilder: (state) => const HomeScreenBody(),
           ),
           createGoRoute(
-            path: '/help-request-for-owners/:helpRequestUserId',
-            childBuilder: (state) => HelpRequestForOwners(
-              index: int.tryParse(state.pathParameters['index'] ?? '0') ?? 0,
-            ),
+            path: '/help-request-for-owners',
+            childBuilder: (state) => HelpRequestForOwners(),
           ),
           createGoRoute(
             path: '/help-request-for-helpers/:helpRequestUserId',
@@ -119,10 +122,6 @@ final goRouter = GoRouter(
             path: '/login',
             childBuilder: (state) => const LoginScreen(),
           ),
-          // createGoRoute(
-          //   path: '/edit-help-request',
-          //   childBuilder: (state) => const EditHelpRequest(),
-          // ),
           createGoRoute(
             path: '/help-request-form',
             childBuilder: (state) => const HelpRequestFormScreen(),
@@ -131,6 +130,16 @@ final goRouter = GoRouter(
             path: '/settings',
             childBuilder: (state) => const SettingsScreen(),
           ),
+          createGoRoute(
+            path: '/onboarding',
+            childBuilder: (state) => const OnboardingScreen(),
+          ),
+          // GoRoute(
+          //   path: '/onboarding',
+          //   pageBuilder: (BuildContext context, GoRouterState state) {
+          //     return const MaterialPage(child: OnboardingScreen());
+          //   },
+          // ),
         ]),
   ],
 );

@@ -199,8 +199,13 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                     ),
                     leading: CircleAvatar(
                       radius: 25,
-                      backgroundImage: CachedNetworkImageProvider(
-                          '${helpRequest.avatar_url}'),
+                      backgroundImage: helpRequest.avatar_url != null
+                          ? CachedNetworkImageProvider(
+                              '${helpRequest.avatar_url}')
+                          : null,
+                      child: helpRequest.avatar_url == null
+                          ? const Icon(Icons.account_circle, size: 50)
+                          : null,
                     ),
                     trailing: Visibility(
                       visible: helpRequest.location_sharing_enabled == true,

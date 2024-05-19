@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../provider/activity_provider.dart';
 import '../../provider/close_hrs_provider.dart';
@@ -58,9 +61,22 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   @override
   void initState() {
     super.initState();
+    final navigateTo = GoRouter.of(context);
     if (_isFirstLoad) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        fetchData();
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        // Check if the user has seen the onboarding screen
+        // fetchData();
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        final bool hasSeenOnboarding =
+            prefs.getBool('hasSeenOnboarding') ?? false;
+
+        if (!hasSeenOnboarding) {
+          // If the user hasn't seen the onboarding screen, navigate to it
+          navigateTo.go('/onboarding');
+        } else {
+          // Otherwise, fetch data as usual
+          fetchData();
+        }
       });
       _isFirstLoad = false;
     }
@@ -81,12 +97,13 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
           showFlashError(context, 'Error fetching data in the Home screen: $e');
         }
       },
-      child: ListView(
+      child: Column(
         children: <Widget>[
           Selector<UserNotifier, bool>(
             selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
             builder: (_, userExist, __) => Visibility(
-              visible: !userExist,
+              visible: !userExist &&
+                  locationPermissionNotifier.hasLocationPermission,
               child: const LoginCard(),
             ),
           ),
@@ -96,20 +113,18 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
           ),
           Visibility(
             visible: locationPermissionNotifier.hasLocationPermission,
-            child: const SizedBox(
-              height: 260,
-              child: CustomeTabController(),
-            ),
+            child: const Expanded(child: CustomeTabController()),
           ),
           Visibility(
             visible: !locationPermissionNotifier.hasLocationPermission,
-            child: const Center(
+            child: Center(
               child: Card.outlined(
                 child: Padding(
-                  padding: EdgeInsets.all(25),
-                  child: const Text(
-                    'Please enable location permission to view nearby help requests',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  padding: const EdgeInsets.all(25),
+                  child: Text(
+                    AppLocalizations.of(context)!.homePleaseLocation,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

@@ -225,7 +225,7 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
 
                           if (success) {
                             activitiesNotifier.createLocalPostActivity();
-                            navigateTo.go('/');
+                            navigateTo.go('/help-request-for-owners');
                             messenger.showSnackBar(
                               SnackBar(
                                 backgroundColor:
@@ -264,7 +264,7 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
                         : AppLocalizations.of(context)!.createHelpRequest),
               ),
             ),
-            const SizedBox(height: 100),
+            const SizedBox(height: 10),
           ],
         ),
       ),

@@ -9,7 +9,7 @@
   "settingsDark": "Dark",
   "settingsLanguage": "Language",
   "settingsEnglish": "English",
-  "settingsSpanish": "Spanish",
+  "settingsSpanish": "Español",
   "settings": "Settings",
   "profile": "Profile",
   "profileEditUserName": "Edit Username",
@@ -52,6 +52,7 @@
   "homePleaseLogin": "Login to create a help request",
   "homeAllowLocation": "Allow the app to access your location",
   "homeEnable": "Enable",
+  "homePleaseLocation": "To see help requests closest to you, please grant location access",
   "ownerMyHelpRequest": "My Help Request",
   "ownersSettings": "Settings for your Help Request",
   "ownerEdit": "Edit",
@@ -94,5 +95,12 @@
   "createHelpRequestCreated": "Help Request Created Successfully",
   "createPleaseFillout": "Please fill out at least one contact field",
   "createUpdateHelpRequest": "Update Help Request",
-  "logout": "Logout"
+  "logout": "Logout",
+  "onboardingWelcome": "Welcome to Ministrar",
+  "onboardingTheFirst": "The first mobile app for people who need help and for those who wish to help others",
+  "onboardingPleaseSelect": "Please choose your language",
+  "onboardingFindHelp": "Find help requests",
+  "onboardingTheHome": "The home screen will present the 5 nearest help requests to your location",
+  "onboardingCreate": "Create Help Requests",
+  "onboardingAfter": "After requesting help, the application will not allow you to send another request until you have first provided assistance to a user"
 }

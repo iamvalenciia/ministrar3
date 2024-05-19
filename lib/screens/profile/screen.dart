@@ -37,9 +37,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           ListTile(
             leading: CircleAvatar(
-                radius: 30,
-                backgroundImage:
-                    CachedNetworkImageProvider('${user?.avatar_url}')),
+              radius: 30,
+              backgroundImage: user?.avatar_url != null
+                  ? CachedNetworkImageProvider('${user?.avatar_url}')
+                  : null,
+              child: user?.avatar_url == null
+                  ? const Icon(Icons.account_circle, size: 56)
+                  : null,
+            ),
             title: Row(
               children: [
                 Flexible(
