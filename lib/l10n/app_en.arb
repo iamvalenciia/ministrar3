@@ -102,5 +102,11 @@
   "onboardingFindHelp": "Find help requests",
   "onboardingTheHome": "The home screen will present the 5 nearest help requests to your location",
   "onboardingCreate": "Create Help Requests",
-  "onboardingAfter": "After requesting help, the application will not allow you to send another request until you have first provided assistance to a user"
+  "onboardingAfter": "After requesting help, the application will not allow you to send another request until you have first provided assistance to a user",
+  "onboardingRate": "Rate the Help",
+  "onboardingYouCan": "You can rate the help you received from other users, if you place yes the user will increase the number of people helped in their profile",
+  "onboardingFinish": "Finish",
+  "onboardingNext": "Next",
+  "onboardingHelp": "Provide Help",
+  "onboardingHowToHelp": "When you press the 'Help' button, the contact information of the user who requested assistance will be displayed. Use this information to coordinate and provide the necessary help"
 }

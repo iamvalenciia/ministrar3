@@ -11,6 +11,7 @@ import 'provider/l10n_provider.dart';
 import 'provider/loading_provider.dart';
 import 'provider/location_permission.dart';
 import 'provider/my_hr_provider.dart';
+import 'provider/onboarding_provider.dart';
 import 'provider/people_helping_provider.dart';
 import 'provider/theme_provider.dart';
 import 'provider/user_provider.dart';
@@ -77,4 +78,5 @@ final providers = <SingleChildWidget>[
   provider.ChangeNotifierProvider(create: (_) => L10nNotifier()),
   provider.ChangeNotifierProvider(create: (_) => DistanceUnitNotifier()),
   provider.ChangeNotifierProvider(create: (_) => LoadingNotifier()),
+  provider.ChangeNotifierProvider(create: (_) => OnboardingNavigation())
 ];
