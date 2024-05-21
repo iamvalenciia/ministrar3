@@ -105,7 +105,7 @@
   "onboardingCreate": "Create Help Requests",
   "onboardingAfter": "After requesting help, the application will not allow you to send another request until you have first provided assistance to a user",
   "onboardingRate": "Rate the Help",
-  "onboardingYouCan": "You can rate the help you received from other users. By selecting 'Yes,' the user will increase the number of people they have helped on their profile",
+  "onboardingYouCan": "You can rate the help you receive from other users. By selecting 'Yes,' the user will increase the number of people helped on their profile",
   "onboardingFinish": "Finish",
   "onboardingNext": "Next",
   "onboardingHelp": "Provide Help",
