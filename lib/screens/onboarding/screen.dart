@@ -29,14 +29,6 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   }
 
   @override
-  void dispose() {
-    final onboardingNavigation =
-        Provider.of<OnboardingNavigation>(context, listen: false);
-    onboardingNavigation.removeListener(() {});
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final L10nNotifier l10nNotifier =
         Provider.of<L10nNotifier>(context, listen: false);
@@ -119,13 +111,13 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         }
                         return Padding(
                           padding: const EdgeInsets.only(top: 50),
-                          child: Card(
-                            elevation: 20,
+                          child: Card.outlined(
+                            // elevation: 5,
                             child: Container(
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   image: AssetImage(imagePath),
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.contain,
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -153,9 +145,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(bottom: 80, left: 14, right: 14),
+                        const EdgeInsets.only(bottom: 90, left: 14, right: 14),
                     child: Text(AppLocalizations.of(context)!.onboardingTheHome,
-                        style: const TextStyle(fontSize: 22)),
+                        style: const TextStyle(fontSize: 20)),
                   ),
                 ],
               ),
@@ -186,12 +178,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         return Padding(
                           padding: const EdgeInsets.only(top: 50),
                           child: Card(
-                            elevation: 20,
+                            // elevation: 20,
                             child: Container(
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   image: AssetImage(imagePath),
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.contain,
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -219,9 +211,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(bottom: 50, left: 14, right: 14),
+                        const EdgeInsets.only(bottom: 60, left: 14, right: 14),
                     child: Text(AppLocalizations.of(context)!.onboardingAfter,
-                        style: const TextStyle(fontSize: 22)),
+                        style: const TextStyle(fontSize: 20)),
                   ),
                 ],
               ),
@@ -252,12 +244,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         return Padding(
                           padding: const EdgeInsets.only(top: 50),
                           child: Card(
-                            elevation: 20,
+                            // elevation: 20,
                             child: Container(
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   image: AssetImage(imagePath),
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.contain,
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -285,10 +277,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(bottom: 80, left: 14, right: 14),
+                        const EdgeInsets.only(bottom: 60, left: 14, right: 14),
                     child: Text(
                         AppLocalizations.of(context)!.onboardingHowToHelp,
-                        style: const TextStyle(fontSize: 22)),
+                        style: const TextStyle(fontSize: 20)),
                   ),
                 ],
               ),
@@ -319,12 +311,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         return Padding(
                           padding: const EdgeInsets.only(top: 50),
                           child: Card(
-                            elevation: 20,
+                            // elevation: 20,
                             child: Container(
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   image: AssetImage(imagePath),
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.contain,
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -352,9 +344,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(bottom: 50, left: 14, right: 14),
+                        const EdgeInsets.only(bottom: 60, left: 14, right: 14),
                     child: Text(AppLocalizations.of(context)!.onboardingYouCan,
-                        style: const TextStyle(fontSize: 22)),
+                        style: const TextStyle(fontSize: 20)),
                   ),
                 ],
               ),
@@ -375,6 +367,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         await SharedPreferences.getInstance();
                     await prefs.setBool('hasSeenOnboarding', true);
                     navigateTo.go('/');
+                    tabController?.index = 0;
+                    onboardingNavigation.setNavigationIndex(0);
                   } else {
                     onboardingNavigation
                         .setNavigationIndex(tabController!.index);

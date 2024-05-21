@@ -226,6 +226,16 @@ class CustomeNavigationDrawer extends StatelessWidget {
             },
           ),
         ),
+        ListTile(
+          selectedColor: Theme.of(context).colorScheme.primary,
+          title: Text(AppLocalizations.of(context)!.guide),
+          // onboarding icon
+          leading: const Icon(Icons.info),
+          onTap: () {
+            Navigator.pop(context);
+            context.go('/onboarding');
+          },
+        ),
         Selector<UserNotifier, bool>(
           selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
           builder: (_, userExist, __) => ListTile(
