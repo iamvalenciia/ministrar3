@@ -7,7 +7,8 @@ import 'package:timeago/timeago.dart' as timeago;
 import '../../provider/my_hr_provider.dart';
 import '../../provider/people_helping_provider.dart';
 import '../../provider/user_provider.dart';
-import 'help_request_settings.dart';
+import 'people_helping.dart';
+import 'settings.dart';
 
 class HelpRequestForOwners extends StatefulWidget {
   HelpRequestForOwners({super.key});
@@ -17,69 +18,11 @@ class HelpRequestForOwners extends StatefulWidget {
 }
 
 class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
-  String? userResponse;
-
-  void _updateActivityStatusAndHelpRequest(
-      int activityId, bool status, String username) {
-    final peopleHelpingNotifier = context.read<PeopleHelpingNotifier>();
-    final myHelpRequestNotifier = context.read<MyHelpRequestNotifier>();
-    peopleHelpingNotifier.updateActivityStatusAndHelpRequest(
-        activityId, status);
-    if (status) {
-      myHelpRequestNotifier.updateReceiveHelpAt();
-    }
-    setState(() {
-      userResponse = status
-          ? AppLocalizations.of(context)!.ownerResponseYes
-          : AppLocalizations.of(context)!.ownerResponseNo;
-    });
-  }
-
-  Future<void> _showConfirmationDialog(String username, int activityId) async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '@$username',
-                style: const TextStyle(fontSize: 18),
-              ),
-              Text(AppLocalizations.of(context)!.ownerUserHelpsYou,
-                  style: const TextStyle(fontSize: 18)),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(AppLocalizations.of(context)!.ownerResponseYes),
-              onPressed: () {
-                _updateActivityStatusAndHelpRequest(activityId, true, username);
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text(AppLocalizations.of(context)!.ownerResponseNo),
-              onPressed: () {
-                _updateActivityStatusAndHelpRequest(
-                    activityId, false, username);
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final myHelpRequestNotifier = context.read<MyHelpRequestNotifier>();
-    final peopleHelping = context.read<PeopleHelpingNotifier>().peopleHelping;
+    context.read<PeopleHelpingNotifier>();
+
     final helpRequest = myHelpRequestNotifier.myHelpRequest!;
 
     final username = context.select((UserNotifier un) => un.user?.username);
@@ -142,7 +85,7 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
               },
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 5),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -230,65 +173,7 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
               ),
             ),
             const Divider(),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: ListView.builder(
-                  itemCount: peopleHelping?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    final peopleisHelping = peopleHelping?[index];
-                    return ListTile(
-                      leading: CircleAvatar(
-                        radius: 20,
-                        backgroundImage: peopleisHelping?.avatar_url != null
-                            ? CachedNetworkImageProvider(
-                                '${peopleisHelping?.avatar_url}')
-                            : null,
-                        child: peopleisHelping?.avatar_url == null
-                            ? const Icon(Icons.account_circle, size: 40)
-                            : null,
-                      ),
-                      title: Text(
-                        '@${peopleisHelping?.username ?? ''}',
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      subtitle: Selector<PeopleHelpingNotifier, bool?>(
-                        selector: (_, peopleHelpingNotifier) =>
-                            peopleHelpingNotifier.peopleHelping![index].status,
-                        builder: (context, status, _) {
-                          return Text(
-                            '${AppLocalizations.of(context)!.ownerUserHelpsYou}  ${getStatusText(status, context)}',
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).colorScheme.outline),
-                          );
-                        },
-                      ),
-                      trailing: Selector<PeopleHelpingNotifier, bool?>(
-                        selector: (_, peopleHelpingNotifier) =>
-                            peopleHelpingNotifier.peopleHelping![index].status,
-                        builder: (context, status, _) {
-                          if (status == null) {
-                            return Card(
-                              child: IconButton(
-                                color: Theme.of(context).colorScheme.primary,
-                                icon: const Icon(Icons.rate_review),
-                                onPressed: () {
-                                  _showConfirmationDialog(
-                                      peopleisHelping?.username ?? '',
-                                      peopleisHelping?.activity_id ?? 0);
-                                },
-                              ),
-                            );
-                          }
-                          return const SizedBox(width: 0);
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
+            const PeopleHelping()
           ],
         ),
       ),

@@ -225,7 +225,9 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text('${helpRequest.content}',
-                          style: const TextStyle(fontSize: 18)),
+                          style: const TextStyle(
+                            fontSize: 18,
+                          )),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -478,7 +480,8 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                                   AppLocalizations.of(context)!
                                       .helperCalcelhelp,
                                   style: TextStyle(
-                                    color: Theme.of(context).colorScheme.error,
+                                    color:
+                                        Theme.of(context).colorScheme.outline,
                                     overflow: TextOverflow.ellipsis,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -507,22 +510,24 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                     child: Column(
                       children: [
                         const SizedBox(height: 10),
-                        Card.filled(
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    AppLocalizations.of(context)!
-                                        .helperUseTheFollowingInformation,
-                                    style: const TextStyle(
-                                        overflow: TextOverflow.fade),
-                                  ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  AppLocalizations.of(context)!
+                                      .helperUseTheFollowingInformation,
+                                  style: TextStyle(
+                                      overflow: TextOverflow.fade,
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 10),
                         Card.outlined(

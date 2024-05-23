@@ -31,7 +31,8 @@ class _HelpRequestSettingsState extends State<HelpRequestSettings> {
               controller.open();
             }
           },
-          icon: const Icon(Icons.settings),
+          icon: Icon(Icons.settings,
+              color: Theme.of(context).colorScheme.primary),
           tooltip: AppLocalizations.of(context)!.ownersSettings,
         );
       },

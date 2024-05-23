@@ -86,52 +86,40 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   Widget build(BuildContext context) {
     final locationPermissionNotifier =
         Provider.of<LocationPermissionNotifier>(context);
-    return RefreshIndicator(
-      onRefresh: () async {
-        try {
-          fetchData();
-        } catch (e) {
-          if (!context.mounted) {
-            return;
-          }
-          showFlashError(context, 'Error fetching data in the Home screen: $e');
-        }
-      },
-      child: Column(
-        children: <Widget>[
-          Selector<UserNotifier, bool>(
-            selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
-            builder: (_, userExist, __) => Visibility(
-              visible: !userExist &&
-                  locationPermissionNotifier.hasLocationPermission,
-              child: const LoginCard(),
-            ),
+    return Column(
+      children: <Widget>[
+        Selector<UserNotifier, bool>(
+          selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
+          builder: (_, userExist, __) => Visibility(
+            visible:
+                !userExist && locationPermissionNotifier.hasLocationPermission,
+            child: const LoginCard(),
           ),
-          Visibility(
-            visible: !locationPermissionNotifier.hasLocationPermission,
-            child: const LocationCard(),
-          ),
-          Visibility(
-            visible: locationPermissionNotifier.hasLocationPermission,
-            child: const Expanded(child: CustomeTabController()),
-          ),
-          Visibility(
-            visible: !locationPermissionNotifier.hasLocationPermission,
-            child: Center(
-              child: Card.outlined(
-                child: Padding(
-                  padding: const EdgeInsets.all(25),
-                  child: Text(
-                    AppLocalizations.of(context)!.homePleaseLocation,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
+        ),
+        Visibility(
+          visible: !locationPermissionNotifier.hasLocationPermission,
+          child: const LocationCard(),
+        ),
+        Visibility(
+          visible: locationPermissionNotifier.hasLocationPermission,
+          child: const Expanded(child: CustomeTabController()),
+        ),
+        Visibility(
+          visible: !locationPermissionNotifier.hasLocationPermission,
+          child: Center(
+            child: Card.outlined(
+              child: Padding(
+                padding: const EdgeInsets.all(25),
+                child: Text(
+                  AppLocalizations.of(context)!.homePleaseLocation,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -31,7 +32,16 @@ class MyHelpRequest extends StatelessWidget {
                   child: SizedBox(
                     width: 300, // Set a finite width here
                     child: ListTile(
-                      leading: const Icon(Icons.account_circle),
+                      leading: CircleAvatar(
+                        radius: 20,
+                        backgroundImage: myHelpRequest.avatar_url != null
+                            ? CachedNetworkImageProvider(
+                                '${myHelpRequest.avatar_url}')
+                            : null,
+                        child: myHelpRequest.avatar_url == null
+                            ? const Icon(Icons.account_circle, size: 40)
+                            : null,
+                      ),
                       title: Text(
                         username.toString(),
                         overflow: TextOverflow.ellipsis,
@@ -64,22 +74,6 @@ class MyHelpRequest extends StatelessWidget {
                 );
               },
             ),
-          ),
-          const Spacer(),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Wrap(
-                  children: [
-                    Text(
-                      '',
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
         ],
       );

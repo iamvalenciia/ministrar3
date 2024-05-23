@@ -65,6 +65,7 @@
   "ownerUserHelpsYou": "le ayudó a usted?",
   "ownerCongratulations": "¡Felicidades por haber recibido ayuda! Tu solicitud será eliminada automáticamente en 24 horas.",
   "owner24Hours": "24 horas",
+  "ownerNoOneHas": "Nadie se ha unido para ayudar en este momento. Por favor, vuelve más tarde",
   "helperPhoneNumber": "Número de teléfono",
   "helperPhoneNumberCopied": "Número de teléfono copiado al portapapeles",
   "helperXTwitterCopied": "Nombre de usuario copiado al portapapeles",

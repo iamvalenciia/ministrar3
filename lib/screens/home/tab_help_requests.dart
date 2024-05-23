@@ -18,8 +18,10 @@ class HelpRequests extends StatelessWidget {
         .select<HelpRequestsNotifier, bool>((notifier) => notifier.isLoading);
     final error = context
         .select<HelpRequestsNotifier, String?>((notifier) => notifier.error);
+    final HelpRequestsNotifier helpRequestsNotifier =
+        Provider.of<HelpRequestsNotifier>(context, listen: false);
 
-    if (isLoading) {
+    if (isLoading && helpRequestsNotifier.helpRequests == null) {
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -47,7 +49,9 @@ class HelpRequests extends StatelessWidget {
           )));
         }
 
-        return HelpRequestsList(helpRequests: helpRequests);
+        return HelpRequestsList(
+            helpRequests: helpRequests,
+            helpRequestsNotifier: helpRequestsNotifier);
       },
     );
   }
@@ -57,162 +61,155 @@ class HelpRequests extends StatelessWidget {
 //  widget used in the ProfileScreen widget /
 //------------------------------------------/
 class HelpRequestsList extends StatelessWidget {
-  HelpRequestsList({super.key, required this.helpRequests});
+  HelpRequestsList(
+      {super.key,
+      required this.helpRequests,
+      required this.helpRequestsNotifier});
   final List<HelpRequestModel> helpRequests;
+  final HelpRequestsNotifier helpRequestsNotifier;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
-          child: ListView.builder(
-            // scrollDirection: Axis.horizontal,
-            itemCount: helpRequests.length,
-            itemBuilder: (context, index) {
-              final request = helpRequests[index];
-              final userName = request.username.toString();
-              final category = request.category.toString();
-              return GestureDetector(
-                onTap: () => context.go(
-                    '/help-request-for-helpers/${request.help_request_owner_id}'),
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: 280,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundImage: request.avatar_url != null
-                                      ? CachedNetworkImageProvider(
-                                          '${request.avatar_url}')
-                                      : null,
-                                  child: request.avatar_url == null
-                                      ? const Icon(Icons.account_circle,
-                                          size: 40)
-                                      : null,
-                                ),
-                                const SizedBox(width: 18),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '@$userName',
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Selector<HelpRequestsNotifier,
-                                          ({double distance, bool unit})>(
-                                        selector: (_, notifier) => (
-                                          distance: notifier.distances![index],
-                                          unit: notifier.isDistanceInKilometers
-                                        ),
-                                        builder: (_, data, __) {
-                                          final distance = data.distance;
-                                          final isDistanceInKilometers =
-                                              data.unit;
-                                          final unit = isDistanceInKilometers
-                                              ? 'km'
-                                              : 'mi';
-                                          return Text(
-                                            distance != 1.1
-                                                ? '${distance.toStringAsFixed(1)} $unit'
-                                                : AppLocalizations.of(context)!
-                                                    .homeDistance,
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Selector<ActivityNotifier, bool>(
-                                  selector: (_, activityNotifier) =>
-                                      activityNotifier
-                                          .isHelping(request.hr_id.toString()),
-                                  builder: (context, isHelping, _) {
-                                    return isHelping
-                                        ? Icon(
-                                            Icons.volunteer_activism,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .outline,
-                                          )
-                                        : Container();
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          Card.outlined(
-                            child: Padding(
+          child: RefreshIndicator(
+            onRefresh: () async {
+              await helpRequestsNotifier.fetchHelpRequests();
+            },
+            child: ListView.builder(
+              // scrollDirection: Axis.horizontal,
+              itemCount: helpRequests.length,
+              itemBuilder: (context, index) {
+                final request = helpRequests[index];
+                final userName = request.username.toString();
+                final category = request.category.toString();
+                return GestureDetector(
+                  onTap: () => context.go(
+                      '/help-request-for-helpers/${request.help_request_owner_id}'),
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 280,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                request.content.toString(),
-                                overflow: TextOverflow.ellipsis,
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 20,
+                                    backgroundImage: request.avatar_url != null
+                                        ? CachedNetworkImageProvider(
+                                            '${request.avatar_url}')
+                                        : null,
+                                    child: request.avatar_url == null
+                                        ? const Icon(Icons.account_circle,
+                                            size: 40)
+                                        : null,
+                                  ),
+                                  const SizedBox(width: 18),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '@$userName',
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Selector<HelpRequestsNotifier,
+                                            ({double distance, bool unit})>(
+                                          selector: (_, notifier) => (
+                                            distance:
+                                                notifier.distances![index],
+                                            unit:
+                                                notifier.isDistanceInKilometers
+                                          ),
+                                          builder: (_, data, __) {
+                                            final distance = data.distance;
+                                            final isDistanceInKilometers =
+                                                data.unit;
+                                            final unit = isDistanceInKilometers
+                                                ? 'km'
+                                                : 'mi';
+                                            return Text(
+                                              distance != 1.1
+                                                  ? '${distance.toStringAsFixed(1)} $unit'
+                                                  : AppLocalizations.of(
+                                                          context)!
+                                                      .homeDistance,
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Selector<ActivityNotifier, bool>(
+                                    selector: (_, activityNotifier) =>
+                                        activityNotifier.isHelping(
+                                            request.hr_id.toString()),
+                                    builder: (context, isHelping, _) {
+                                      return isHelping
+                                          ? Icon(
+                                              Icons.volunteer_activism,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                            )
+                                          : Container();
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: Row(
-                              children: [
-                                Text(
-                                  timeago.format(request.inserted_at!,
-                                      locale:
-                                          AppLocalizations.of(context)!.locale),
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .outline),
+                            Card.outlined(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  request.content.toString(),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                Text(
-                                  ' / ${AppLocalizations.of(context)!.homeCategory(category)}',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color:
-                                        Theme.of(context).colorScheme.outline,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ],
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    timeago.format(request.inserted_at!,
+                                        locale: AppLocalizations.of(context)!
+                                            .locale),
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .outline),
+                                  ),
+                                  Text(
+                                    ' / ${AppLocalizations.of(context)!.homeCategory(category)}',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color:
+                                          Theme.of(context).colorScheme.outline,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.end,
-        //   children: [
-        //     Padding(
-        //       padding: const EdgeInsets.all(8.0),
-        //       child: Wrap(
-        //         children: [
-        //           Text(
-        //             AppLocalizations.of(context)!.homeScrollToTheRight,
-        //             overflow: TextOverflow.ellipsis,
-        //             style: TextStyle(
-        //               fontSize: 14,
-        //               color: Theme.of(context).colorScheme.outline,
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   ],
-        // ),
       ],
     );
   }

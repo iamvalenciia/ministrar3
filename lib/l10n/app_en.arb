@@ -65,6 +65,7 @@
   "ownerUserHelpsYou": "helped you?",
   "ownerCongratulations": "Congratulations on receiving help! Your request will automatically be deleted in 24 hours",
   "owner24Hours": "24 hours",
+  "ownerNoOneHas": "No one has joined to help at the moment. Please check back later",
   "helperPhoneNumber": "Phone Number",
   "helperPhoneNumberCopied": "Phone number copied to clipboard",
   "helperXTwitterCopied": "Username copied to clipboard",
