@@ -10,6 +10,7 @@ import '../../provider/loading_provider.dart';
 import '../../provider/my_hr_provider.dart';
 import '../../provider/people_helping_provider.dart';
 import '../../provider/user_provider.dart';
+import '../../provider/user_ranking_provider.dart';
 
 class SigninGoogleButton extends StatelessWidget {
   const SigninGoogleButton({super.key});
@@ -43,6 +44,8 @@ class SigninGoogleButton extends StatelessWidget {
                     final helpRequests = contextRead<HelpRequestsNotifier>();
                     final activities = contextRead<ActivityNotifier>();
                     final peopleHelping = contextRead<PeopleHelpingNotifier>();
+                    final userRankingNotifier =
+                        contextRead<UserRankingNotifier>();
 
                     userNotifier.updateLoginStatus();
 
@@ -52,7 +55,8 @@ class SigninGoogleButton extends StatelessWidget {
                         myHelpRequest.fetchMyHelpRequest(),
                         activities.fetchTheLastFourActivities(),
                         activities.fetchHelpActivities(),
-                        peopleHelping.fetchPeopleHelpingInMyHelpRequest()
+                        peopleHelping.fetchPeopleHelpingInMyHelpRequest(),
+                        userRankingNotifier.fetchUserRakingAndNeighbors()
                       ],
                     );
 

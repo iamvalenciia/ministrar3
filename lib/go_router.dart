@@ -3,7 +3,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'provider/activity_provider.dart';
 import 'provider/close_hrs_provider.dart';
@@ -19,6 +18,7 @@ import 'screens/home/screen.dart';
 import 'screens/login/screen.dart';
 import 'screens/onboarding/screen.dart';
 import 'screens/profile/screen.dart';
+import 'screens/ranking/screen.dart';
 import 'screens/settings/screent.dart';
 import 'utility_functions.dart';
 
@@ -52,6 +52,8 @@ final goRouter = GoRouter(
             appBarTitle = AppLocalizations.of(context)!.createHelpRequest;
           } else if (state.fullPath == '/settings') {
             appBarTitle = AppLocalizations.of(context)!.settings;
+          } else if (state.fullPath == '/ranking') {
+            appBarTitle = AppLocalizations.of(context)!.rankingTitle;
           } else if (state.fullPath == '/onboarding') {
             return const OnboardingScreen();
           }
@@ -89,7 +91,10 @@ final goRouter = GoRouter(
                             onPressed: () => context.go('/'),
                             icon: const Icon(Icons.arrow_back))
                         : null,
-            externalAppBarTitle: Text(appBarTitle),
+            externalAppBarTitle: Text(
+              appBarTitle,
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            ),
             externalDrawer:
                 state.fullPath == '/' ? const CustomeNavigationDrawer() : null,
           );
@@ -133,6 +138,10 @@ final goRouter = GoRouter(
           createGoRoute(
             path: '/onboarding',
             childBuilder: (state) => const OnboardingScreen(),
+          ),
+          createGoRoute(
+            path: '/ranking',
+            childBuilder: (state) => const UserRakingList(),
           ),
           // GoRoute(
           //   path: '/onboarding',
@@ -207,6 +216,19 @@ class CustomeNavigationDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               context.go('/account');
+            },
+          ),
+        ),
+        Selector<UserNotifier, bool>(
+          selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
+          builder: (_, userExist, __) => ListTile(
+            enabled: userExist,
+            selectedColor: Theme.of(context).colorScheme.primary,
+            title: Text(AppLocalizations.of(context)!.rankingTitle),
+            leading: const Icon(Icons.leaderboard),
+            onTap: () {
+              Navigator.pop(context);
+              context.go('/ranking');
             },
           ),
         ),

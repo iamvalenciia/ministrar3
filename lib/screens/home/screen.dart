@@ -11,8 +11,8 @@ import '../../provider/location_permission.dart';
 import '../../provider/my_hr_provider.dart';
 import '../../provider/people_helping_provider.dart';
 import '../../provider/user_provider.dart';
+import '../../provider/user_ranking_provider.dart';
 import '../../services/supabase.dart';
-import '../../utility_functions.dart';
 import 'location_card.dart';
 import 'login_card.dart';
 import 'tab_controller.dart';
@@ -32,6 +32,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
         Provider.of<UserNotifier>(context, listen: false);
     final ActivityNotifier activityNotifier =
         Provider.of<ActivityNotifier>(context, listen: false);
+    final UserRankingNotifier userRankingNotifier =
+        Provider.of<UserRankingNotifier>(context, listen: false);
     userNotifier.updateLoginStatus();
     Geolocator.checkPermission().then((value) {
       if (value == LocationPermission.whileInUse ||
@@ -54,6 +56,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
         userNotifier.fetchUserProfile(),
         activityNotifier.fetchTheLastFourActivities(),
         activityNotifier.fetchHelpActivities(),
+        userRankingNotifier.fetchUserRakingAndNeighbors()
       ]);
     }
   }

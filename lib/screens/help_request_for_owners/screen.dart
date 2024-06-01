@@ -110,7 +110,7 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
                                   final unit =
                                       isDistanceInKilometers ? 'km' : 'mi';
                                   return Text(
-                                    distance != 1.1
+                                    distance != null
                                         ? '${distance.toStringAsFixed(1)} $unit'
                                         : AppLocalizations.of(context)!
                                             .homeDistance,

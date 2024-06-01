@@ -43,7 +43,8 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
             TextFormField(
               style: const TextStyle(fontSize: 18),
               controller: _usernameController,
-              decoration: const InputDecoration(labelText: 'Username'),
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.username),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return AppLocalizations.of(context)!

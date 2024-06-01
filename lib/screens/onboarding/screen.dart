@@ -25,7 +25,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 5, vsync: this);
+    tabController = TabController(length: 6, vsync: this);
   }
 
   @override
@@ -65,16 +65,15 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                             fontSize: 20,
                             color: Theme.of(context).colorScheme.outline)),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 80),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         AppLocalizations.of(context)!.onboardingPleaseSelect,
                         style: TextStyle(
-                            fontSize: 20,
-                            color:
-                                Theme.of(context).colorScheme.outlineVariant),
+                            fontSize: 16,
+                            color: Theme.of(context).colorScheme.outline),
                       ),
                     ],
                   ),
@@ -137,8 +136,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color:
-                                  Theme.of(context).colorScheme.outlineVariant),
+                              color: Theme.of(context).colorScheme.outline),
                         ),
                       ],
                     ),
@@ -177,7 +175,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         }
                         return Padding(
                           padding: const EdgeInsets.only(top: 50),
-                          child: Card(
+                          child: Card.outlined(
                             // elevation: 20,
                             child: Container(
                               decoration: BoxDecoration(
@@ -203,8 +201,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color:
-                                  Theme.of(context).colorScheme.outlineVariant),
+                              color: Theme.of(context).colorScheme.outline),
                         ),
                       ],
                     ),
@@ -213,7 +210,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     padding:
                         const EdgeInsets.only(bottom: 60, left: 14, right: 14),
                     child: Text(AppLocalizations.of(context)!.onboardingAfter,
-                        style: const TextStyle(fontSize: 20)),
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.normal)),
                   ),
                 ],
               ),
@@ -243,7 +241,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         }
                         return Padding(
                           padding: const EdgeInsets.only(top: 50),
-                          child: Card(
+                          child: Card.outlined(
                             // elevation: 20,
                             child: Container(
                               decoration: BoxDecoration(
@@ -269,8 +267,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color:
-                                  Theme.of(context).colorScheme.outlineVariant),
+                              color: Theme.of(context).colorScheme.outline),
                         ),
                       ],
                     ),
@@ -310,7 +307,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         }
                         return Padding(
                           padding: const EdgeInsets.only(top: 50),
-                          child: Card(
+                          child: Card.outlined(
                             // elevation: 20,
                             child: Container(
                               decoration: BoxDecoration(
@@ -336,8 +333,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color:
-                                  Theme.of(context).colorScheme.outlineVariant),
+                              color: Theme.of(context).colorScheme.outline),
                         ),
                       ],
                     ),
@@ -346,6 +342,72 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     padding:
                         const EdgeInsets.only(bottom: 60, left: 14, right: 14),
                     child: Text(AppLocalizations.of(context)!.onboardingYouCan,
+                        style: const TextStyle(fontSize: 20)),
+                  ),
+                ],
+              ),
+              // PAGE #6 - RANKING
+              Column(
+                children: [
+                  Expanded(
+                    child: Selector<L10nNotifier, bool>(
+                      selector: (_, l10nNotifier) =>
+                          // ignore: avoid_bool_literals_in_conditional_expressions
+                          l10nNotifier.appLocale == const Locale('en')
+                              ? true
+                              : false,
+                      builder: (_, isEnglish, __) {
+                        final isDarkModeOn =
+                            themeProvider.themeDataStyle == ThemeDataStyle.dark;
+                        String imagePath;
+
+                        if (isEnglish) {
+                          imagePath = isDarkModeOn
+                              ? 'assets/app_images/ranking_dark_en.png'
+                              : 'assets/app_images/ranking_light_en.png';
+                        } else {
+                          imagePath = isDarkModeOn
+                              ? 'assets/app_images/ranking_dark_es.png'
+                              : 'assets/app_images/ranking_light_es.png';
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 50),
+                          child: Card.outlined(
+                            // elevation: 20,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(imagePath),
+                                  fit: BoxFit.contain,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 90, bottom: 20, left: 14),
+                    child: Row(
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.rankingTitle,
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.outline),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: 60, left: 14, right: 14),
+                    child: Text(
+                        AppLocalizations.of(context)!.rankingDescription,
                         style: const TextStyle(fontSize: 20)),
                   ),
                 ],
@@ -362,7 +424,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               TextButton(
                 onPressed: () async {
                   final navigateTo = GoRouter.of(context);
-                  if (tabController?.index == 4) {
+                  if (tabController?.index == 5) {
                     final SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     await prefs.setBool('hasSeenOnboarding', true);
@@ -382,7 +444,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 child: Selector<OnboardingNavigation, bool>(
                   selector: (_, onboardingNavigation) =>
                       // ignore: avoid_bool_literals_in_conditional_expressions
-                      onboardingNavigation.navigationIndex == 4 ? true : false,
+                      onboardingNavigation.navigationIndex == 5 ? true : false,
                   builder: (_, isNavigationIndex3, __) => Text(
                     isNavigationIndex3
                         ? AppLocalizations.of(context)!.onboardingFinish

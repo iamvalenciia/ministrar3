@@ -4,15 +4,18 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:tuple/tuple.dart';
 
 import '../../models/activity_model/activity_model.dart';
 import '../../models/user_model/user_model.dart';
 import '../../provider/activity_provider.dart';
 import '../../provider/loading_provider.dart';
+import '../../provider/location_permission.dart';
 import '../../provider/people_helping_provider.dart';
 import '../../provider/user_provider.dart';
 import '../../services/supabase.dart';
 import '../../utility_functions.dart';
+import '../home/username_card.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -31,10 +34,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final peopleHelped = context.read<UserNotifier>().peopleHelped;
     final activityNotifier = context.read<ActivityNotifier>();
     final peopleHelpingNotifier = context.read<PeopleHelpingNotifier>();
+    final locationPermissionNotifier =
+        Provider.of<LocationPermissionNotifier>(context);
 
     return Scaffold(
       body: Column(
         children: [
+          Selector<UserNotifier, Tuple2<bool, String?>>(
+            selector: (_, userNotifier) => Tuple2(
+                userNotifier.isUserLoggedIn, userNotifier.user?.username),
+            builder: (_, userData, __) => Visibility(
+              visible: userData.item1 &&
+                  locationPermissionNotifier.hasLocationPermission &&
+                  userData.item2 == null,
+              child: const UsernameCard(),
+            ),
+          ),
           ListTile(
             leading: CircleAvatar(
               radius: 30,
@@ -70,7 +85,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           controller.open();
                         }
                       },
-                      icon: const Icon(Icons.more_vert),
+                      icon: Icon(Icons.settings,
+                          color: Theme.of(context).colorScheme.primary),
                     );
                   },
                   menuChildren: <Widget>[

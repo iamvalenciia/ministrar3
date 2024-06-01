@@ -87,6 +87,8 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
                       .createThisAppWilluseYourCurrentLocation)),
             ),
             const SizedBox(height: 20),
+            Text(AppLocalizations.of(context)!.createSelectCategory,
+                style: TextStyle(color: Theme.of(context).colorScheme.outline)),
             CategoryChoice(
               myHelpRequestNotifier: myHelpRequestNotifier,
               selectedCategory: dropdownValue,
@@ -101,8 +103,9 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
               controller: _contentController,
               maxLength: 240,
               maxLines: 6,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: AppLocalizations.of(context)!.createTypeYouhelp,
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {

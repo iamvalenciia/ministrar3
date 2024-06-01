@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../models/people_helping_in_my_hr/people_helping_in_my_hr.dart';
 import '../../provider/my_hr_provider.dart';
 import '../../provider/people_helping_provider.dart';

@@ -15,7 +15,7 @@ class MyHelpRequestNotifier extends ChangeNotifier {
   }
 
   HelpRequestModel? _myHelpRequest;
-  double? _distance;
+  double? _distance = 0.0;
   bool _isLoading = true;
   bool isFirstLoad = true;
   String? _error;
@@ -34,29 +34,53 @@ class MyHelpRequestNotifier extends ChangeNotifier {
     super.dispose();
   }
 
-  void _updateDistance(Position position) {
+  void _updateDistance(Position? position) {
+    if (position == null) {
+      developer.log('Position is null', name: 'MyHelpRequestNotifier');
+      return;
+    }
+
     final double userLat = position.latitude;
     final double userLong = position.longitude;
 
     if (_myHelpRequest != null) {
       final double helpRequestLat = _myHelpRequest!.lat ?? 0.0;
       final double helpRequestLong = _myHelpRequest!.long ?? 0.0;
-      _distance = Geolocator.distanceBetween(
-            userLat,
-            userLong,
-            helpRequestLat,
-            helpRequestLong,
-          ) /
-          1000; // Convert meters to kilometers
+      _distance = calculateDistance(
+        userLat,
+        userLong,
+        helpRequestLat,
+        helpRequestLong,
+        _isDistanceInKilometers,
+      );
+    }
+    developer.log('Distance updated: $_distance km',
+        name: 'MyHelpRequestNotifier');
+    notifyListeners();
+  }
 
-      // Convert to miles if _isDistanceInKilometers is false
-      if (!_isDistanceInKilometers) {
-        _distance = _distance! *
-            0.621371; // 1 kilometer is approximately 0.621371 miles
-      }
+  double calculateDistance(
+    double userLat,
+    double userLong,
+    double helpRequestLat,
+    double helpRequestLong,
+    bool isDistanceInKilometers,
+  ) {
+    double distance = Geolocator.distanceBetween(
+          userLat,
+          userLong,
+          helpRequestLat,
+          helpRequestLong,
+        ) /
+        1000; // Convert meters to kilometers
+
+    // Convert to miles if _isDistanceInKilometers is false
+    if (!isDistanceInKilometers) {
+      distance =
+          distance * 0.621371; // 1 kilometer is approximately 0.621371 miles
     }
 
-    notifyListeners();
+    return distance;
   }
 
   Future<void> _loadDistancePreference() async {

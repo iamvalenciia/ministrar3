@@ -15,6 +15,7 @@ import 'provider/onboarding_provider.dart';
 import 'provider/people_helping_provider.dart';
 import 'provider/theme_provider.dart';
 import 'provider/user_provider.dart';
+import 'provider/user_ranking_provider.dart';
 import 'services/supabase.dart';
 
 Future<void> main() async {
@@ -57,10 +58,7 @@ class _MyAppState extends State<MyApp> {
 final providers = <SingleChildWidget>[
   // Async Network // Get db data
   // fetchHelpRequests is call when:
-  //            # Login with google
-  //            # Location card
-  //            # Home Screen
-  //            # When LogOut
+
   provider.ChangeNotifierProvider(create: (_) => HelpRequestsNotifier()),
   // Async Network // Get db data
   provider.ChangeNotifierProvider(create: (_) => UserNotifier()),
@@ -78,5 +76,6 @@ final providers = <SingleChildWidget>[
   provider.ChangeNotifierProvider(create: (_) => L10nNotifier()),
   provider.ChangeNotifierProvider(create: (_) => DistanceUnitNotifier()),
   provider.ChangeNotifierProvider(create: (_) => LoadingNotifier()),
-  provider.ChangeNotifierProvider(create: (_) => OnboardingNavigation())
+  provider.ChangeNotifierProvider(create: (_) => OnboardingNavigation()),
+  provider.ChangeNotifierProvider(create: (_) => UserRankingNotifier())
 ];

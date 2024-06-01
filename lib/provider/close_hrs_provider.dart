@@ -17,7 +17,9 @@ class HelpRequestsNotifier extends ChangeNotifier {
   HelpRequestsNotifier() {
     _loadDistancePreference();
     _positionStreamSubscription = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(),
+      locationSettings: const LocationSettings(
+        distanceFilter: 10,
+      ),
     ).listen(_updateDistances);
   }
 
