@@ -81,7 +81,7 @@ class MyHelpRequest extends StatelessWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(
+          FilledButton(
             onPressed:
                 userExist ? () => context.go('/help-request-form') : null,
             child: Row(

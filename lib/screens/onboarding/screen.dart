@@ -1,3 +1,4 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -21,11 +22,30 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     with TickerProviderStateMixin {
   final PageController _controller = PageController();
   TabController? tabController;
+  int currentPageIndex = 0; // Track the current page index
 
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 6, vsync: this);
+    BackButtonInterceptor.add(myInterceptor, zIndex: 2, name: 'SomeName');
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.removeByName('SomeName');
+    super.dispose();
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    if (currentPageIndex != 0) {
+      _controller.previousPage(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeIn,
+      );
+      return true; // Prevent the default back button action
+    }
+    return true;
   }
 
   @override
@@ -42,6 +62,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         Expanded(
           child: PageView(
             onPageChanged: (index) {
+              setState(() {
+                currentPageIndex = index; // Update the current page index
+              });
               onboardingNavigation.setNavigationIndex(index);
               tabController?.index = index;
             },
@@ -85,69 +108,76 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 ],
               ),
               // PAGE #2 - Find Opportunities
-              Column(
-                children: [
-                  Expanded(
-                    child: Selector<L10nNotifier, bool>(
-                      selector: (_, l10nNotifier) =>
-                          // ignore: avoid_bool_literals_in_conditional_expressions
-                          l10nNotifier.appLocale == const Locale('en')
-                              ? true
-                              : false,
-                      builder: (_, isEnglish, __) {
-                        final isDarkModeOn =
-                            themeProvider.themeDataStyle == ThemeDataStyle.dark;
-                        String imagePath;
+              PopScope(
+                canPop: true,
+                onPopInvoked: (bool didPop) async {
+                  Navigator.pop(context);
+                },
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Selector<L10nNotifier, bool>(
+                        selector: (_, l10nNotifier) =>
+                            // ignore: avoid_bool_literals_in_conditional_expressions
+                            l10nNotifier.appLocale == const Locale('en')
+                                ? true
+                                : false,
+                        builder: (_, isEnglish, __) {
+                          final isDarkModeOn = themeProvider.themeDataStyle ==
+                              ThemeDataStyle.dark;
+                          String imagePath;
 
-                        if (isEnglish) {
-                          imagePath = isDarkModeOn
-                              ? 'assets/app_images/5help_dark_en.png'
-                              : 'assets/app_images/5help_light_en.png';
-                        } else {
-                          imagePath = isDarkModeOn
-                              ? 'assets/app_images/5help_dark_es.png'
-                              : 'assets/app_images/5help_light_es.png';
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 50),
-                          child: Card.outlined(
-                            // elevation: 5,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(imagePath),
-                                  fit: BoxFit.contain,
+                          if (isEnglish) {
+                            imagePath = isDarkModeOn
+                                ? 'assets/app_images/5help_dark_en.png'
+                                : 'assets/app_images/5help_light_en.png';
+                          } else {
+                            imagePath = isDarkModeOn
+                                ? 'assets/app_images/5help_dark_es.png'
+                                : 'assets/app_images/5help_light_es.png';
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 50),
+                            child: Card.outlined(
+                              // elevation: 5,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(imagePath),
+                                    fit: BoxFit.contain,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                                borderRadius: BorderRadius.circular(12),
                               ),
                             ),
+                          );
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 90, bottom: 20, left: 14),
+                      child: Row(
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.onboardingFindHelp,
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.outline),
                           ),
-                        );
-                      },
+                        ],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 90, bottom: 20, left: 14),
-                    child: Row(
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.onboardingFindHelp,
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.outline),
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          bottom: 90, left: 14, right: 14),
+                      child: Text(
+                          AppLocalizations.of(context)!.onboardingTheHome,
+                          style: const TextStyle(fontSize: 20)),
                     ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(bottom: 90, left: 14, right: 14),
-                    child: Text(AppLocalizations.of(context)!.onboardingTheHome,
-                        style: const TextStyle(fontSize: 20)),
-                  ),
-                ],
+                  ],
+                ),
               ),
               // PAGE #3 - Create Help Requests
               Column(

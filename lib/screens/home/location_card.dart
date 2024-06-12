@@ -13,7 +13,7 @@ class LocationCard extends StatelessWidget {
     final locationPermissionNotifier =
         Provider.of<LocationPermissionNotifier>(context, listen: false);
 
-    return Card(
+    return Card.filled(
       child: ListTile(
         leading: const Icon(Icons.my_location),
         title: Text(AppLocalizations.of(context)!.homeAllowLocation),

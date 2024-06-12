@@ -16,12 +16,14 @@ class ActivityNotifier extends ChangeNotifier {
   List<Activity>? _helpActivities;
   bool _wasLastActivityHelpTrue = false;
   bool _isHelpActivityLoading = true;
+  bool _isLoadingHelpButton = false;
   final Map<String, bool> _isHelping = {};
 
   List<Activity>? get activities => _last4Activities;
   List<Activity>? get helpActivities => _helpActivities;
   bool get isHelpActivityLoading => _isHelpActivityLoading;
   bool get wasLastActivityHelpTrue => _wasLastActivityHelpTrue;
+  bool get isLoadingHelpBotton => _isLoadingHelpButton;
 
   // Add a new method to get the helping state for a specific user
   bool isHelping(String helpRequestId) {
@@ -114,6 +116,8 @@ class ActivityNotifier extends ChangeNotifier {
 
   Future<void> createHelpActivity(
       int helpRequestId, String helpRequestOwnerid) async {
+    _isLoadingHelpButton = true;
+    notifyListeners();
     try {
       final activityOwner = supabase.auth.currentUser?.id;
       await supabase.from('activities').insert([
@@ -136,10 +140,15 @@ class ActivityNotifier extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       developer.log('Error in createHelpActivity', error: e);
+    } finally {
+      _isLoadingHelpButton = false;
+      notifyListeners();
     }
   }
 
   Future<void> removeMyHelpActivity(int helpRequestId) async {
+    _isLoadingHelpButton = true;
+    notifyListeners();
     final activity = _helpActivities?.firstWhere(
       (activity) => activity.help_request_id == helpRequestId,
     );
@@ -157,6 +166,9 @@ class ActivityNotifier extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       developer.log(e.toString(), name: 'ERROR removeMyHelpActivity');
+    } finally {
+      _isLoadingHelpButton = false;
+      notifyListeners();
     }
   }
 

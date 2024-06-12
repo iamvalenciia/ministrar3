@@ -24,7 +24,7 @@ class SigninGoogleButton extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 60),
-      child: ElevatedButton(
+      child: FilledButton(
         onPressed: isLoggingIn
             ? null
             : () async {

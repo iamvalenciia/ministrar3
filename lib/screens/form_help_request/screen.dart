@@ -173,7 +173,7 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
             ),
             const SizedBox(height: 20),
             Consumer<LoadingNotifier>(
-              builder: (_, loadingNotifier, __) => ElevatedButton(
+              builder: (_, loadingNotifier, __) => FilledButton(
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     loadingNotifier.setLoading(true);

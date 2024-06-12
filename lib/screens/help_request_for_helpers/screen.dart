@@ -1,16 +1,21 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 import '../../provider/activity_provider.dart';
 import '../../provider/close_hrs_provider.dart';
+import '../../provider/location_permission.dart';
+import '../../provider/user_provider.dart';
 import '../../services/supabase.dart';
 import '../../utility_functions.dart';
+import '../home/login_card.dart';
 
 class HelpRequestForHelpers extends StatefulWidget {
   HelpRequestForHelpers({super.key, required this.helpRequestUserId});
@@ -24,6 +29,23 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
   String? userResponse;
 
   @override
+  void initState() {
+    super.initState();
+    BackButtonInterceptor.add(myInterceptor, zIndex: 2, name: 'SomeName');
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.removeByName('SomeName');
+    super.dispose();
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    context.go('/');
+    return true;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final userId = supabase.auth.currentUser?.id;
     final helpRequestsNotifier = context.read<HelpRequestsNotifier>();
@@ -35,6 +57,8 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
         (r) => r.help_request_owner_id == widget.helpRequestUserId);
     final bool? helped =
         context.read<ActivityNotifier>().helped(helpRequest!.hr_id.toString());
+    final locationPermissionNotifier =
+        Provider.of<LocationPermissionNotifier>(context);
 
     final List<Widget> tabs = [];
     final List<Widget> tabViews = [];
@@ -441,14 +465,19 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                 children: [
                   const SizedBox(width: 1),
                   Expanded(
-                    child: Selector<ActivityNotifier, bool>(
-                      selector: (_, activityNotifier) => activityNotifier
-                          .isHelping(helpRequest.hr_id.toString()),
-                      builder: (context, isHelping, _) {
-                        return ElevatedButton(
+                    child: Selector<ActivityNotifier,
+                        ({bool isHelping, bool isLoading})>(
+                      selector: (_, activityNotifier) => (
+                        isHelping: activityNotifier.isHelping(
+                          helpRequest.hr_id.toString(),
+                        ),
+                        isLoading: activityNotifier.isLoadingHelpBotton,
+                      ),
+                      builder: (context, data, _) {
+                        return FilledButton(
                           onPressed: userId != null
                               ? () {
-                                  if (isHelping) {
+                                  if (data.isHelping) {
                                     context
                                         .read<ActivityNotifier>()
                                         .removeMyHelpActivity(
@@ -470,33 +499,36 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
                                   }
                                 }
                               : null,
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: isHelping && userId != null
-                              ? Text(
-                                  AppLocalizations.of(context)!
-                                      .helperCalcelhelp,
-                                  style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.outline,
-                                    overflow: TextOverflow.ellipsis,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
-                              : Text(
-                                  AppLocalizations.of(context)!.helperHelp,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                          child: data.isLoading
+                              ? const LinearProgressIndicator()
+                              : data.isHelping && userId != null
+                                  ? Text(
+                                      AppLocalizations.of(context)!
+                                          .helperCalcelhelp,
+                                      style: const TextStyle(
+                                        overflow: TextOverflow.ellipsis,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                  : Text(
+                                      AppLocalizations.of(context)!.helperHelp,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                         );
                       },
                     ),
                   ),
                 ],
+              ),
+            ),
+            Selector<UserNotifier, bool>(
+              selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
+              builder: (_, userExist, __) => Visibility(
+                visible: !userExist &&
+                    locationPermissionNotifier.hasLocationPermission,
+                child: const LoginCard(),
               ),
             ),
             Visibility(

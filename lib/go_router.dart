@@ -10,6 +10,7 @@ import 'provider/location_permission.dart';
 import 'provider/my_hr_provider.dart';
 import 'provider/people_helping_provider.dart';
 import 'provider/user_provider.dart';
+import 'screens/donation/screen.dart';
 import 'screens/form_help_request/screen.dart';
 import 'screens/form_username/screen.dart';
 import 'screens/help_request_for_helpers/screen.dart';
@@ -54,6 +55,8 @@ final goRouter = GoRouter(
             appBarTitle = AppLocalizations.of(context)!.settings;
           } else if (state.fullPath == '/ranking') {
             appBarTitle = AppLocalizations.of(context)!.rankingTitle;
+          } else if (state.fullPath == '/donation') {
+            appBarTitle = AppLocalizations.of(context)!.donation;
           } else if (state.fullPath == '/onboarding') {
             return const OnboardingScreen();
           }
@@ -143,6 +146,10 @@ final goRouter = GoRouter(
             path: '/ranking',
             childBuilder: (state) => const UserRakingList(),
           ),
+          createGoRoute(
+            path: '/donation',
+            childBuilder: (state) => const DonationScreen(),
+          ),
           // GoRoute(
           //   path: '/onboarding',
           //   pageBuilder: (BuildContext context, GoRouterState state) {
@@ -219,6 +226,16 @@ class CustomeNavigationDrawer extends StatelessWidget {
             },
           ),
         ),
+        // add a donation buttoN
+        // ListTile(
+        //   selectedColor: Theme.of(context).colorScheme.primary,
+        //   title: Text(AppLocalizations.of(context)!.donation),
+        //   leading: const Icon(Icons.monetization_on),
+        //   onTap: () {
+        //     Navigator.pop(context);
+        //     context.go('/donation');
+        //   },
+        // ),
         Selector<UserNotifier, bool>(
           selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
           builder: (_, userExist, __) => ListTile(

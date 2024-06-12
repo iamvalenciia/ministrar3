@@ -1,3 +1,4 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -26,6 +27,23 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool isExpanded = false; // State variable to track expansion
+
+  @override
+  void initState() {
+    super.initState();
+    BackButtonInterceptor.add(myInterceptor, zIndex: 2, name: 'SomeName');
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.removeByName('SomeName');
+    super.dispose();
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    context.go('/');
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {

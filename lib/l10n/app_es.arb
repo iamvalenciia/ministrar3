@@ -31,12 +31,13 @@
   "loginSignIn": "Iniciar sesión",
   "loginOrCreateAccount": "Iniciar sesión o crear una cuenta",
   "loginjoinWithGoogle": "Unirse con Google",
-  "homePleaseLoginToContinue": "Inicia sesión para interactuar con la app",
-  "homeLogin": "Acceder",
+  "homePleaseLoginToContinue": "Inicia sesión para interactuar",
+  "homeLogin": "Iniciar sesión",
   "homeHelpRequests": "Solicitudes",
   "homeMyHelpRequests": "Mi solicitud",
   "homeNoHelpRequests": "Actualmente no hay solicitudes de ayuda disponibles. Por favor, vuelve a comprobar más tarde para ver las actualizaciones",
   "homeDistance": "Distancia ...",
+  "homeCategoryWord": "Categoría",
   "homeCategory": "{category, select, food{Alimentos} medicine{Medicina} others{Otros} other{category}}",
   "@homeCategory": {
     "description": "Un mensaje de categoría",
@@ -121,5 +122,6 @@
   "rankingPeopleHelped": "Personas Ayudadas",
   "rankingUser": "Usuario",
   "rankingInfo": "Esta tabla muestra su posición actual en comparación con otros usuarios. Cuantas más personas ayudes, mejor será su clasificación en la tabla",
-  "ranking": "Clasificación"
+  "ranking": "Clasificación",
+  "donation": "Donación"
 }

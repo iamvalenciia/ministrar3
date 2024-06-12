@@ -115,8 +115,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                 padding: const EdgeInsets.all(25),
                 child: Text(
                   AppLocalizations.of(context)!.homePleaseLocation,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold),
+                  style: const TextStyle(),
                 ),
               ),
             ),

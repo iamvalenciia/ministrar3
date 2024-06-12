@@ -7,7 +7,7 @@ class LoginCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Card.filled(
       child: ListTile(
         leading: const Icon(Icons.login),
         title: Row(

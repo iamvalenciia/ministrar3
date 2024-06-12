@@ -31,12 +31,13 @@
   "loginSignIn": "Sign In",
   "loginOrCreateAccount": "Login or Create Account",
   "loginjoinWithGoogle": "Join with Google",
-  "homePleaseLoginToContinue": "Login to interact with the app",
+  "homePleaseLoginToContinue": "Login to interact",
   "homeLogin": "Login",
   "homeHelpRequests": "Help Requests",
   "homeMyHelpRequests": "My Help Request",
   "homeNoHelpRequests": "No help requests are currently available. Please check back later for updates",
   "homeDistance": "Distance ...",
+  "homeCategoryWord": "Category",
   "homeCategory": "{category, select, food{Aliments} medicine{Medicine} others{Others} other{category}}",
   "@homeCategory": {
     "description": "A category message",
@@ -121,5 +122,6 @@
   "rankingPeopleHelped": "People Helped",
   "rankingUser": "User",
   "rankingInfo": "This table shows your current position compared to other users. The more people you help, the better your ranking will be on the table",
-  "ranking": "Ranking"
+  "ranking": "Ranking",
+  "donation": "Donation"
 }

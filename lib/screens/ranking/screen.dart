@@ -1,6 +1,8 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../models/user_ranking_model/user_ranking_model.dart';
 import '../../provider/user_ranking_provider.dart';
@@ -14,6 +16,23 @@ class UserRakingList extends StatefulWidget {
 }
 
 class _UserRakingListState extends State<UserRakingList> {
+  @override
+  void initState() {
+    super.initState();
+    BackButtonInterceptor.add(myInterceptor, zIndex: 2, name: 'SomeName');
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.removeByName('SomeName');
+    super.dispose();
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    context.go('/');
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final UserRankingNotifier userRankingNotifier =
