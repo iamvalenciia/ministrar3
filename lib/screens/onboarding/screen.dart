@@ -28,12 +28,12 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   void initState() {
     super.initState();
     tabController = TabController(length: 6, vsync: this);
-    BackButtonInterceptor.add(myInterceptor, zIndex: 2, name: 'SomeName');
+    BackButtonInterceptor.add(myInterceptor, zIndex: 2, name: 'onboarding');
   }
 
   @override
   void dispose() {
-    BackButtonInterceptor.removeByName('SomeName');
+    BackButtonInterceptor.removeByName('onboarding');
     super.dispose();
   }
 
@@ -72,8 +72,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
             children: [
               // PAGE #1 - Welcome
               Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const SizedBox(height: 40),
                   Text(AppLocalizations.of(context)!.onboardingWelcome,
                       style: TextStyle(
                           fontSize: 22,
@@ -88,96 +88,81 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                             fontSize: 20,
                             color: Theme.of(context).colorScheme.outline)),
                   ),
-                  const SizedBox(height: 80),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.onboardingPleaseSelect,
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Theme.of(context).colorScheme.outline),
-                      ),
-                    ],
-                  ),
+                  const SizedBox(height: 40),
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 28),
                     child: LanguageChoice(l10nNotifier: l10nNotifier),
                   ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    child: ThemeChoice(themeProvider: themeProvider),
+                  ),
                 ],
               ),
               // PAGE #2 - Find Opportunities
-              PopScope(
-                canPop: true,
-                onPopInvoked: (bool didPop) async {
-                  Navigator.pop(context);
-                },
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Selector<L10nNotifier, bool>(
-                        selector: (_, l10nNotifier) =>
-                            // ignore: avoid_bool_literals_in_conditional_expressions
-                            l10nNotifier.appLocale == const Locale('en')
-                                ? true
-                                : false,
-                        builder: (_, isEnglish, __) {
-                          final isDarkModeOn = themeProvider.themeDataStyle ==
-                              ThemeDataStyle.dark;
-                          String imagePath;
+              Column(
+                children: [
+                  Expanded(
+                    child: Selector<L10nNotifier, bool>(
+                      selector: (_, l10nNotifier) =>
+                          // ignore: avoid_bool_literals_in_conditional_expressions
+                          l10nNotifier.appLocale == const Locale('en')
+                              ? true
+                              : false,
+                      builder: (_, isEnglish, __) {
+                        final isDarkModeOn =
+                            themeProvider.themeDataStyle == ThemeDataStyle.dark;
+                        String imagePath;
 
-                          if (isEnglish) {
-                            imagePath = isDarkModeOn
-                                ? 'assets/app_images/5help_dark_en.png'
-                                : 'assets/app_images/5help_light_en.png';
-                          } else {
-                            imagePath = isDarkModeOn
-                                ? 'assets/app_images/5help_dark_es.png'
-                                : 'assets/app_images/5help_light_es.png';
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 50),
-                            child: Card.outlined(
-                              // elevation: 5,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(imagePath),
-                                    fit: BoxFit.contain,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
+                        if (isEnglish) {
+                          imagePath = isDarkModeOn
+                              ? 'assets/app_images/5help_dark_en.png'
+                              : 'assets/app_images/5help_light_en.png';
+                        } else {
+                          imagePath = isDarkModeOn
+                              ? 'assets/app_images/5help_dark_es.png'
+                              : 'assets/app_images/5help_light_es.png';
+                        }
+                        return Card.outlined(
+                          // elevation: 5,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(imagePath),
+                                fit: BoxFit.contain,
                               ),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(top: 90, bottom: 20, left: 14),
-                      child: Row(
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.onboardingFindHelp,
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.outline),
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          bottom: 90, left: 14, right: 14),
-                      child: Text(
-                          AppLocalizations.of(context)!.onboardingTheHome,
-                          style: const TextStyle(fontSize: 20)),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 40, bottom: 20, left: 14),
+                    child: Row(
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.onboardingFindHelp,
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  Theme.of(context).colorScheme.outlineVariant),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: 90, left: 14, right: 14),
+                    child: Text(AppLocalizations.of(context)!.onboardingTheHome,
+                        style: const TextStyle(fontSize: 20)),
+                  ),
+                ],
               ),
               // PAGE #3 - Create Help Requests
               Column(
@@ -203,18 +188,15 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                               ? 'assets/app_images/create_dark_es.png'
                               : 'assets/app_images/create_light_es.png';
                         }
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 50),
-                          child: Card.outlined(
-                            // elevation: 20,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(imagePath),
-                                  fit: BoxFit.contain,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
+                        return Card.outlined(
+                          // elevation: 20,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(imagePath),
+                                fit: BoxFit.contain,
                               ),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                         );
@@ -223,7 +205,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(top: 90, bottom: 20, left: 14),
+                        const EdgeInsets.only(top: 40, bottom: 20, left: 14),
                     child: Row(
                       children: [
                         Text(
@@ -231,7 +213,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.outline),
+                              color:
+                                  Theme.of(context).colorScheme.outlineVariant),
                         ),
                       ],
                     ),
@@ -269,18 +252,15 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                               ? 'assets/app_images/bottom_dark_es.png'
                               : 'assets/app_images/bottom_light_es.png';
                         }
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 50),
-                          child: Card.outlined(
-                            // elevation: 20,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(imagePath),
-                                  fit: BoxFit.contain,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
+                        return Card.outlined(
+                          // elevation: 20,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(imagePath),
+                                fit: BoxFit.contain,
                               ),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                         );
@@ -289,7 +269,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(top: 90, bottom: 20, left: 14),
+                        const EdgeInsets.only(top: 40, bottom: 20, left: 14),
                     child: Row(
                       children: [
                         Text(
@@ -297,7 +277,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.outline),
+                              color:
+                                  Theme.of(context).colorScheme.outlineVariant),
                         ),
                       ],
                     ),
@@ -335,18 +316,15 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                               ? 'assets/app_images/help_dark_es.png'
                               : 'assets/app_images/help_light_es.png';
                         }
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 50),
-                          child: Card.outlined(
-                            // elevation: 20,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(imagePath),
-                                  fit: BoxFit.contain,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
+                        return Card.outlined(
+                          // elevation: 20,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(imagePath),
+                                fit: BoxFit.contain,
                               ),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                         );
@@ -355,7 +333,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(top: 90, bottom: 20, left: 14),
+                        const EdgeInsets.only(top: 40, bottom: 20, left: 14),
                     child: Row(
                       children: [
                         Text(
@@ -363,7 +341,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.outline),
+                              color:
+                                  Theme.of(context).colorScheme.outlineVariant),
                         ),
                       ],
                     ),
@@ -400,18 +379,15 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                               ? 'assets/app_images/ranking_dark_es.png'
                               : 'assets/app_images/ranking_light_es.png';
                         }
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 50),
-                          child: Card.outlined(
-                            // elevation: 20,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage(imagePath),
-                                  fit: BoxFit.contain,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
+                        return Card.outlined(
+                          // elevation: 20,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(imagePath),
+                                fit: BoxFit.contain,
                               ),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
                         );
@@ -420,7 +396,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(top: 90, bottom: 20, left: 14),
+                        const EdgeInsets.only(top: 40, bottom: 20, left: 14),
                     child: Row(
                       children: [
                         Text(
@@ -428,7 +404,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.outline),
+                              color:
+                                  Theme.of(context).colorScheme.outlineVariant),
                         ),
                       ],
                     ),

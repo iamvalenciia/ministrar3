@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,12 +31,14 @@ class HelpRequestsNotifier extends ChangeNotifier {
   String? _error;
   StreamSubscription<Position>? _positionStreamSubscription;
   bool _isDistanceInKilometers = true;
+  Map<String, ColorScheme> _colorSchemes = {};
 
   List<HelpRequestModel>? get helpRequests => _helpRequests;
   List<double>? get distances => _distances;
   bool get isLoading => _isLoading;
   String? get error => _error;
   bool get isDistanceInKilometers => _isDistanceInKilometers;
+  Map<String, ColorScheme> get colorSchemes => _colorSchemes;
 
   // This method is called whenever the user's position updates.
   // It calculates the distance from the user to each help request,
@@ -80,6 +83,11 @@ class HelpRequestsNotifier extends ChangeNotifier {
     _isDistanceInKilometers = !_isDistanceInKilometers;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isDistanceInKilometers', _isDistanceInKilometers);
+
+    // Fetch current position and update distances
+    final Position position = await Geolocator.getCurrentPosition();
+    _updateDistances(position);
+
     notifyListeners(); // Notify listeners to update the UI
   }
 
@@ -127,6 +135,10 @@ class HelpRequestsNotifier extends ChangeNotifier {
               (json) => HelpRequestModel.fromJson(json as Map<String, dynamic>))
           .toList();
       clearError();
+
+      // Prefetch color schemes for the fetched help requests
+      await _fetchColorSchemesForHelpRequests();
+
       // Update the distances list with the new help requests.
       _updateDistances(position);
     } catch (e) {
@@ -183,5 +195,38 @@ class HelpRequestsNotifier extends ChangeNotifier {
         }
       }
     }
+  }
+
+  Future<void> _fetchColorSchemesForHelpRequests() async {
+    if (_helpRequests == null) {
+      return;
+    }
+    final futures = <Future>[];
+    for (final request in _helpRequests!) {
+      futures.add(
+        _getColorSchemeFromImage(request.avatar_url).then((colorScheme) {
+          _colorSchemes[request.hr_id.toString()] = colorScheme;
+          developer.log('Fetched color scheme for request: ${request.hr_id}',
+              name: 'fetchColorSchemes');
+        }).catchError((error) {
+          _colorSchemes[request.hr_id.toString()] = ColorScheme.fromSwatch();
+          developer.log(
+              'Error fetching color scheme for request: ${request.hr_id}, error: $error',
+              name: 'fetchColorSchemesError');
+        }),
+      );
+    }
+    await Future.wait(futures);
+    developer.log('All color schemes: $_colorSchemes',
+        name: 'fetchColorSchemes');
+  }
+
+  Future<ColorScheme> _getColorSchemeFromImage(String? imageUrl) async {
+    if (imageUrl == null) {
+      return ColorScheme.fromSwatch();
+    }
+    return ColorScheme.fromImageProvider(
+      provider: CachedNetworkImageProvider(imageUrl),
+    );
   }
 }

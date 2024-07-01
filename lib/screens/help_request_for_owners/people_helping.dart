@@ -139,24 +139,12 @@ class _PeopleHelpingState extends State<PeopleHelping> {
                       );
                     },
                   ),
-                  trailing: Selector<PeopleHelpingNotifier, bool?>(
-                    selector: (_, notifier) =>
-                        notifier.peopleHelping?[index].status,
-                    builder: (context, status, _) {
-                      if (status == null) {
-                        return Card(
-                          child: IconButton(
-                            color: Theme.of(context).colorScheme.primary,
-                            icon: const Icon(Icons.rate_review),
-                            onPressed: () {
-                              showConfirmationDialog(
-                                  peopleisHelping.username ?? '',
-                                  peopleisHelping.activity_id ?? 0);
-                            },
-                          ),
-                        );
-                      }
-                      return const SizedBox(width: 0);
+                  trailing: IconButton(
+                    color: Theme.of(context).colorScheme.primary,
+                    icon: const Icon(Icons.rate_review),
+                    onPressed: () {
+                      showConfirmationDialog(peopleisHelping.username ?? '',
+                          peopleisHelping.activity_id ?? 0);
                     },
                   ),
                 );

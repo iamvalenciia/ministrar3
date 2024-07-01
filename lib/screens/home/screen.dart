@@ -7,12 +7,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../provider/activity_provider.dart';
 import '../../provider/close_hrs_provider.dart';
+import '../../provider/conectivity_provider.dart';
 import '../../provider/location_permission.dart';
 import '../../provider/my_hr_provider.dart';
 import '../../provider/people_helping_provider.dart';
 import '../../provider/user_provider.dart';
 import '../../provider/user_ranking_provider.dart';
 import '../../services/supabase.dart';
+import '../../utility_functions.dart';
 import 'location_card.dart';
 import 'login_card.dart';
 import 'tab_controller.dart';
@@ -44,10 +46,13 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
             Provider.of<MyHelpRequestNotifier>(context, listen: false);
         final PeopleHelpingNotifier peopleHelpingNotifier =
             Provider.of<PeopleHelpingNotifier>(context, listen: false);
+        Provider.of<HelpRequestsNotifier>(context, listen: false);
+        // final error = Provider.of<HelpRequestsNotifier>(context, listen: false);
 
         helpRequestsNotifier.fetchHelpRequests();
         myHelpRequestNotifier.fetchMyHelpRequest();
         peopleHelpingNotifier.fetchPeopleHelpingInMyHelpRequest();
+        // showFlashError(context, error.toString());
       }
     });
 
@@ -64,7 +69,9 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   @override
   void initState() {
     super.initState();
+
     final navigateTo = GoRouter.of(context);
+
     if (_isFirstLoad) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         // Check if the user has seen the onboarding screen
@@ -89,13 +96,16 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   Widget build(BuildContext context) {
     final locationPermissionNotifier =
         Provider.of<LocationPermissionNotifier>(context);
+    final ConnectivityProvider connectivityStatus =
+        Provider.of<ConnectivityProvider>(context, listen: false);
     return Column(
       children: <Widget>[
         Selector<UserNotifier, bool>(
           selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
           builder: (_, userExist, __) => Visibility(
-            visible:
-                !userExist && locationPermissionNotifier.hasLocationPermission,
+            visible: !userExist &&
+                locationPermissionNotifier.hasLocationPermission &&
+                connectivityStatus.status != ConnectivityStatus.Offline,
             child: const LoginCard(),
           ),
         ),

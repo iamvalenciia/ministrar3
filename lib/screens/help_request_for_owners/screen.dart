@@ -51,7 +51,7 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
         height: MediaQuery.of(context).size.height,
         child: Column(
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             Selector<MyHelpRequestNotifier, DateTime?>(
               selector: (_, notifier) =>
                   notifier.myHelpRequest?.receive_help_at,
@@ -69,7 +69,11 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
                                 child: Text(
                                   AppLocalizations.of(context)!
                                       .ownerCongratulations,
-                                  style: const TextStyle(fontSize: 15),
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .outline),
                                 ),
                               ),
                             ),

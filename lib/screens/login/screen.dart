@@ -15,12 +15,12 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    BackButtonInterceptor.add(myInterceptor, zIndex: 2, name: 'SomeName');
+    BackButtonInterceptor.add(myInterceptor, zIndex: 2, name: 'login');
   }
 
   @override
   void dispose() {
-    BackButtonInterceptor.removeByName('SomeName');
+    BackButtonInterceptor.removeByName('login');
     super.dispose();
   }
 

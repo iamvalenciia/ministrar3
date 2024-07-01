@@ -241,7 +241,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   '${AppLocalizations.of(context)!.profileIsTryingToHelpTo} @${currentActivity.help_request_owner_username}',
-                                  style: const TextStyle(fontSize: 15),
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .outline),
                                 ),
                               ),
                               const Divider(),
@@ -256,7 +260,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   '${AppLocalizations.of(context)!.profileHelpedTo} @${currentActivity.help_request_owner_username} ${timeago.format(currentActivity.status_updated_at!, locale: AppLocalizations.of(context)!.locale)}',
-                                  style: const TextStyle(fontSize: 15),
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .outline),
                                 ),
                               ),
                               const Divider(),
@@ -271,7 +279,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   '${AppLocalizations.of(context)!.profileFailedToHelpTo} @${currentActivity.help_request_owner_username} ${timeago.format(currentActivity.status_updated_at!, locale: AppLocalizations.of(context)!.locale)}',
-                                  style: const TextStyle(fontSize: 15),
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .outline),
                                 ),
                               ),
                               const Divider(),
@@ -285,7 +297,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   '${AppLocalizations.of(context)!.profileCreatedAhelpRequest} ${timeago.format(currentActivity.inserted_at!, locale: AppLocalizations.of(context)!.locale)}',
-                                  style: const TextStyle(fontSize: 15),
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .outline),
                                 ),
                               ),
                               const Divider(),
@@ -299,7 +315,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   '${AppLocalizations.of(context)!.profileActivityTypeNotRecognzed} ${currentActivity.status}, ${AppLocalizations.of(context)!.profileType}: ${currentActivity.activity_type}',
-                                  style: const TextStyle(fontSize: 15),
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .outline),
                                 ),
                               ),
                               const Divider(),

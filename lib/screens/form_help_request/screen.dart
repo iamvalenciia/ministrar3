@@ -1,3 +1,4 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -45,6 +46,7 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
   @override
   void initState() {
     super.initState();
+    BackButtonInterceptor.add(myInterceptor, zIndex: 2, name: 'creating');
     final myHelpRequest = context.read<MyHelpRequestNotifier>().myHelpRequest;
     _contentController = TextEditingController();
     _phoneController = TextEditingController();
@@ -63,11 +65,17 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
 
   @override
   void dispose() {
+    BackButtonInterceptor.removeByName('creating');
     _contentController.dispose();
     _phoneController.dispose();
     _twitterController.dispose();
     _instagramController.dispose();
     super.dispose();
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    context.go('/');
+    return true;
   }
 
   @override
@@ -200,9 +208,7 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
                           );
 
                           if (success) {
-                            activitiesNotifier.createLocalPostActivity();
-
-                            navigateTo.go('/');
+                            navigateTo.go('/help-request-for-owners');
                             messenger.showSnackBar(
                               SnackBar(
                                 backgroundColor:
@@ -212,7 +218,7 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
                               ),
                             );
                           } else if (!success) {
-                            navigateTo.go('/');
+                            navigateTo.go('/help-request-for-owners');
                           }
                         } else {
                           // Create new help request

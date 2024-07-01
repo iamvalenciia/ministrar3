@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import 'provider/activity_provider.dart';
 import 'provider/close_hrs_provider.dart';
+import 'provider/conectivity_provider.dart';
 import 'provider/location_permission.dart';
 import 'provider/my_hr_provider.dart';
 import 'provider/people_helping_provider.dart';
@@ -36,6 +37,8 @@ final goRouter = GoRouter(
         builder: (BuildContext context, GoRouterState state, Widget child) {
           final isNotHome = state.fullPath != '/';
           String appBarTitle = '';
+          Widget? trailingIcon; // Add this line
+
           if (state.fullPath ==
               '/help-request-for-helpers/:helpRequestUserId') {
             appBarTitle = AppLocalizations.of(context)!.helperHelpRequest;
@@ -58,7 +61,16 @@ final goRouter = GoRouter(
           } else if (state.fullPath == '/donation') {
             appBarTitle = AppLocalizations.of(context)!.donation;
           } else if (state.fullPath == '/onboarding') {
-            return const OnboardingScreen();
+            appBarTitle = '';
+            trailingIcon = Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: IconButton(
+                iconSize: 30,
+                color: Theme.of(context).colorScheme.outlineVariant,
+                icon: const Icon(Icons.close),
+                onPressed: () => context.go('/'),
+              ),
+            ); // Add this block
           }
           return BaseScaffold(
             externalBody: child,
@@ -100,6 +112,7 @@ final goRouter = GoRouter(
             ),
             externalDrawer:
                 state.fullPath == '/' ? const CustomeNavigationDrawer() : null,
+            externalAppBarTrailing: trailingIcon, // Add this line
           );
         },
         navigatorKey: _shellNavigatorKey,
@@ -146,15 +159,9 @@ final goRouter = GoRouter(
             path: '/ranking',
             childBuilder: (state) => const UserRakingList(),
           ),
-          createGoRoute(
-            path: '/donation',
-            childBuilder: (state) => const DonationScreen(),
-          ),
-          // GoRoute(
-          //   path: '/onboarding',
-          //   pageBuilder: (BuildContext context, GoRouterState state) {
-          //     return const MaterialPage(child: OnboardingScreen());
-          //   },
+          // createGoRoute(
+          //   path: '/donation',
+          //   childBuilder: (state) => const DonationScreen(),
           // ),
         ]),
   ],
@@ -204,6 +211,8 @@ class CustomeNavigationDrawer extends StatelessWidget {
     final user = context.read<UserNotifier>();
     final activityNotifier = context.read<ActivityNotifier>();
     final peopleHelpingNotifier = context.read<PeopleHelpingNotifier>();
+    final ConnectivityProvider connectivityStatus =
+        Provider.of<ConnectivityProvider>(context, listen: false);
 
     return NavigationDrawer(
       children: <Widget>[
@@ -216,7 +225,8 @@ class CustomeNavigationDrawer extends StatelessWidget {
         Selector<UserNotifier, bool>(
           selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
           builder: (_, userExist, __) => ListTile(
-            enabled: userExist,
+            enabled: userExist &&
+                connectivityStatus.status != ConnectivityStatus.Offline,
             selectedColor: Theme.of(context).colorScheme.primary,
             title: Text(AppLocalizations.of(context)!.profile),
             leading: const Icon(Icons.account_circle),
@@ -239,7 +249,8 @@ class CustomeNavigationDrawer extends StatelessWidget {
         Selector<UserNotifier, bool>(
           selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
           builder: (_, userExist, __) => ListTile(
-            enabled: userExist,
+            enabled: userExist &&
+                connectivityStatus.status != ConnectivityStatus.Offline,
             selectedColor: Theme.of(context).colorScheme.primary,
             title: Text(AppLocalizations.of(context)!.rankingTitle),
             leading: const Icon(Icons.leaderboard),
@@ -278,7 +289,8 @@ class CustomeNavigationDrawer extends StatelessWidget {
         Selector<UserNotifier, bool>(
           selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
           builder: (_, userExist, __) => ListTile(
-            enabled: userExist,
+            enabled: userExist &&
+                connectivityStatus.status != ConnectivityStatus.Offline,
             title: Text(AppLocalizations.of(context)!.logout),
             leading: const Icon(Icons.logout),
             onTap: () async {
@@ -335,10 +347,12 @@ class BaseScaffold extends StatelessWidget {
     this.externalAppBarLeading,
     this.externalAppBarTitle,
     this.externalDrawer,
+    this.externalAppBarTrailing, // Add this line
   });
 
   final Widget? externalAppBarLeading;
   final Widget? externalAppBarTitle;
+  final Widget? externalAppBarTrailing; // Add this line
   final Widget? externalBody;
   final Widget? externalDrawer;
 
@@ -348,6 +362,8 @@ class BaseScaffold extends StatelessWidget {
       appBar: AppBar(
         title: externalAppBarTitle,
         leading: externalAppBarLeading,
+        actions:
+            externalAppBarTrailing != null ? [externalAppBarTrailing!] : null,
       ),
       endDrawer: externalDrawer,
       body: Padding(

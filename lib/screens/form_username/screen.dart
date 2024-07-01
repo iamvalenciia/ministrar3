@@ -1,3 +1,4 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -22,12 +23,19 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
     super.initState();
     final user = context.read<UserNotifier>().user;
     _usernameController = TextEditingController(text: user?.username ?? '');
+    BackButtonInterceptor.add(myInterceptor, zIndex: 2, name: 'username');
   }
 
   @override
   void dispose() {
     _usernameController.dispose();
+    BackButtonInterceptor.removeByName('username');
     super.dispose();
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    context.go('/');
+    return true;
   }
 
   @override
@@ -61,7 +69,17 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
               },
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
+            Card.filled(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  AppLocalizations.of(context)!.usernameUpdateWarning,
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.outline),
+                ),
+              ),
+            ),
+            FilledButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   final username = _usernameController.text.trim();

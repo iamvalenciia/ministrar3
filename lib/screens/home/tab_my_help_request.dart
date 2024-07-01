@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/activity_provider.dart';
+import '../../provider/conectivity_provider.dart';
 import '../../provider/my_hr_provider.dart';
 import '../../provider/user_provider.dart';
 
@@ -19,6 +20,23 @@ class MyHelpRequest extends StatelessWidget {
         context.select((MyHelpRequestNotifier mhrn) => mhrn.myHelpRequest);
     final bool wasLastActivityHelpTrue =
         context.read<ActivityNotifier>().wasLastActivityHelpTrue;
+    final ConnectivityProvider connectivityStatus =
+        Provider.of<ConnectivityProvider>(context, listen: false);
+
+    if (connectivityStatus.status == ConnectivityStatus.Offline) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: Text(AppLocalizations.of(context)!.homeNoInternet),
+            ),
+          ],
+        ),
+      );
+    }
+
     if (myHelpRequest != null) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,

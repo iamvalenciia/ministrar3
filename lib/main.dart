@@ -6,6 +6,7 @@ import 'package:provider/provider.dart' as provider;
 import 'go_router.dart';
 import 'provider/activity_provider.dart';
 import 'provider/close_hrs_provider.dart';
+import 'provider/conectivity_provider.dart';
 import 'provider/km_mi_notifier.dart';
 import 'provider/l10n_provider.dart';
 import 'provider/loading_provider.dart';
@@ -77,5 +78,6 @@ final providers = <SingleChildWidget>[
   provider.ChangeNotifierProvider(create: (_) => DistanceUnitNotifier()),
   provider.ChangeNotifierProvider(create: (_) => LoadingNotifier()),
   provider.ChangeNotifierProvider(create: (_) => OnboardingNavigation()),
-  provider.ChangeNotifierProvider(create: (_) => UserRankingNotifier())
+  provider.ChangeNotifierProvider(create: (_) => UserRankingNotifier()),
+  provider.ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
 ];

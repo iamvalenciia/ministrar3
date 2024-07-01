@@ -71,8 +71,9 @@ class _UserRakingListState extends State<UserRakingList> {
                   ],
                 ),
               ),
+              const SizedBox(height: 15),
               ...userRakingAndNeighbors!.map(
-                (user) => Card(
+                (user) => Card.filled(
                   color: user.user_id == supabase.auth.currentUser?.id
                       ? Theme.of(context).colorScheme.inversePrimary
                       : null,
@@ -119,14 +120,12 @@ class _UserRakingListState extends State<UserRakingList> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
-                child: Card.filled(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      AppLocalizations.of(context)!.rankingInfo,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.outline),
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    AppLocalizations.of(context)!.rankingInfo,
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.outline),
                   ),
                 ),
               )

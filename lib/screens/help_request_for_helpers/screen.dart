@@ -31,12 +31,12 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
   @override
   void initState() {
     super.initState();
-    BackButtonInterceptor.add(myInterceptor, zIndex: 2, name: 'SomeName');
+    BackButtonInterceptor.add(myInterceptor, zIndex: 2, name: 'forHelpers');
   }
 
   @override
   void dispose() {
-    BackButtonInterceptor.removeByName('SomeName');
+    BackButtonInterceptor.removeByName('forHelpers');
     super.dispose();
   }
 
