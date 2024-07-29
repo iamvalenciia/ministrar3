@@ -2,10 +2,10 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../../app_routes.dart';
 import '../../provider/my_hr_provider.dart';
 import '../../provider/people_helping_provider.dart';
 import '../../provider/user_provider.dart';
@@ -33,7 +33,9 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    context.go('/');
+    Navigator.of(context).pushNamed(
+      AppRoutes.home,
+    );
     return true;
   }
 
@@ -107,6 +109,7 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
                 );
               },
             ),
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: Column(
@@ -195,6 +198,7 @@ class _HelpRequestForOwnersState extends State<HelpRequestForOwners> {
                 ],
               ),
             ),
+            const SizedBox(height: 20),
             const Divider(),
             const PeopleHelping()
           ],

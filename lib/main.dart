@@ -3,10 +3,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart' as provider;
 
-import 'go_router.dart';
+import 'app_routes.dart';
+import 'main_screen.dart';
 import 'provider/activity_provider.dart';
 import 'provider/close_hrs_provider.dart';
 import 'provider/conectivity_provider.dart';
+import 'provider/help_points.dart';
 import 'provider/km_mi_notifier.dart';
 import 'provider/l10n_provider.dart';
 import 'provider/loading_provider.dart';
@@ -39,13 +41,15 @@ class _MyAppState extends State<MyApp> {
     return provider.MultiProvider(
       providers: providers,
       builder: (context, child) {
-        return MaterialApp.router(
+        return MaterialApp(
+            home: const MainScreen(),
+            initialRoute: AppRoutes.home,
+            onGenerateRoute: AppRoutes.generateRoute,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             locale: provider.Provider.of<L10nNotifier>(context).appLocale,
             scaffoldMessengerKey: scaffoldKey,
-            title: 'Flutter Demo',
-            routerConfig: goRouter,
+            title: 'Ministrar',
             debugShowCheckedModeBanner: false,
             theme: provider.Provider.of<ThemeProvider>(context).themeDataStyle);
       },
@@ -53,23 +57,13 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-// ------------------------------/
-//  variable use in MyApp widget /
-//-------------------------------/
 final providers = <SingleChildWidget>[
-  // Async Network // Get db data
-  // fetchHelpRequests is call when:
-
   provider.ChangeNotifierProvider(create: (_) => HelpRequestsNotifier()),
   // Async Network // Get db data
   provider.ChangeNotifierProvider(create: (_) => UserNotifier()),
-  // Async Network // Get db data
   provider.ChangeNotifierProvider(create: (_) => MyHelpRequestNotifier()),
-  // Async Network // Get db data
   provider.ChangeNotifierProvider(create: (_) => ActivityNotifier()),
-  // Async Network // Get db data
   provider.ChangeNotifierProvider(create: (_) => LocationPermissionNotifier()),
-  // Async Network // Get db data
   provider.ChangeNotifierProvider(create: (_) => PeopleHelpingNotifier()),
   //---------------------------------------------------------------------------
   //---------------------------------------------------------------------------
@@ -80,4 +74,5 @@ final providers = <SingleChildWidget>[
   provider.ChangeNotifierProvider(create: (_) => OnboardingNavigation()),
   provider.ChangeNotifierProvider(create: (_) => UserRankingNotifier()),
   provider.ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
+  provider.ChangeNotifierProvider(create: (_) => HelpPoints()),
 ];

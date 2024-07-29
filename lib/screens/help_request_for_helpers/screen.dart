@@ -4,18 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../../app_routes.dart';
 import '../../provider/activity_provider.dart';
 import '../../provider/close_hrs_provider.dart';
 import '../../provider/location_permission.dart';
 import '../../provider/user_provider.dart';
 import '../../services/supabase.dart';
 import '../../utility_functions.dart';
-import '../home/login_card.dart';
+import '../home/login_card-pending-delete.dart';
 
 class HelpRequestForHelpers extends StatefulWidget {
   HelpRequestForHelpers({super.key, required this.helpRequestUserId});
@@ -41,7 +42,9 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    context.go('/');
+    Navigator.of(context).pushNamed(
+      AppRoutes.home,
+    );
     return true;
   }
 
@@ -447,14 +450,16 @@ class _HelpRequestForHelpersState extends State<HelpRequestForHelpers> {
             ),
             Visibility(
               visible: helped == false,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  AppLocalizations.of(context)!.helperThanksForTrying,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.outline,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+              child: Card.outlined(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    AppLocalizations.of(context)!.helperThanksForTrying,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.outline,
+                      fontSize: 16,
+                      // fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),

@@ -1,15 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../../app_routes.dart';
 import '../../models/help_requests_model/help_request_model.dart';
 import '../../provider/activity_provider.dart';
 import '../../provider/close_hrs_provider.dart';
 import '../../provider/conectivity_provider.dart';
-import '../../utility_functions.dart';
 
 class HelpRequests extends StatelessWidget {
   const HelpRequests({super.key});
@@ -103,8 +102,10 @@ class HelpRequestsList extends StatelessWidget {
                     Theme.of(context).colorScheme;
 
                 return GestureDetector(
-                  onTap: () => context.go(
-                      '/help-request-for-helpers/${request.help_request_owner_id}'),
+                  onTap: () => Navigator.of(context).pushNamed(
+                    AppRoutes.helpRequest,
+                    arguments: {'id': request.help_request_owner_id},
+                  ),
                   child: Card(
                     // color: colorScheme.inversePrimary,
                     // shadowColor: colorScheme.primary,
@@ -164,6 +165,7 @@ class HelpRequestsList extends StatelessWidget {
                                       ),
                                     ],
                                   ),
+                                  const SizedBox(width: 10),
                                   Expanded(
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -174,17 +176,22 @@ class HelpRequestsList extends StatelessWidget {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
                                             children: [
-                                              Text(
-                                                timeago.format(
-                                                    request.inserted_at!,
-                                                    locale: AppLocalizations.of(
-                                                            context)!
-                                                        .locale),
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .outline),
+                                              Flexible(
+                                                child: Text(
+                                                  timeago.format(
+                                                      request.inserted_at!,
+                                                      locale:
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .locale),
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .outline),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -192,35 +199,7 @@ class HelpRequestsList extends StatelessWidget {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
                                             children: [
-                                              // Selector<ActivityNotifier,
-                                              //     bool>(
-                                              //   selector: (_,
-                                              //           activityNotifier) =>
-                                              //       activityNotifier
-                                              //           .isHelping(request
-                                              //               .hr_id
-                                              //               .toString()),
-                                              //   builder: (context,
-                                              //       isHelping, _) {
-                                              //     return isHelping
-                                              //         ? Padding(
-                                              //             padding:
-                                              //                 const EdgeInsets
-                                              //                     .only(
-                                              //                     bottom: 6,
-                                              //                     left: 10),
-                                              //             child: Icon(
-                                              //               Icons
-                                              //                   .volunteer_activism,
-                                              //               color:
-                                              //                   colorScheme
-                                              //                       .primary,
-                                              //             ),
-                                              //           )
-                                              //         : Container();
-                                              //   },
-                                              // ),
-                                              SizedBox(width: 10),
+                                              const SizedBox(width: 10),
                                               Text(
                                                 AppLocalizations.of(context)!
                                                     .homeCategory(category),
@@ -263,7 +242,7 @@ class HelpRequestsList extends StatelessWidget {
                                         ? Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Icon(
-                                              Icons.volunteer_activism,
+                                              Icons.schedule,
                                               color: colorScheme.primary,
                                             ),
                                           )

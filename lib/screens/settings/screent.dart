@@ -1,9 +1,10 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../app_routes.dart';
+import '../../badgets/new_badget.dart';
 import '../../provider/close_hrs_provider.dart';
 import '../../provider/l10n_provider.dart';
 import '../../provider/my_hr_provider.dart';
@@ -12,8 +13,8 @@ import '../../theme.dart'; // Import your HelpRequestsNotifier
 
 enum DistanceUnit { kilometers, miles }
 
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+class PreferenceScreen extends StatelessWidget {
+  const PreferenceScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +73,7 @@ class SettingsScreen extends StatelessWidget {
 }
 
 // -------------------------------------------/
-//  widget used in the SettingsScreen widget /
+//  widget used in the PreferenceScreen widget /
 //-------------------------------------------/
 class SingleChoice extends StatefulWidget {
   const SingleChoice({super.key, required this.helpRequestsNotifier});
@@ -126,7 +127,7 @@ class _SingleChoiceState extends State<SingleChoice> {
 }
 
 // -------------------------------------------/
-//  widget used in the SettingsScreen widget /
+//  widget used in the PreferenceScreen widget /
 //-------------------------------------------/
 enum ThemeStyle { light, dark }
 
@@ -178,7 +179,7 @@ class _ThemeChoiceState extends State<ThemeChoice> {
 }
 
 // -------------------------------------------/
-//  widget used in the SettingsScreen widget /
+//  widget used in the PreferenceScreen widget /
 //-------------------------------------------/
 enum Language { english, spanish }
 
@@ -209,7 +210,7 @@ class _LanguageChoiceState extends State<LanguageChoice> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    context.go('/');
+    Navigator.of(context).pushNamed(AppRoutes.home);
     return true;
   }
 

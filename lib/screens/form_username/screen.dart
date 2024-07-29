@@ -1,9 +1,9 @@
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../app_routes.dart';
 import '../../provider/user_provider.dart';
 import '../../utility_functions.dart';
 
@@ -34,7 +34,9 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    context.go('/');
+    Navigator.of(context).pushNamed(
+      AppRoutes.home,
+    );
     return true;
   }
 
@@ -85,7 +87,9 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
                   final username = _usernameController.text.trim();
                   // If the username is the same as the current one, navigate back to the account screen
                   if (username == user?.username) {
-                    context.go('/account');
+                    Navigator.of(context).pushNamed(
+                      AppRoutes.profile,
+                    );
                     return;
                   }
                   try {
@@ -97,7 +101,9 @@ class _UsernameFormScreenState extends State<UsernameFormScreen> {
                     }
                     if (result['code'] == 200) {
                       showFlashSuccess(context, '${result['message']}');
-                      context.go('/account');
+                      Navigator.of(context).pushNamed(
+                        AppRoutes.profile,
+                      );
                     } else {
                       showFlashError(context, '${result['message']}');
                     }

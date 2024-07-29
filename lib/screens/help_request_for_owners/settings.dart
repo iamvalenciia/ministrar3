@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../app_routes.dart';
 import '../../provider/my_hr_provider.dart';
 import '../../provider/people_helping_provider.dart';
 import '../../utility_functions.dart';
@@ -38,11 +38,14 @@ class _HelpRequestSettingsState extends State<HelpRequestSettings> {
       },
       menuChildren: <Widget>[
         MenuItemButton(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(AppLocalizations.of(context)!.ownerEdit),
-            ),
-            onPressed: () => context.go('/help-request-form')),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(AppLocalizations.of(context)!.ownerEdit),
+          ),
+          onPressed: () => Navigator.of(context).pushNamed(
+            AppRoutes.createHelpRequest,
+          ),
+        ),
         MenuItemButton(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -66,11 +69,14 @@ class _HelpRequestSettingsState extends State<HelpRequestSettings> {
                             if (response) {
                               myHelpRequestNotifier.clearHelpRequest();
                               peopleHelpingNotifier.clearPeopleHelping();
-                              context.go('/');
+                              Navigator.of(context).pushNamed(
+                                AppRoutes.home,
+                              );
                               showFlashSuccess(
-                                  context,
-                                  AppLocalizations.of(context)!
-                                      .ownerHelpRequestDeleted);
+                                context,
+                                AppLocalizations.of(context)!
+                                    .ownerHelpRequestDeleted,
+                              );
                             }
                           },
                         );

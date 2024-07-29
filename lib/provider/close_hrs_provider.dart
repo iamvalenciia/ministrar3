@@ -31,7 +31,7 @@ class HelpRequestsNotifier extends ChangeNotifier {
   String? _error;
   StreamSubscription<Position>? _positionStreamSubscription;
   bool _isDistanceInKilometers = true;
-  Map<String, ColorScheme> _colorSchemes = {};
+  final Map<String, ColorScheme> _colorSchemes = {};
 
   List<HelpRequestModel>? get helpRequests => _helpRequests;
   List<double>? get distances => _distances;

@@ -2,12 +2,10 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:tuple/tuple.dart';
 
-import '../../models/activity_model/activity_model.dart';
+import '../../app_routes.dart';
 import '../../models/user_model/user_model.dart';
 import '../../provider/activity_provider.dart';
 import '../../provider/loading_provider.dart';
@@ -41,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    context.go('/');
+    Navigator.of(context).pushNamed(AppRoutes.home);
     return true;
   }
 
@@ -116,7 +114,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             AppLocalizations.of(context)!.profileEditUserName,
                             style: const TextStyle(fontSize: 16)),
                       ),
-                      onPressed: () => context.go('/username-form'),
+                      onPressed: () => Navigator.of(context).pushNamed(
+                          AppRoutes.editUserName,
+                          arguments: userNotifier.user),
                     ),
                     MenuItemButton(
                       child: Padding(
@@ -159,7 +159,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       loadingNotifier.setLoading(false);
                                       if (context.mounted) {
                                         Navigator.of(dialogContext).pop();
-                                        context.go('/login');
+                                        Navigator.of(context)
+                                            .pushNamed(AppRoutes.home);
                                         showFlashSuccess(
                                             context,
                                             AppLocalizations.of(context)!
@@ -196,143 +197,143 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 40),
-          Row(
-            children: [
-              Icon(Icons.history, color: Theme.of(context).colorScheme.primary),
-              const SizedBox(width: 10),
-              Text(AppLocalizations.of(context)!.profileRecentActivities,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.bold)),
-            ],
-          ),
-          Selector<ActivityNotifier, List<Activity>>(
-            selector: (_, notifier) => notifier.activities ?? [],
-            builder: (_, activity, __) {
-              if (activity.isEmpty) {
-                return Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          AppLocalizations.of(context)!
-                              .profileThereAreNoActivities,
-                          style: const TextStyle(fontSize: 15),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              } else {
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ListView.builder(
-                      itemCount: activity.length,
-                      itemBuilder: (context, index) {
-                        final currentActivity = activity[index];
-                        if (currentActivity.status == null &&
-                            currentActivity.activity_type == 'help') {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  '${AppLocalizations.of(context)!.profileIsTryingToHelpTo} @${currentActivity.help_request_owner_username}',
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .outline),
-                                ),
-                              ),
-                              const Divider(),
-                            ],
-                          );
-                        } else if (currentActivity.status ??
-                            true && currentActivity.activity_type == 'help') {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  '${AppLocalizations.of(context)!.profileHelpedTo} @${currentActivity.help_request_owner_username} ${timeago.format(currentActivity.status_updated_at!, locale: AppLocalizations.of(context)!.locale)}',
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .outline),
-                                ),
-                              ),
-                              const Divider(),
-                            ],
-                          );
-                        } else if (currentActivity.status == false &&
-                            currentActivity.activity_type == 'help') {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  '${AppLocalizations.of(context)!.profileFailedToHelpTo} @${currentActivity.help_request_owner_username} ${timeago.format(currentActivity.status_updated_at!, locale: AppLocalizations.of(context)!.locale)}',
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .outline),
-                                ),
-                              ),
-                              const Divider(),
-                            ],
-                          );
-                        } else if (currentActivity.activity_type == 'post') {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  '${AppLocalizations.of(context)!.profileCreatedAhelpRequest} ${timeago.format(currentActivity.inserted_at!, locale: AppLocalizations.of(context)!.locale)}',
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .outline),
-                                ),
-                              ),
-                              const Divider(),
-                            ],
-                          );
-                        } else {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  '${AppLocalizations.of(context)!.profileActivityTypeNotRecognzed} ${currentActivity.status}, ${AppLocalizations.of(context)!.profileType}: ${currentActivity.activity_type}',
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .outline),
-                                ),
-                              ),
-                              const Divider(),
-                            ],
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                );
-              }
-            },
-          ),
+          // const SizedBox(height: 40),
+          // Row(
+          //   children: [
+          //     Icon(Icons.history, color: Theme.of(context).colorScheme.primary),
+          //     const SizedBox(width: 10),
+          //     Text(AppLocalizations.of(context)!.profileRecentActivities,
+          //         style: const TextStyle(
+          //             fontSize: 16, fontWeight: FontWeight.bold)),
+          //   ],
+          // ),
+          // Selector<ActivityNotifier, List<Activity>>(
+          //   selector: (_, notifier) => notifier.activities ?? [],
+          //   builder: (_, activity, __) {
+          //     if (activity.isEmpty) {
+          //       return Row(
+          //         children: [
+          //           Expanded(
+          //             child: Padding(
+          //               padding: const EdgeInsets.all(8.0),
+          //               child: Text(
+          //                 AppLocalizations.of(context)!
+          //                     .profileThereAreNoActivities,
+          //                 style: const TextStyle(fontSize: 15),
+          //               ),
+          //             ),
+          //           ),
+          //         ],
+          //       );
+          //     } else {
+          //       return Expanded(
+          //         child: Padding(
+          //           padding: const EdgeInsets.all(8.0),
+          //           child: ListView.builder(
+          //             itemCount: activity.length,
+          //             itemBuilder: (context, index) {
+          //               final currentActivity = activity[index];
+          //               if (currentActivity.status == null &&
+          //                   currentActivity.activity_type == 'help') {
+          //                 return Column(
+          //                   crossAxisAlignment: CrossAxisAlignment.start,
+          //                   children: [
+          //                     Padding(
+          //                       padding: const EdgeInsets.all(8.0),
+          //                       child: Text(
+          //                         '${AppLocalizations.of(context)!.profileIsTryingToHelpTo} @${currentActivity.help_request_owner_username}',
+          //                         style: TextStyle(
+          //                             fontSize: 15,
+          //                             color: Theme.of(context)
+          //                                 .colorScheme
+          //                                 .outline),
+          //                       ),
+          //                     ),
+          //                     const Divider(),
+          //                   ],
+          //                 );
+          //               } else if (currentActivity.status ??
+          //                   true && currentActivity.activity_type == 'help') {
+          //                 return Column(
+          //                   crossAxisAlignment: CrossAxisAlignment.start,
+          //                   children: [
+          //                     Padding(
+          //                       padding: const EdgeInsets.all(8.0),
+          //                       child: Text(
+          //                         '${AppLocalizations.of(context)!.profileHelpedTo} @${currentActivity.help_request_owner_username} ${timeago.format(currentActivity.status_updated_at!, locale: AppLocalizations.of(context)!.locale)}',
+          //                         style: TextStyle(
+          //                             fontSize: 15,
+          //                             color: Theme.of(context)
+          //                                 .colorScheme
+          //                                 .outline),
+          //                       ),
+          //                     ),
+          //                     const Divider(),
+          //                   ],
+          //                 );
+          //               } else if (currentActivity.status == false &&
+          //                   currentActivity.activity_type == 'help') {
+          //                 return Column(
+          //                   crossAxisAlignment: CrossAxisAlignment.start,
+          //                   children: [
+          //                     Padding(
+          //                       padding: const EdgeInsets.all(8.0),
+          //                       child: Text(
+          //                         '${AppLocalizations.of(context)!.profileFailedToHelpTo} @${currentActivity.help_request_owner_username} ${timeago.format(currentActivity.status_updated_at!, locale: AppLocalizations.of(context)!.locale)}',
+          //                         style: TextStyle(
+          //                             fontSize: 15,
+          //                             color: Theme.of(context)
+          //                                 .colorScheme
+          //                                 .outline),
+          //                       ),
+          //                     ),
+          //                     const Divider(),
+          //                   ],
+          //                 );
+          //               } else if (currentActivity.activity_type == 'post') {
+          //                 return Column(
+          //                   crossAxisAlignment: CrossAxisAlignment.start,
+          //                   children: [
+          //                     Padding(
+          //                       padding: const EdgeInsets.all(8.0),
+          //                       child: Text(
+          //                         '${AppLocalizations.of(context)!.profileCreatedAhelpRequest} ${timeago.format(currentActivity.inserted_at!, locale: AppLocalizations.of(context)!.locale)}',
+          //                         style: TextStyle(
+          //                             fontSize: 15,
+          //                             color: Theme.of(context)
+          //                                 .colorScheme
+          //                                 .outline),
+          //                       ),
+          //                     ),
+          //                     const Divider(),
+          //                   ],
+          //                 );
+          //               } else {
+          //                 return Column(
+          //                   crossAxisAlignment: CrossAxisAlignment.start,
+          //                   children: [
+          //                     Padding(
+          //                       padding: const EdgeInsets.all(8.0),
+          //                       child: Text(
+          //                         '${AppLocalizations.of(context)!.profileActivityTypeNotRecognzed} ${currentActivity.status}, ${AppLocalizations.of(context)!.profileType}: ${currentActivity.activity_type}',
+          //                         style: TextStyle(
+          //                             fontSize: 15,
+          //                             color: Theme.of(context)
+          //                                 .colorScheme
+          //                                 .outline),
+          //                       ),
+          //                     ),
+          //                     const Divider(),
+          //                   ],
+          //                 );
+          //               }
+          //             },
+          //           ),
+          //         ),
+          //       );
+          //     }
+          //   },
+          // ),
         ],
       ),
     );

@@ -13,16 +13,16 @@ import '../services/supabase.dart';
 
 class ActivityNotifier extends ChangeNotifier {
   List<Activity>? _last4Activities;
-  List<Activity>? _helpActivities;
-  bool _wasLastActivityHelpTrue = false;
+  List<Activity>? _whoIamHelping;
+  // bool _wasLastActivityHelpTrue = false;
   bool _isHelpActivityLoading = true;
   bool _isLoadingHelpButton = false;
   final Map<String, bool> _isHelping = {};
 
   List<Activity>? get activities => _last4Activities;
-  List<Activity>? get helpActivities => _helpActivities;
+  List<Activity>? get whoIamHelping => _whoIamHelping;
   bool get isHelpActivityLoading => _isHelpActivityLoading;
-  bool get wasLastActivityHelpTrue => _wasLastActivityHelpTrue;
+  // bool get wasLastActivityHelpTrue => _wasLastActivityHelpTrue;
   bool get isLoadingHelpBotton => _isLoadingHelpButton;
 
   // Add a new method to get the helping state for a specific user
@@ -31,7 +31,7 @@ class ActivityNotifier extends ChangeNotifier {
   }
 
   bool? helped(String helpRequestId) {
-    final activity = _helpActivities?.firstWhereOrNull(
+    final activity = _whoIamHelping?.firstWhereOrNull(
       (activity) => activity.help_request_id.toString() == helpRequestId,
     );
 
@@ -51,63 +51,63 @@ class ActivityNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchTheLastFourActivities() async {
+  // Future<void> fetchTheLastFourActivities() async {
+  //   _isHelpActivityLoading = true;
+  //   notifyListeners();
+  //   try {
+  //     final userId = supabase.auth.currentUser?.id;
+
+  //     final List<dynamic> response =
+  //         await supabase.rpc('get_4_activities', params: {
+  //       'p_activity_owner': userId,
+  //     });
+  //     // Check if the last activity was a help activity so
+  //     // this allow user if can create help request or no
+  //     await wasLastActivityHelp();
+
+  //     developer.log('fetchTheLastFourActivities',
+  //         error: response, name: 'fetchTheLastFourActivities');
+
+  //     _last4Activities =
+  //         // ignore: inference_failure_on_untyped_parameter, avoid_dynamic_calls
+  //         response
+  //             .map((json) => Activity.fromJson(json as Map<String, dynamic>))
+  //             .toList();
+  //   } catch (e) {
+  //     developer.log('ERROR fetchTheLastFourActivities',
+  //         error: e, name: 'ERROR fetchTheLastFourActivities');
+  //   } finally {
+  //     _isHelpActivityLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
+
+  Future<void> fetchWhoIamHelping() async {
     _isHelpActivityLoading = true;
     notifyListeners();
     try {
       final userId = supabase.auth.currentUser?.id;
 
       final List<dynamic> response =
-          await supabase.rpc('get_4_activities', params: {
-        'p_activity_owner': userId,
-      });
-      // Check if the last activity was a help activity so
-      // this allow user if can create help request or no
-      await wasLastActivityHelp();
-
-      developer.log('fetchTheLastFourActivities',
-          error: response, name: 'fetchTheLastFourActivities');
-
-      _last4Activities =
-          // ignore: inference_failure_on_untyped_parameter, avoid_dynamic_calls
-          response
-              .map((json) => Activity.fromJson(json as Map<String, dynamic>))
-              .toList();
-    } catch (e) {
-      developer.log('ERROR fetchTheLastFourActivities',
-          error: e, name: 'ERROR fetchTheLastFourActivities');
-    } finally {
-      _isHelpActivityLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> fetchHelpActivities() async {
-    _isHelpActivityLoading = true;
-    notifyListeners();
-    try {
-      final userId = supabase.auth.currentUser?.id;
-
-      final List<dynamic> response =
-          await supabase.rpc('get_help_activities', params: {
+          await supabase.rpc('fetch_who_iam_helping', params: {
         'p_activity_owner': userId,
       });
 
-      developer.log('fetchHelpActivities',
-          error: response, name: 'fetchHelpActivities');
+      developer.log('fetchWhoIamHelping',
+          error: response, name: 'fetchWhoIamHelping');
 
-      _helpActivities =
+      _whoIamHelping =
           // ignore: inference_failure_on_untyped_parameter, avoid_dynamic_calls
           response
               .map((json) => Activity.fromJson(json as Map<String, dynamic>))
               .toList();
       // Update _isHelping for each fetched help activity
-      for (final activity in _helpActivities!) {
+      for (final activity in _whoIamHelping!) {
         _isHelping[activity.help_request_id.toString()] = true;
       }
     } catch (e) {
-      developer.log('ERROR fetchHelpActivities',
-          error: e, name: 'ERROR fetchHelpActivities');
+      developer.log('ERROR fetchWhoIamHelping',
+          error: e, name: 'ERROR fetchWhoIamHelping');
     } finally {
       _isHelpActivityLoading = false;
       notifyListeners();
@@ -135,7 +135,7 @@ class ActivityNotifier extends ChangeNotifier {
         inserted_at: DateTime.now(),
         help_request_id: helpRequestId,
       );
-      _helpActivities?.insert(0, helpActivity);
+      _whoIamHelping?.insert(0, helpActivity);
       _isHelping[helpRequestId.toString()] = true;
       notifyListeners();
     } catch (e) {
@@ -149,7 +149,7 @@ class ActivityNotifier extends ChangeNotifier {
   Future<void> removeMyHelpActivity(int helpRequestId) async {
     _isLoadingHelpButton = true;
     notifyListeners();
-    final activity = _helpActivities?.firstWhere(
+    final activity = _whoIamHelping?.firstWhere(
       (activity) => activity.help_request_id == helpRequestId,
     );
     try {
@@ -159,8 +159,8 @@ class ActivityNotifier extends ChangeNotifier {
         'p_help_request_id': helpRequestId,
       });
 
-      // Remove the activity from _helpActivities
-      _helpActivities?.remove(activity);
+      // Remove the activity from _whoIamHelping
+      _whoIamHelping?.remove(activity);
       // Update the helping state
       _isHelping[helpRequestId.toString()] = false;
       notifyListeners();
@@ -172,13 +172,13 @@ class ActivityNotifier extends ChangeNotifier {
     }
   }
 
-  Future<void> wasLastActivityHelp() async {
-    final userId = supabase.auth.currentUser?.id;
-    final bool response = await supabase.rpc('was_last_activity_help', params: {
-      'p_activity_owner': userId,
-    });
-    _wasLastActivityHelpTrue = response;
-  }
+  // Future<void> wasLastActivityHelp() async {
+  //   final userId = supabase.auth.currentUser?.id;
+  //   final bool response = await supabase.rpc('was_last_activity_help', params: {
+  //     'p_activity_owner': userId,
+  //   });
+  //   _wasLastActivityHelpTrue = response;
+  // }
 
   void clearIsHelping() {
     _isHelping.clear();
@@ -186,7 +186,7 @@ class ActivityNotifier extends ChangeNotifier {
   }
 
   void clearHelpActivities() {
-    _helpActivities = null;
+    _whoIamHelping = null;
     notifyListeners();
   }
 

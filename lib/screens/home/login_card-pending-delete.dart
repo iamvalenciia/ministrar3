@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
 
 class LoginCard extends StatelessWidget {
   const LoginCard({super.key});
@@ -20,9 +19,9 @@ class LoginCard extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             TextButton(
-              child: Text(AppLocalizations.of(context)!.homeLogin),
-              onPressed: () => context.go('/login'),
-            ),
+                child: Text(AppLocalizations.of(context)!.homeLogin),
+                // add logic to open up screen to continue with google, xd
+                onPressed: () => null),
           ],
         ),
       ),

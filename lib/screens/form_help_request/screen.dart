@@ -2,12 +2,15 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../app_routes.dart';
 import '../../provider/activity_provider.dart';
+import '../../provider/help_points.dart';
 import '../../provider/loading_provider.dart';
 import '../../provider/my_hr_provider.dart';
+import '../../provider/theme_provider.dart';
+import '../../theme.dart';
 
 enum Category { food, medicine, others }
 
@@ -74,14 +77,50 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    context.go('/');
+    Navigator.of(context).pushNamed(
+      AppRoutes.home,
+    );
     return true;
+  }
+
+  Future<void> showConfirmationDialog() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('information'),
+              Text(AppLocalizations.of(context)!.ownerUserHelpsYou,
+                  style: const TextStyle(fontSize: 18)),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+                onPressed: null,
+                child: Text(AppLocalizations.of(context)!.ownerResponseYes)),
+            TextButton(
+                onPressed: null,
+                child: Text(AppLocalizations.of(context)!.ownerResponseNo)),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final myHelpRequestNotifier = context.read<MyHelpRequestNotifier>();
     final activitiesNotifier = context.read<ActivityNotifier>();
+    final int helpPoint =
+        Provider.of<HelpPoints>(context).userHelpPoints?.points ?? 0;
+    final ThemeProvider themeProvider =
+        Provider.of<ThemeProvider>(context, listen: false);
+    final isDarkModeOn = themeProvider.themeDataStyle == ThemeDataStyle.dark;
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -157,6 +196,12 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
               ),
             ),
             const SizedBox(height: 20),
+            // IconButton(
+            //   icon: Icon(Icons.info),
+            //   onPressed: () {
+            //     showConfirmationDialog();
+            //   },
+            // ),
             Card.outlined(
               child: CheckboxListTile(
                 title: ListTile(
@@ -180,98 +225,161 @@ class _HelpRequestFormScreenState extends State<HelpRequestFormScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            Consumer<LoadingNotifier>(
-              builder: (_, loadingNotifier, __) => FilledButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    loadingNotifier.setLoading(true);
-                    final appLocalizations = AppLocalizations.of(context);
-                    final messenger = ScaffoldMessenger.of(context);
-                    final themeContext = Theme.of(context);
-                    final navigateTo = GoRouter.of(context);
-
-                    try {
-                      if (_contentController.text.isNotEmpty &&
-                          (_phoneController.text.isNotEmpty ||
-                              _twitterController.text.isNotEmpty ||
-                              _instagramController.text.isNotEmpty)) {
-                        if (_isEditing) {
-                          // Update existing help request
-                          final success =
-                              await myHelpRequestNotifier.updateMyHelpRequest(
-                            dropdownValue.name,
-                            _contentController.text,
-                            _phoneController.text,
-                            _twitterController.text,
-                            _instagramController.text,
-                            _locationSharingEnable,
-                          );
-
-                          if (success) {
-                            navigateTo.go('/help-request-for-owners');
-                            messenger.showSnackBar(
-                              SnackBar(
-                                backgroundColor:
-                                    themeContext.colorScheme.primary,
-                                content: Text(
-                                    appLocalizations!.createHelpRequestUpdated),
-                              ),
-                            );
-                          } else if (!success) {
-                            navigateTo.go('/help-request-for-owners');
-                          }
-                        } else {
-                          // Create new help request
-                          final success =
-                              await myHelpRequestNotifier.createMyHelpRequest(
-                            dropdownValue.name,
-                            _contentController.text,
-                            _phoneController.text,
-                            _twitterController.text,
-                            _instagramController.text,
-                            _locationSharingEnable,
-                          );
-
-                          if (success) {
-                            activitiesNotifier.createLocalPostActivity();
-                            navigateTo.go('/help-request-for-owners');
-                            messenger.showSnackBar(
-                              SnackBar(
-                                backgroundColor:
-                                    themeContext.colorScheme.primary,
-                                content: Text(
-                                    appLocalizations!.createHelpRequestCreated),
-                              ),
-                            );
-                          }
-                        }
-                      } else {
-                        messenger.showSnackBar(
-                          SnackBar(
-                            backgroundColor: themeContext.colorScheme.error,
-                            content:
-                                Text(appLocalizations!.createPleaseFillout),
-                          ),
-                        );
-                      }
-                    } catch (e) {
-                      messenger.showSnackBar(
-                        SnackBar(
-                          backgroundColor: themeContext.colorScheme.error,
-                          content: Text(e.toString()),
+            // Card.filled(
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(8.0),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       children: [
+            //         Text('You have: $helpPoint ',
+            //             style: TextStyle(
+            //                 color: Theme.of(context).colorScheme.primary,
+            //                 // fontWeight: FontWeight.bold,
+            //                 fontSize: 16)),
+            //         Icon(
+            //           Icons.volunteer_activism,
+            //           color: Theme.of(context).colorScheme.primary,
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            Row(
+              children: [
+                Card.filled(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    child: Row(
+                      children: [
+                        Text(
+                          '3  ',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.outline,
+                              // fontWeight: FontWeight.bold,
+                              fontSize: 18),
                         ),
-                      );
-                    } finally {
-                      loadingNotifier.setLoading(false);
-                    }
-                  } else {}
-                },
-                child: loadingNotifier.isLoading
-                    ? const LinearProgressIndicator()
-                    : Text(_isEditing
-                        ? AppLocalizations.of(context)!.createUpdateHelpRequest
-                        : AppLocalizations.of(context)!.createHelpRequest),
-              ),
+                        Icon(
+                          Icons.volunteer_activism,
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Consumer<LoadingNotifier>(
+                    builder: (_, loadingNotifier, __) => ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              10), // Ajusta este valor para controlar la curvatura de los bordes
+                        ),
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          loadingNotifier.setLoading(true);
+                          final appLocalizations = AppLocalizations.of(context);
+                          final messenger = ScaffoldMessenger.of(context);
+                          final themeContext = Theme.of(context);
+                          final navigateTo = Navigator.of(context);
+
+                          try {
+                            if (_contentController.text.isNotEmpty &&
+                                (_phoneController.text.isNotEmpty ||
+                                    _twitterController.text.isNotEmpty ||
+                                    _instagramController.text.isNotEmpty)) {
+                              if (_isEditing) {
+                                // Update existing help request
+                                final success = await myHelpRequestNotifier
+                                    .updateMyHelpRequest(
+                                  dropdownValue.name,
+                                  _contentController.text,
+                                  _phoneController.text,
+                                  _twitterController.text,
+                                  _instagramController.text,
+                                  _locationSharingEnable,
+                                );
+
+                                if (success) {
+                                  navigateTo.pushNamed(AppRoutes.myHelpRequest);
+                                  messenger.showSnackBar(
+                                    SnackBar(
+                                      backgroundColor:
+                                          themeContext.colorScheme.primary,
+                                      content: Text(appLocalizations!
+                                          .createHelpRequestUpdated),
+                                    ),
+                                  );
+                                } else if (!success) {
+                                  navigateTo.pushNamed(AppRoutes.myHelpRequest);
+                                }
+                              } else {
+                                // Create new help request
+                                final success = await myHelpRequestNotifier
+                                    .createMyHelpRequest(
+                                  dropdownValue.name,
+                                  _contentController.text,
+                                  _phoneController.text,
+                                  _twitterController.text,
+                                  _instagramController.text,
+                                  _locationSharingEnable,
+                                );
+
+                                if (success) {
+                                  activitiesNotifier.createLocalPostActivity();
+                                  navigateTo.pushNamed(AppRoutes.myHelpRequest);
+                                  messenger.showSnackBar(
+                                    SnackBar(
+                                      backgroundColor:
+                                          themeContext.colorScheme.primary,
+                                      content: Text(appLocalizations!
+                                          .createHelpRequestCreated),
+                                    ),
+                                  );
+                                }
+                              }
+                            } else {
+                              messenger.showSnackBar(
+                                SnackBar(
+                                  backgroundColor:
+                                      themeContext.colorScheme.error,
+                                  content: Text(
+                                      appLocalizations!.createPleaseFillout),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            messenger.showSnackBar(
+                              SnackBar(
+                                backgroundColor: themeContext.colorScheme.error,
+                                content: Text(e.toString()),
+                              ),
+                            );
+                          } finally {
+                            loadingNotifier.setLoading(false);
+                          }
+                        } else {}
+                      },
+                      child: loadingNotifier.isLoading
+                          ? const LinearProgressIndicator()
+                          : Text(
+                              _isEditing
+                                  ? AppLocalizations.of(context)!
+                                      .createUpdateHelpRequest
+                                  : AppLocalizations.of(context)!
+                                      .createHelpRequest,
+                              style: TextStyle(
+                                color: isDarkModeOn
+                                    ? Theme.of(context).colorScheme.scrim
+                                    : Colors.white,
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 10),
           ],

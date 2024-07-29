@@ -1,11 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../provider/activity_provider.dart';
+// import '../../provider/activity_provider.dart';
+import '../../app_routes.dart';
+import '../../badgets/mosaico.dart';
 import '../../provider/conectivity_provider.dart';
+// import '../../provider/help_points.dart';
 import '../../provider/my_hr_provider.dart';
 import '../../provider/user_provider.dart';
 
@@ -14,12 +16,13 @@ class MyHelpRequest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userExist = context.select((UserNotifier un) => un.isUserLoggedIn);
-    final username = context.select((UserNotifier un) => un.user?.username);
+    final userExist = Provider.of<UserNotifier>(context).isUserLoggedIn;
+    final username = Provider.of<UserNotifier>(context).user?.username;
     final myHelpRequest =
-        context.select((MyHelpRequestNotifier mhrn) => mhrn.myHelpRequest);
-    final bool wasLastActivityHelpTrue =
-        context.read<ActivityNotifier>().wasLastActivityHelpTrue;
+        Provider.of<MyHelpRequestNotifier>(context).myHelpRequest;
+    // final bool wasLastActivityHelpTrue =
+    //     context.read<ActivityNotifier>().wasLastActivityHelpTrue;
+    // final int helpPoint = Provider.of<HelpPoints>(context).helpPoints;
     final ConnectivityProvider connectivityStatus =
         Provider.of<ConnectivityProvider>(context, listen: false);
 
@@ -86,7 +89,9 @@ class MyHelpRequest extends StatelessWidget {
                             .homeCategory(myHelpRequest.category.toString()),
                         style: const TextStyle(fontSize: 15),
                       ),
-                      onTap: () => context.go('/help-request-for-owners'),
+                      onTap: () => Navigator.of(context).pushNamed(
+                        AppRoutes.myHelpRequest,
+                      ),
                     ),
                   ),
                 );
@@ -95,44 +100,33 @@ class MyHelpRequest extends StatelessWidget {
           ),
         ],
       );
-    } else if (wasLastActivityHelpTrue && userExist) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+    } else if (userExist) {
+      return Column(
         children: [
-          FilledButton(
-            onPressed:
-                userExist ? () => context.go('/help-request-form') : null,
-            child: Row(
-              children: [
-                const Icon(Icons.post_add),
-                const SizedBox(width: 10),
-                Text(AppLocalizations.of(context)!.homeCreateAHelpRequest),
-              ],
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              FilledButton(
+                onPressed: userExist
+                    ? () => Navigator.of(context).pushNamed(
+                          AppRoutes.createHelpRequest,
+                        )
+                    : null,
+                child: Row(
+                  children: [
+                    const Icon(Icons.post_add),
+                    const SizedBox(width: 10),
+                    Text(AppLocalizations.of(context)!.homeCreateAHelpRequest),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 200, // Set a fixed height
+            child: MarioPixelArt(),
           ),
         ],
-      );
-    } else if (!wasLastActivityHelpTrue && userExist) {
-      return Center(
-        child: Card.filled(
-          child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      AppLocalizations.of(context)!.homeToMakeAnotherRequest,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(Icons.volunteer_activism,
-                        color: Theme.of(context).colorScheme.primary),
-                  ),
-                ],
-              )),
-        ),
       );
     } else if (!userExist) {
       return Center(

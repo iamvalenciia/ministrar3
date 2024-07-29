@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:provider/provider.dart';
 
 import '../../provider/activity_provider.dart';
 import '../../provider/close_hrs_provider.dart';
+import '../../provider/help_points.dart';
 import '../../provider/loading_provider.dart';
 import '../../provider/my_hr_provider.dart';
 import '../../provider/people_helping_provider.dart';
@@ -20,11 +21,12 @@ class SigninGoogleButton extends StatelessWidget {
     final UserNotifier userNotifier = context.watch<UserNotifier>();
     final loadingNotifier = context.watch<LoadingNotifier>();
     final bool isLoggingIn = userNotifier.isLoading;
+
     // final bool isLoggingIn = userNotifier.isLoading;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 60),
-      child: FilledButton(
+      child: ElevatedButton(
         onPressed: isLoggingIn
             ? null
             : () async {
@@ -32,7 +34,8 @@ class SigninGoogleButton extends StatelessWidget {
                 final contextRead = context.read;
                 final messenger = ScaffoldMessenger.of(context);
                 final color = Theme.of(context);
-                final navigateTo = GoRouter.of(context);
+                // final navigateTo = GoRouter.of(context);
+                final appLocalizations = AppLocalizations.of(context);
                 try {
                   await userNotifier.loginWithGoogle();
                   await userNotifier.fetchUserProfile();
@@ -46,29 +49,30 @@ class SigninGoogleButton extends StatelessWidget {
                     final peopleHelping = contextRead<PeopleHelpingNotifier>();
                     final userRankingNotifier =
                         contextRead<UserRankingNotifier>();
+                    final HelpPoints helpPoints = contextRead<HelpPoints>();
 
                     userNotifier.updateLoginStatus();
 
-                    await Future.wait(
+                    Future.wait(
                       [
                         helpRequests.fetchHelpRequests(),
                         myHelpRequest.fetchMyHelpRequest(),
-                        activities.fetchTheLastFourActivities(),
-                        activities.fetchHelpActivities(),
+                        helpPoints.fetchHelpPoints(),
+                        // activities.fetchTheLastFourActivities(),
+                        activities.fetchWhoIamHelping(),
                         peopleHelping.fetchPeopleHelpingInMyHelpRequest(),
                         userRankingNotifier.fetchUserRakingAndNeighbors()
                       ],
                     );
 
-                    if (userNotifier.isUserLoggedIn) {
-                      if (userNotifier.user?.username == null) {
-                        navigateTo.go('/username-form');
-                      } else {
-                        navigateTo.go('/');
-                      }
-                    }
+                    // if (userNotifier.isUserLoggedIn) {
+                    //   if (userNotifier.user?.username == null) {
+                    //     navigateTo.go('/username-form');
+                    //   } else {
+                    //     navigateTo.go('/');
+                    //   }
+                    // }
                   }
-                  loadingNotifier.setLoading(false);
                 } catch (e) {
                   messenger.showSnackBar(
                     SnackBar(
@@ -76,6 +80,15 @@ class SigninGoogleButton extends StatelessWidget {
                       content: Text(e.toString()),
                     ),
                   );
+                } finally {
+                  if (userNotifier.user?.username != null) {
+                    messenger.showSnackBar(
+                      SnackBar(
+                        backgroundColor: color.colorScheme.primary,
+                        content: Text(appLocalizations!.loginWithGoogleSuccess),
+                      ),
+                    );
+                  }
                   loadingNotifier.setLoading(false);
                 }
               },

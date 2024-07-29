@@ -5,11 +5,6 @@ import 'package:flutter/material.dart';
 enum ConnectivityStatus { WiFi, Cellular, Ethernet, Offline }
 
 class ConnectivityProvider extends ChangeNotifier {
-  late Connectivity _connectivity;
-  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
-
-  ConnectivityStatus _status = ConnectivityStatus.Offline;
-  ConnectivityStatus get status => _status;
 
   ConnectivityProvider() {
     _connectivity = Connectivity();
@@ -23,6 +18,11 @@ class ConnectivityProvider extends ChangeNotifier {
     );
     _initConnectivity();
   }
+  late Connectivity _connectivity;
+  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
+
+  ConnectivityStatus _status = ConnectivityStatus.Offline;
+  ConnectivityStatus get status => _status;
 
   Future<void> _initConnectivity() async {
     final List<ConnectivityResult> result =
@@ -36,16 +36,12 @@ class ConnectivityProvider extends ChangeNotifier {
     switch (result) {
       case ConnectivityResult.wifi:
         _status = ConnectivityStatus.WiFi;
-        break;
       case ConnectivityResult.mobile:
         _status = ConnectivityStatus.Cellular;
-        break;
       case ConnectivityResult.ethernet:
         _status = ConnectivityStatus.Ethernet;
-        break;
       case ConnectivityResult.none:
         _status = ConnectivityStatus.Offline;
-        break;
       default:
         _status = ConnectivityStatus.Offline;
         break;
