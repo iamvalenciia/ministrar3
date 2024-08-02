@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../app_routes.dart';
+import '../../badgets/mosaico.dart';
 import '../../models/help_requests_model/help_request_model.dart';
 import '../../models/user_model/user_model.dart';
 import '../../provider/close_hrs_provider.dart';
@@ -95,15 +96,17 @@ class HelpRequestsList extends StatelessWidget {
           SliverAppBar(
             floating: true,
             snap: true,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Ministrar',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                const Text(' 3 stars')
-              ],
+            title: Card(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Ministrar',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  const Text(' 3 stars')
+                ],
+              ),
             ),
           ),
           SliverToBoxAdapter(
@@ -131,47 +134,50 @@ class HelpRequestsList extends StatelessWidget {
                   },
                 );
               },
-              child: Container(
-                padding: const EdgeInsets.only(
-                    left: 12, right: 8, bottom: 20, top: 2),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundImage: user?.avatar_url != null
-                          ? CachedNetworkImageProvider('${user?.avatar_url}')
-                          : null,
-                      child: user?.avatar_url == null
-                          ? const Icon(Icons.account_circle, size: 40)
-                          : null,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                right: 8, top: 8.0, bottom: 8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  user!.username
-                                      .toString(), // Replace with actual username
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                Text(
-                                  'Need a hand? Create a help request now!', // Replace with actual text
-                                  style: Theme.of(context).textTheme.titleSmall,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+              child: Expanded(
+                child: Container(
+                  padding: const EdgeInsets.only(
+                      left: 12, right: 8, bottom: 20, top: 2),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundImage: user?.avatar_url != null
+                            ? CachedNetworkImageProvider('${user?.avatar_url}')
+                            : null,
+                        child: user?.avatar_url == null
+                            ? const Icon(Icons.account_circle, size: 40)
+                            : null,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  right: 8, top: 8.0, bottom: 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    user!.username
+                                        .toString(), // Replace with actual username
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                  Text(
+                                    'Need a hand? Create a help request now!', // Replace with actual text
+                                    style:
+                                        Theme.of(context).textTheme.titleSmall,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
