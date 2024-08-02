@@ -20,6 +20,7 @@ import 'provider/theme_provider.dart';
 import 'provider/user_provider.dart';
 import 'provider/user_ranking_provider.dart';
 import 'services/supabase.dart';
+import 'theme.dart';
 
 Future<void> main() async {
   await initializeSupabase();
@@ -42,16 +43,18 @@ class _MyAppState extends State<MyApp> {
       providers: providers,
       builder: (context, child) {
         return MaterialApp(
-            home: const MainScreen(),
-            initialRoute: AppRoutes.home,
-            onGenerateRoute: AppRoutes.generateRoute,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            locale: provider.Provider.of<L10nNotifier>(context).appLocale,
-            scaffoldMessengerKey: scaffoldKey,
-            title: 'Ministrar',
-            debugShowCheckedModeBanner: false,
-            theme: provider.Provider.of<ThemeProvider>(context).themeDataStyle);
+          home: const MainScreen(),
+          initialRoute: AppRoutes.home,
+          onGenerateRoute: AppRoutes.generateRoute,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: provider.Provider.of<L10nNotifier>(context).appLocale,
+          scaffoldMessengerKey: scaffoldKey,
+          title: 'Ministrar',
+          debugShowCheckedModeBanner: false,
+          // theme: provider.Provider.of<ThemeProvider>(context).themeDataStyle);
+          theme: ThemeDataStyle.light,
+        );
       },
     );
   }

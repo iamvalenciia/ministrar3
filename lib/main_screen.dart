@@ -19,15 +19,14 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<AppBar> appBarOptions = <AppBar>[
     AppBar(
-      title: const Text('Home'),
-      leading: const Icon(Icons.home),
+      title: const Text('Ministrar'),
     ),
     AppBar(
-      title: const Text('Business'),
+      title: const Text('People helping'),
       leading: const Icon(Icons.business),
     ),
     AppBar(
-      title: const Text('School'),
+      title: const Text('Business'),
       leading: const Icon(Icons.school),
     ),
     AppBar(
@@ -39,24 +38,30 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarOptions[_selectedIndex],
+      // if the index is 0, we don't want to show the app bar
+      // 0 == HomeScreen
+      appBar: _selectedIndex == 0 ? null : appBarOptions[_selectedIndex],
       body: IndexedStack(
         index: _selectedIndex,
         children: _pages,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (index) {
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (index) {
           setState(() {
             _selectedIndex = index;
           });
         },
-        items: const [
-          BottomNavigationBarItem(
+        destinations: const [
+          NavigationDestination(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
+            icon: Icon(Icons.group),
+            label: 'Helping',
+          ),
+          NavigationDestination(
             icon: Icon(Icons.person),
             label: 'Profile',
           ),

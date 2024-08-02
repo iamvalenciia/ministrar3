@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'tab_help_requests.dart';
-import 'tab_my_help_request.dart';
+import 'help_requests.dart';
+import 'my_help_request.dart';
 
 class CustomeTabController extends StatelessWidget {
   const CustomeTabController({super.key});

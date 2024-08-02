@@ -17,6 +17,7 @@ class HelpRequestModel with _$HelpRequestModel {
     double? lat,
     double? long,
     String? username,
+    String? full_name,
     String? avatar_url,
     bool? location_sharing_enabled,
     String? phone_number,

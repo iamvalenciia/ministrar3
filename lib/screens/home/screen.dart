@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../provider/activity_provider.dart';
 import '../../provider/close_hrs_provider.dart';
-import '../../provider/conectivity_provider.dart';
 import '../../provider/help_points.dart';
 import '../../provider/location_permission.dart';
 import '../../provider/my_hr_provider.dart';
@@ -14,9 +12,8 @@ import '../../provider/people_helping_provider.dart';
 import '../../provider/user_provider.dart';
 import '../../provider/user_ranking_provider.dart';
 import '../../services/supabase.dart';
+import 'help_requests.dart';
 import 'location_card.dart';
-import 'login_card-pending-delete.dart';
-import 'tab_controller.dart';
 
 class HomeScreenBody extends StatefulWidget {
   const HomeScreenBody({super.key});
@@ -112,13 +109,23 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
         //     child: const LoginCard(),
         //   ),
         // ),
+
         Visibility(
           visible: !locationPermissionNotifier.hasLocationPermission,
           child: const LocationCard(),
         ),
+        // Selector<UserNotifier, bool>(
+        //   selector: (_, userNotifier) => userNotifier.isUserLoggedIn,
+        //   builder: (_, userExist, __) => Visibility(
+        //     visible: userExist,
+        //     child: const Text('User is logged in'),
+        //   ),
+        // ),
         Visibility(
           visible: locationPermissionNotifier.hasLocationPermission,
-          child: const Expanded(child: CustomeTabController()),
+          child: const Expanded(
+            child: HelpRequests(),
+          ),
         ),
         Visibility(
           visible: !locationPermissionNotifier.hasLocationPermission,

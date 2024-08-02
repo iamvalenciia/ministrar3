@@ -21,3 +21,18 @@ void showFlashSuccess(BuildContext context, String message) {
   );
   developer.log(name: 'showFlashSuccess', message);
 }
+
+String personalizedTimeAgo(DateTime dateTime) {
+  final now = DateTime.now();
+  final difference = now.difference(dateTime);
+
+  if (difference.inHours >= 1 && difference.inHours < 24) {
+    return '${difference.inHours}h';
+  } else if (difference.inDays >= 1 && difference.inDays <= 6) {
+    return '${difference.inDays}d';
+  } else if (difference.inDays > 6) {
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year % 100}';
+  } else {
+    return 'Just now';
+  }
+}

@@ -4,7 +4,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../app_routes.dart';
-import '../../badgets/new_badget.dart';
 import '../../provider/close_hrs_provider.dart';
 import '../../provider/l10n_provider.dart';
 import '../../provider/my_hr_provider.dart';

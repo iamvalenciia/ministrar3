@@ -21,7 +21,7 @@ class LoginCard extends StatelessWidget {
             TextButton(
                 child: Text(AppLocalizations.of(context)!.homeLogin),
                 // add logic to open up screen to continue with google, xd
-                onPressed: () => null),
+                onPressed: () {}),
           ],
         ),
       ),
